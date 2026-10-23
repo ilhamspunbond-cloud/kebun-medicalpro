@@ -88,89 +88,6 @@
             </div>
         </div>
 
-        <!-- MODUL PENCATATAN STOK & SUPLAI KEBUN -->
-        <div class="bg-white rounded-3xl p-6 shadow-xl mb-6 border border-slate-100 text-slate-800">
-            <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
-                    <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
-                </div>
-                <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sistem Mandiri</span>
-            </div>
-
-            <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl mb-6 space-y-3 border border-slate-200">
-                <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru (Tuai / Suplai)</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
-                        <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
-                        <select id="inputItem" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
-                            <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
-                            <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
-                            <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
-                            <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh</option>
-                            <option value="Bunga Kantan">Bunga Kantan</option>
-                            <option value="Bunga Tajus">Bunga Tajus</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
-                        <select id="inputAction" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
-                            <option value="tuai">Hasil Tuai (Masuk Stok)</option>
-                            <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600 block mb-1">Jumlah (Kg / Pack)</label>
-                        <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-600 block mb-1">Keterangan / Tujuan</label>
-                        <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli / Panen blok A" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">
-                    Simpan Data ke Sistem
-                </button>
-            </form>
-
-            <div class="mb-6">
-                <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok di Gudang Kebun:</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="stockSummaryContainer"></div>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <div class="text-xs font-bold text-slate-700 uppercase">📋 Riwayat & Rekap Data:</div>
-                    <div class="flex gap-1">
-                        <button onclick="filterData('all')" class="text-[10px] px-2 py-1 bg-slate-200 rounded-lg font-medium hover:bg-slate-300">Semua</button>
-                        <button onclick="filterData('weekly')" class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200">Mingguan</button>
-                        <button onclick="filterData('monthly')" class="text-[10px] px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200">Bulanan</button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-600 border-b">
-                                <th class="p-2">Tanggal</th>
-                                <th class="p-2">Item</th>
-                                <th class="p-2">Aksi</th>
-                                <th class="p-2">Jumlah</th>
-                                <th class="p-2">Keterangan</th>
-                                <th class="p-2 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="supplyTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <!-- Boss Portal & Walkie-Talkie Voice Note -->
         <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4 mb-6">
             <h3 id="lblBossPortalTitle" class="font-bold text-amber-900 flex items-center gap-2 text-lg">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
@@ -200,12 +117,13 @@
         </section>
 
         <!-- Navigation Tabs (Sistem Halaman Terpisah) -->
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-3 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
-            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-3 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Stok Bio Baja</span></button>
-            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-3 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-3 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
-            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-3 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95 sm:col-span-1 col-span-2">💵 <span id="navIncome">Pendapatan</span></button>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
+            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
+            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Bio Baja</span></button>
+            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
+            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
         </div>
 
         <!-- CONTAINER HALAMAN / TAB -->
@@ -267,6 +185,89 @@
                         </thead>
                         <tbody id="taskTableBody"></tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- Supply & Stock Management Page (Tab Baru) -->
+            <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
+                        <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
+                    </div>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sistem Mandiri</span>
+                </div>
+
+                <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
+                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru (Tuai / Suplai)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
+                            <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
+                            <select id="inputItem" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                                <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
+                                <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
+                                <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
+                                <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh</option>
+                                <option value="Bunga Kantan">Bunga Kantan</option>
+                                <option value="Bunga Tajus">Bunga Tajus</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
+                            <select id="inputAction" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                                <option value="tuai">Hasil Tuai (Masuk Stok)</option>
+                                <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Jumlah (Kg / Pack)</label>
+                            <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Keterangan / Tujuan</label>
+                            <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli / Panen blok A" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">
+                        Simpan Data ke Sistem
+                    </button>
+                </form>
+
+                <div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok di Gudang Kebun:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="stockSummaryContainer"></div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-xs font-bold text-slate-700 uppercase">📋 Riwayat & Rekap Data Suplai:</div>
+                        <div class="flex gap-1">
+                            <button onclick="filterData('all')" class="text-[10px] px-2 py-1 bg-slate-200 rounded-lg font-medium hover:bg-slate-300">Semua</button>
+                            <button onclick="filterData('weekly')" class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200">Mingguan</button>
+                            <button onclick="filterData('monthly')" class="text-[10px] px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200">Bulanan</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 border-b">
+                                    <th class="p-2">Tanggal</th>
+                                    <th class="p-2">Item</th>
+                                    <th class="p-2">Aksi</th>
+                                    <th class="p-2">Jumlah</th>
+                                    <th class="p-2">Keterangan</th>
+                                    <th class="p-2 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplyTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -510,12 +511,12 @@
 
             const buttons = document.querySelectorAll('[id^="tabBtn-"]');
             buttons.forEach(b => {
-                b.className = "bg-white text-emerald-700 p-3 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95";
+                b.className = "bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95";
             });
 
             const activeBtn = document.getElementById('tabBtn-' + tabId);
             if (activeBtn) {
-                activeBtn.className = "bg-emerald-600 text-white p-3 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95";
+                activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95";
             }
         }
 
@@ -581,9 +582,9 @@
         setTimeout(autoCleanOldPhotos, 3000);
 
         const dictionary = {
-            ms: { tasks: "Tugas Harian", stock: "Stok Bio Baja", assets: "Aset Kebun", expenses: "Perbelanjaan", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Arahan & Walkie-Talkie Boss", sendOrder: "Hantar", historyTitle: "Riwayat Arahan:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
-            id: { tasks: "Tugas Harian", stock: "Stok Bio Baja", assets: "Aset Kebun", expenses: "Pengeluaran", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Perintah & Walkie-Talkie Boss", sendOrder: "Kirim", historyTitle: "Riwayat Perintah:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
-            en: { tasks: "Daily Tasks", stock: "Bio Fertilizer", assets: "Assets", expenses: "Expenses", income: "Income", bossPortalTitle: "⚠️ Boss's Direct Orders & Walkie-Talkie", sendOrder: "Send", historyTitle: "Orders History:", sectionTaskTitle: "📌 Daily Tasks & Routine Schedule" }
+            ms: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Perbelanjaan", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Arahan & Walkie-Talkie Boss", sendOrder: "Hantar", historyTitle: "Riwayat Arahan:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
+            id: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Pengeluaran", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Perintah & Walkie-Talkie Boss", sendOrder: "Kirim", historyTitle: "Riwayat Perintah:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
+            en: { tasks: "Daily Tasks", supply: "Supply Stock", stock: "Bio Fertilizer", assets: "Assets", expenses: "Expenses", income: "Income", bossPortalTitle: "⚠️ Boss's Direct Orders & Walkie-Talkie", sendOrder: "Send", historyTitle: "Orders History:", sectionTaskTitle: "📌 Daily Tasks & Routine Schedule" }
         };
 
         function changeLang(lang) {
@@ -593,6 +594,7 @@
 
             const t = dictionary[lang];
             document.getElementById('navTasks').innerText = t.tasks;
+            document.getElementById('navSupply').innerText = t.supply;
             document.getElementById('navStock').innerText = t.stock;
             document.getElementById('navAssets').innerText = t.assets;
             document.getElementById('navExpenses').innerText = t.expenses;
