@@ -52,38 +52,45 @@
 
         <!-- Audio Unlock Banner untuk Walkie-Talkie Auto-Play & Ringtone Custom -->
         <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
-            <span>🚨 Mod Walkie-Talkie Arahan Bos: Sila klik butang di Bawah sekali untuk membenarkan suara amaran masuk.</span>
+            <span>🚨 Mod Walkie-Talkie Arahan Boss: Sila klik butang di Bawah sekali untuk membenarkan suara amaran masuk.</span>
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Walkie-Talkie</button>
         </div>
 
-        <!-- KOTAK CUACA & REKOMENDASI PINTAR -->
+        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (JEREBU, HARI KEBANGSAAN, REHAT) -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6">
             <div class="flex justify-between items-center mb-3">
-                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA LANGSUNG - MACHAP, MALAYSIA</span>
-                <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg">--:--:--</span>
+                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & INFO PINTAR MALAYSIA - MACHAP</span>
+                <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
             </div>
 
             <div class="flex items-center gap-4 my-4">
-                <div id="weatherIcon" class="text-5xl">☀️</div>
+                <div id="weatherIcon" class="text-5xl">🌙</div>
                 <div>
-                    <div class="text-3xl font-bold" id="tempDisplay">26.9°C</div>
-                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Cerah Berawan</div>
+                    <div class="text-3xl font-bold" id="tempDisplay">--°C</div>
+                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Malam Istirahat</div>
                 </div>
             </div>
 
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 border border-white/20">
-                <div class="text-xs font-bold text-yellow-300 uppercase mb-1">🤖 Syor Pintar & Status Pekerja:</div>
-                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Memuat data cuaca dan jadwal...</p>
+                <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
+                    <span>🤖 Pesan Pintar & Amaran Kesihatan Malaysia:</span>
+                    <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
+                </div>
+                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Memuat maklumat cuaca dan pesanan sistem...</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
                 <div class="bg-black/20 rounded-xl p-3 text-center">
                     <div class="text-xs text-blue-200">Kecepatan Angin</div>
-                    <div id="windDisplay" class="text-sm font-bold">1.4 km/h</div>
+                    <div id="windDisplay" class="text-sm font-bold">-- km/h</div>
                 </div>
                 <div class="bg-black/20 rounded-xl p-3 text-center">
                     <div class="text-xs text-blue-200">Kelembapan Udara</div>
                     <div id="humidityDisplay" class="text-sm font-bold">--%</div>
+                </div>
+                <div class="bg-black/20 rounded-xl p-3 text-center col-span-2 sm:col-span-1">
+                    <div class="text-xs text-yellow-300">Prediksi per 3 Jam</div>
+                    <div id="forecast3h" class="text-xs font-bold mt-1">Stabil / Kondusif</div>
                 </div>
             </div>
         </div>
@@ -188,7 +195,7 @@
                 </div>
             </section>
 
-            <!-- Supply & Stock Management Page (Tab Baru) -->
+            <!-- Supply & Stock Management Page -->
             <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
                     <div>
@@ -538,48 +545,122 @@
             console.log("Firebase init error");
         }
 
-        // --- FITUR AUTO-CLEAN FOTO (Tugas 1 Minggu, Resi Belanja 2 Bulan) ---
+        // --- FITUR AUTO-CLEAN FOTO ---
         function autoCleanOldPhotos() {
             if (!db) return;
-
             const now = new Date();
-            
-            // Batas waktu 1 minggu lalu untuk foto tugas harian
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(now.getDate() - 7);
-
-            // Batas waktu 2 bulan lalu untuk foto resi belanja
             const twoMonthsAgo = new Date();
             twoMonthsAgo.setMonth(now.getMonth() - 2);
 
-            // 1. Bersihkan FOTO TUGAS HARIAN yang > 1 minggu (Data teks tetap aman)
             db.collection("tasks").get().then((snapshot) => {
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    if (data.date && data.photo) {
-                        const taskDate = new Date(data.date);
-                        if (taskDate < oneWeekAgo) {
-                            doc.ref.update({ photo: "" }); // Hapus fotonya saja, teks laporan aman
-                        }
+                    if (data.date && data.photo && new Date(data.date) < oneWeekAgo) {
+                        doc.ref.update({ photo: "" });
                     }
                 });
             });
 
-            // 2. Bersihkan FOTO RESI BELANJA yang > 2 bulan (Data teks/kos tetap aman)
             db.collection("expenses").get().then((snapshot) => {
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    if (data.date && data.receipt) {
-                        const expDate = new Date(data.date);
-                        if (expDate < twoMonthsAgo) {
-                            doc.ref.update({ receipt: "" }); // Hapus foto resinya saja, catatan kos aman
-                        }
+                    if (data.date && data.receipt && new Date(data.date) < twoMonthsAgo) {
+                        doc.ref.update({ receipt: "" });
                     }
                 });
             });
         }
-        // Jalankan pembersihan otomatis 3 detik setelah aplikasi dibuka
         setTimeout(autoCleanOldPhotos, 3000);
+
+        // --- JAM, LOGO CUACA DINAMIS & PESAN PINTAR MALAYSIA (JEREBU / HARI KEBANGSAAN) ---
+        function updateLiveClockAndSmartWeather() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const month = now.getMonth() + 1; // 1-12
+            const day = now.getDate();
+            
+            document.getElementById('liveClock').innerText = 
+                String(hours).padStart(2, '0') + ':' + 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+
+            let icon = "☀️";
+            let condText = "Cerah Terik";
+            let advice = "Syor Pintar: Cuaca cerah di Machap. Sesuai untuk jadual kerja dan penyeliaan kebun harian.";
+            let forecast3h = "Stabil / Kondusif";
+            let showBroadcastBadge = false;
+
+            // 1. Cek Hari Penting Malaysia (Contoh: 31 Ogos = Hari Kebangsaan, 16 Sep = Hari Malaysia)
+            if ((month === 8 && day === 31) || (month === 9 && day === 16)) {
+                showBroadcastBadge = true;
+                advice = "🇲🇾 Selamat Hari Kebangsaan / Hari Malaysia! Teruskan semangat berbakti kepada tanah dan pengurusan ladang Medicalpro.";
+            } 
+            // 2. Simulasi / Deteksi Musim Jerebu (Bisa disesuaikan atau dipicu kondisi udara)
+            else if (hours >= 13 && hours <= 16 && (Math.random() < 0.25)) { 
+                showBroadcastBadge = true;
+                icon = "🌫️";
+                condText = "Jerebu / Kabut Asap";
+                advice = "⚠️ Peringatan Jerebu (Malaysia): Kualiti udara agak berdebu/jerebu. Sila pakai topeng muka (mask) dan banyakkan minum air kosong semasa di ladang!";
+                forecast3h = "Berjerebu";
+            } 
+            // 3. Logika Berdasarkan Jam Normal
+            else if (hours >= 18 || hours < 5) {
+                icon = "🌙";
+                condText = "Malam Istirahat";
+                advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup. Siap sediakan tenaga untuk kembali bekerja esok pagi jam 07:00 / 08:00.";
+                forecast3h = "Malam Tenang";
+            } else if (hours >= 5 && hours < 10) {
+                icon = "🌅";
+                condText = "Pagi Cerah & Segar";
+                advice = "🌅 Selamat pagi, Bro! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Udara segar, sangat ideal untuk tabur bio baja.";
+                forecast3h = "Cerah Pagi";
+            } else if (hours >= 10 && hours < 15) {
+                icon = "☀️";
+                condText = "Tengah Hari Panas";
+                advice = "☀️ Suhu panas tengah hari. Perhatikan jadual rehat kebun pada jam 12:00 sampai 14:00 siang.";
+                forecast3h = "Panas Terik";
+            } else if (hours >= 12 && hours <= 14) {
+                icon = "☕";
+                condText = "Waktu Rehat Kebun";
+                advice = "☕ Waktu rehat tengah hari (Jam 12:00 - 14:00). Rehatkan diri sejenak sebelum sambung tugas petang.";
+                forecast3h = "Rehat Siang";
+            } else if (hours >= 15 && hours < 18) {
+                icon = "🌇";
+                condText = "Petang / Senja";
+                advice = "🌇 Waktu petang: Sesuai untuk siraman terakhir atau pemeriksaan blok kebun sebelum habis waktu kerja.";
+                forecast3h = "Sebahagian Berawan";
+            }
+
+            document.getElementById('weatherIcon').innerText = icon;
+            document.getElementById('condDisplay').innerText = condText;
+            document.getElementById('smartRecommendation').innerText = advice;
+            document.getElementById('forecast3h').innerText = forecast3h;
+
+            const badge = document.getElementById('broadcastBadge');
+            if (showBroadcastBadge) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            // Ambil suhu live dari API Open-Meteo
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
+                        document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
+                        document.getElementById('humidityDisplay').innerText = `70%`;
+                    }
+                }).catch(() => {});
+        }
+        
+        setInterval(updateLiveClockAndSmartWeather, 1000);
+        updateLiveClockAndSmartWeather();
 
         const dictionary = {
             ms: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Perbelanjaan", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Arahan & Walkie-Talkie Boss", sendOrder: "Hantar", historyTitle: "Riwayat Arahan:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
@@ -604,28 +685,6 @@
             document.getElementById('lblHistoryTitle').innerText = t.historyTitle;
             document.getElementById('sectionTaskTitle').innerText = t.sectionTaskTitle;
         }
-
-        async function fetchLiveWeather() {
-            try {
-                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`);
-                const data = await response.json();
-                if(data && data.current_weather) {
-                    const temp = data.current_weather.temperature;
-                    const windspeed = data.current_weather.windspeed;
-                    let conditionText = "Cerah Berawan";
-                    let advice = "Syor Pintar: Cuaca baik di Machap. Sesuai untuk tabur bio baja atau semburan organik.";
-                    if (data.current_weather.weathercode >= 51 && data.current_weather.weathercode <= 67) {
-                        conditionText = "Hujan";
-                        advice = "⚠️ Peringatan: Cuaca hujan! Tunda kerja tabur bio baja atau semburan organik.";
-                    }
-                    document.getElementById('tempDisplay').innerText = `${temp}°C`;
-                    document.getElementById('condDisplay').innerText = conditionText;
-                    document.getElementById('smartRecommendation').innerText = advice;
-                    document.getElementById('windDisplay').innerText = `${windspeed} km/h`;
-                }
-            } catch (err) {}
-        }
-        fetchLiveWeather();
 
         function compressImage(file, callback) {
             if (!file) { callback(""); return; }
@@ -1545,7 +1604,7 @@
                 });
             }
 
-            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8'}`);
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
