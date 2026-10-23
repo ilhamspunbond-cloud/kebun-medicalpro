@@ -141,7 +141,7 @@
             recommendationEl.style.color = "#fef08a"; // Kuning terang
         } else if (hours >= 7 && hours < 17) {
             // Jam Kerja Aktif -> Cek berdasarkan kondisi cuaca (Simulasi real-time Machap)
-            recommendationEl.innerText = "✨ Cuaca baik di Machap. Sesuai untuk tabur baja atau semburan racun.";
+            recommendationEl.innerText = "✨ Cuaca baik di Machap. Sesuai untuk tabur baja atau semburan biobaj.";
             recommendationEl.style.color = "#ffffff";
         } else {
             recommendationEl.innerText = "⚠️ Jam sore / Persiapan penutupan aktivitas kebun harian.";
@@ -637,7 +637,7 @@
                 <h4 class="font-bold text-sm text-slate-700 mb-2" id="formInventoryTitle">Tambah Master Stok Baja / Racun</h4>
                 <form id="inventoryForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                     <input type="hidden" id="invEditIndex" value="">
-                    <input type="text" id="invName" placeholder="Nama Baja / Racun" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="invName" placeholder="Nama Baja / Biobaja" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="number" id="invStock" placeholder="Jumlah Stok Awal (Cth: 30)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="text" id="invAdvice" placeholder="Kegunaan / Saran Belimbing Wuluh" required class="border p-2 rounded-lg text-sm bg-white sm:col-span-2">
                     <div>
@@ -738,10 +738,10 @@
                     const temp = data.current_weather.temperature;
                     const windspeed = data.current_weather.windspeed;
                     let conditionText = "Cerah Berawan";
-                    let advice = "Syor Pintar: Cuaca baik di Machap. Sesuai untuk tabur baja atau semburan racun.";
+                    let advice = "Syor Pintar: Cuaca baik di Machap. Sesuai untuk tabur baja atau semburan bio baja.";
                     if (data.current_weather.weathercode >= 51 && data.current_weather.weathercode <= 67) {
                         conditionText = "Hujan";
-                        advice = "⚠️ Peringatan: Cuaca hujan! Tunda kerja tabur baja atau semburan racun.";
+                        advice = "⚠️ Peringatan: Cuaca hujan! Tunda kerja tabur baja atau semburan biobaja.";
                     }
                     document.getElementById('weatherTemp').innerText = `☀️ ${temp}°C - ${conditionText}`;
                     document.getElementById('weatherAdvice').innerText = advice;
