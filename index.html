@@ -152,6 +152,212 @@
     updateClockAndSystem();
 </script>
 
+<!-- MODUL PENCATATAN STOK & SUPLAI KEBUN -->
+<div class="bg-white rounded-3xl p-6 shadow-xl mb-6 border border-slate-100 text-slate-800">
+    <div class="flex justify-between items-center mb-4 border-b pb-3">
+        <div>
+            <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
+            <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
+        </div>
+        <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sistem Mandiri</span>
+    </div>
+
+    <!-- Form Input (Bisa diisi siapa saja) -->
+    <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl mb-6 space-y-3 border border-slate-200">
+        <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru (Tuai / Suplai)</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+                <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
+                <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+            </div>
+            <div>
+                <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
+                <select id="inputItem" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                    <option value="Buah Belimbing Buluh Segar">Buah Belimbing Buluh Segar</option>
+                    <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
+                    <option value="Kismis / Manisan Belimbing">Kismis / Manisan Belimbing</option>
+                    <option value="Belimbing Awetan Vakum">Belimbing Awetan Vakum</option>
+                </select>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+                <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
+                <select id="inputAction" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                    <option value="tuai">Hasil Tuai (Masuk Stok)</option>
+                    <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs text-slate-600 block mb-1">Jumlah (Kg / Pack)</label>
+                <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+            </div>
+            <div>
+                <label class="text-xs text-slate-600 block mb-1">Keterangan / Tujuan</label>
+                <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli / Panen blok A" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+            </div>
+        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">
+            Simpan Data ke Sistem
+        </button>
+    </form>
+
+    <!-- Ringkasan Stok Gudang Saat Ini -->
+    <div class="mb-6">
+        <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok di Gudang Kebun:</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="stockSummaryContainer">
+            <!-- Diisi otomatis oleh script -->
+        </div>
+    </div>
+
+    <!-- Filter & Tabel Rekap (Mingguan / Bulanan) -->
+    <div>
+        <div class="flex justify-between items-center mb-2">
+            <div class="text-xs font-bold text-slate-700 uppercase">📋 Riwayat & Rekap Data:</div>
+            <div class="flex gap-1">
+                <button onclick="filterData('all')" class="text-[10px] px-2 py-1 bg-slate-200 rounded-lg font-medium hover:bg-slate-300">Semua</button>
+                <button onclick="filterData('weekly')" class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200">Mingguan</button>
+                <button onclick="filterData('monthly')" class="text-[10px] px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200">Bulanan</button>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                    <tr class="bg-slate-100 text-slate-600 border-b">
+                        <th class="p-2">Tanggal</th>
+                        <th class="p-2">Item</th>
+                        <th class="p-2">Aksi</th>
+                        <th class="p-2">Jumlah</th>
+                        <th class="p-2">Keterangan</th>
+                        <th class="p-2 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="supplyTableBody">
+                    <!-- Data riwayat masuk di sini -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT LOGIKA STOK & REKAP -->
+<script>
+    // Ambil data dari localStorage atau buat array kosong
+    let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
+
+    // Set default tanggal hari ini di form
+    document.getElementById('inputDate').valueAsDate = new Date();
+
+    document.getElementById('supplyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newItem = {
+            id: Date.now(),
+            date: document.getElementById('inputDate').value,
+            item: document.getElementById('inputItem').value,
+            action: document.getElementById('inputAction').value,
+            qty: parseFloat(document.getElementById('inputQty').value),
+            desc: document.getElementById('inputDesc').value || '-'
+        };
+
+        supplyData.unshift(newItem);
+        localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+        
+        // Reset form & refresh tampilan
+        this.reset();
+        document.getElementById('inputDate').valueAsDate = new Date();
+        renderSupplyApp();
+    });
+
+    function deleteRecord(id) {
+        supplyData = supplyData.filter(item => item.id !== id);
+        localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+        renderSupplyApp();
+    }
+
+    function renderSupplyApp(filterType = 'all') {
+        const tbody = document.getElementById('supplyTableBody');
+        const stockContainer = document.getElementById('stockSummaryContainer');
+        tbody.innerHTML = '';
+
+        // Hitung Stok per Item
+        let stocks = {};
+        supplyData.forEach(row => {
+            if (!stocks[row.item]) stocks[row.item] = 0;
+            if (row.action === 'tuai') {
+                stocks[row.item] += row.qty;
+            } else if (row.action === 'suplai') {
+                stocks[row.item] -= row.qty;
+            }
+        });
+
+        // Tampilkan Ringkasan Stok
+        stockContainer.innerHTML = '';
+        const defaultItems = [
+            "Buah Belimbing Buluh Segar", 
+            "Daun Teh Belimbing Buluh", 
+            "Kismis / Manisan Belimbing", 
+            "Belimbing Awetan Vakum"
+        ];
+
+        defaultItems.forEach(item => {
+            let currentStock = stocks[item] || 0;
+            stockContainer.innerHTML += `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center">
+                    <div class="text-[10px] text-slate-500 truncate">${item}</div>
+                    <div class="text-sm font-bold text-blue-600 mt-1">${currentStock} <span class="text-[10px] font-normal">Unit/Kg</span></div>
+                </div>
+            `;
+        });
+
+        // Filter Data Tabel (Mingguan / Bulanan / Semua)
+        let filteredData = supplyData;
+        const now = new Date();
+        
+        if (filterType === 'weekly') {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(now.getDate() - 7);
+            filteredData = supplyData.filter(row => new Date(row.date) >= oneWeekAgo);
+        } else if (filterType === 'monthly') {
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            filteredData = supplyData.filter(row => {
+                const d = new Date(row.date);
+                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+            });
+        }
+
+        // Tampilkan ke Tabel
+        if (filteredData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada data tercatat.</td></tr>`;
+            return;
+        }
+
+        filteredData.forEach(row => {
+            let badgeColor = row.action === 'tuai' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
+            let actionText = row.action === 'tuai' ? '📥 Tuai (Masuk)' : '📤 Suplai (Keluar)';
+            
+            tbody.innerHTML += `
+                <tr class="border-b hover:bg-slate-50">
+                    <td class="p-2 text-slate-600">${row.date}</td>
+                    <td class="p-2 font-medium text-slate-800">${row.item}</td>
+                    <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${badgeColor}">${actionText}</span></td>
+                    <td class="p-2 font-bold">${row.qty}</td>
+                    <td class="p-2 text-slate-500 truncate max-w-[120px]">${row.desc}</td>
+                    <td class="p-2 text-center">
+                        <button onclick="deleteRecord(${row.id})" class="text-red-500 hover:text-red-700 text-xs px-1">✕</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function filterData(type) {
+        renderSupplyApp(type);
+    }
+
+    // Jalankan saat pertama muat
+    renderSupplyApp();
+</script>
 
         <!-- Boss Portal & Walkie-Talkie Voice Note -->
         <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4">
