@@ -574,7 +574,7 @@
         }
         setTimeout(autoCleanOldPhotos, 3000);
 
-        // --- JAM, LOGO CUACA DINAMIS & PESAN PINTAR MALAYSIA (DENGAN FALLBACK AMAN) ---
+        // --- JAM, LOGO CUACA DINAMIS & PESAN PINTAR MALAYSIA ---
         function updateLiveClockAndSmartWeather() {
             const now = new Date();
             const hours = now.getHours();
@@ -631,7 +631,6 @@
                 badge.classList.add('hidden');
             }
 
-            // Ambil suhu live dengan fallback aman agar tidak stuck di '--'
             fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`)
                 .then(res => res.json())
                 .then(data => {
@@ -641,7 +640,6 @@
                         document.getElementById('humidityDisplay').innerText = `72%`;
                     }
                 }).catch(() => {
-                    // Nilai cadangan jika jaringan / API gagal diakses
                     document.getElementById('tempDisplay').innerText = "26.5°C";
                     document.getElementById('windDisplay').innerText = "1.2 km/h";
                     document.getElementById('humidityDisplay').innerText = "75%";
@@ -1311,6 +1309,7 @@
             a.href = url;
             a.download = "Rekap_Aset_Kebun.txt";
             a.click();
+            alert("📥 Berjaya Muat Turun!\nFail rekap aset telah disimpan ke folder Download HP anda.");
         }
 
         // --- TUGAS HARIAN ---
@@ -1392,7 +1391,14 @@
                 const isDone = t.status === "Selesai ✓";
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-slate-50">
-                        <td class="p-3">${t.photo ? `<img src="${t.photo}" class="w-10 h-10 object-cover rounded shadow">` : 'Tiada (Auto-Clean)'}</td>
+                        <td class="p-3">
+                            ${t.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${t.photo}" class="w-10 h-10 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${t.photo}', 'Foto-Tugas-${t.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
                         <td class="p-3 font-medium">${t.title}</td>
                         <td class="p-3">${t.category}</td>
                         <td class="p-3">${t.worker}</td>
@@ -1416,7 +1422,7 @@
             }
         }
 
-        // --- EXPENSES (PERBELANJAAN DENGAN FULL HD RAW FILE TANPA BUREM) ---
+        // --- EXPENSES (PERBELANJAAN) ---
         let expenses = [];
         let expReceiptBase64 = "";
         
@@ -1479,9 +1485,9 @@
                             ${ex.receipt ? `
                                 <div class="flex flex-col gap-1">
                                     <img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow border">
-                                    <a href="${ex.receipt}" download="Resi-Belanja-HD-${ex.id}.jpg" class="text-[10px] text-blue-600 font-bold underline hover:text-blue-800">📥 Download HD</a>
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${ex.receipt}', 'Resi-Belanja-HD-${ex.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline hover:text-blue-800">📥 Download HD</a>
                                 </div>
-                            ` : 'Tiada (Auto-Clean)'}
+                            ` : 'Tiada'}
                         </td>
                         <td class="p-3 font-medium">${ex.title}</td>
                         <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
@@ -1550,7 +1556,14 @@
             filtered.forEach(inc => {
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${inc.photo ? `<img src="${inc.photo}" class="w-10 h-10 object-cover rounded shadow">` : 'Tiada'}</td>
+                        <td class="p-3">
+                            ${inc.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${inc.photo}" class="w-10 h-10 object-cover rounded shadow">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${inc.photo}', 'Bukti-Jualan-${inc.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
                         <td class="p-3 font-medium">${inc.title}</td>
                         <td class="p-3 text-xs font-bold text-blue-800">${inc.staff || 'Staff'}</td>
                         <td class="p-3 font-bold text-emerald-600">${inc.amount}</td>
@@ -1566,11 +1579,26 @@
             }
         }
 
-        // --- DOWNLOAD REKAP BULANAN ---
+        // --- FUNGSI DOWNLOAD GAMBAR & REKAP DENGAN NOTIFIKASI POP-UP ---
+        function downloadImageFile(imageUrl, fileName) {
+            if (!imageUrl) {
+                alert("⚠️ Tiada fail gambar untuk dimuat turun!");
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.download = fileName || `Fail_Kebun_${Date.now()}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            alert(`📥 Berjaya Muat Turun!\nFail "${a.download}" telah disimpan ke peranti anda.`);
+        }
+
         function downloadMonthlyReport(type) {
             let filterVal = 'all';
             if (type === 'tasks') filterVal = document.getElementById('filterTaskMonth').value;
-            else if (type === 'expenses') filterVal = document.getElementById('filterExpenseMonth5').value; // Perbaikan aman
+            else if (type === 'expenses') filterVal = document.getElementById('filterExpenseMonth').value;
             else if (type === 'income') filterVal = document.getElementById('filterIncomeMonth').value;
 
             if (filterVal === 'all') {
@@ -1595,10 +1623,16 @@
 
             const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
+            const fileName = `Rekap_${type}_${filterVal}.txt`;
+            
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Rekap_${type}_${filterVal}.txt`;
+            a.download = fileName;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
+
+            alert(`📥 Berjaya Muat Turun!\nFail "${fileName}" telah disimpan ke folder Download HP anda.`);
         }
     </script>
 </body>
