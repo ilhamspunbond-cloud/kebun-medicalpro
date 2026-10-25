@@ -4,7 +4,7 @@
     <link rel="icon" type="image/png" href="Logopit_1745513395623.png">
     <link rel="apple-touch-icon" href="Logopit_1745513395623.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1c1e">
+    <meta name="theme-color" content="#2563eb">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,430 +12,1628 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <style>
-        body { background-color: #1a1c1e; color: #e3e3e3; }
-        .google-card { background-color: #202124; border-radius: 28px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .google-text-primary { color: #e3e3e3; }
-        .google-text-secondary { color: #9aa0a6; }
-        .google-text-accent { color: #8ab4f8; }
-        .rain-bar { width: 100%; height: 60px; display: flex; align-items: flex-end; gap: 2px; }
-        .rain-bar-segment { flex: 1; background-color: #8ab4f8; border-top-left-radius: 4px; border-top-right-radius: 4px; opacity: 0.7; }
-        .rain-bar-segment.active { opacity: 1; }
-        
-        .ai-chat-container { background-color: #202124; border-radius: 28px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .ai-chat-bubble { max-width: 85%; padding: 14px 18px; border-radius: 20px; margin-bottom: 12px; font-size: 13px; line-height: 1.5; }
-        .ai-bubble { background-color: #303134; align-self: flex-start; border-bottom-left-radius: 4px; color: #e3e3e3; }
-        .user-bubble { background-color: #8ab4f8; color: #1a1c1e; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
-        .ai-typing-indicator { display: flex; gap: 4px; align-items: center; color: #9aa0a6; font-size: 11px; font-style: italic; padding: 8px 0; }
-        .ai-typing-dot { width: 6px; height: 6px; background-color: #9aa0a6; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
-        .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-    </style>
 </head>
-<body class="pb-16">
+<body class="bg-slate-50 text-slate-800 font-sans pb-16">
 
-    <!-- HALAMAN LOGIN / KUNCI NAMA & GENDER (TUAN / PUAN) -->
-    <div id="welcomeLoginModal" class="fixed inset-0 bg-stone-950 flex items-center justify-center p-4 z-50">
-        <div class="bg-stone-900 border border-stone-700 p-8 rounded-3xl max-w-md w-full shadow-2xl text-center space-y-6">
-            <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-3xl mx-auto shadow-md">🌱</div>
-            <div>
-                <h2 class="text-xl font-bold text-stone-100 uppercase tracking-wide">Akses Eksklusif Kebun</h2>
-                <p class="text-xs text-stone-400 mt-1">Sila masukkan nama dan pilih gelaran (Tuan / Puan) untuk masuk ke sistem AI Cerdas.</p>
-            </div>
+    <!-- Header & Custom Branding -->
+    <header class="bg-yellow-400 text-blue-900 shadow-md border-b-4 border-yellow-500">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col items-center text-center gap-3">
             
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="block text-xs font-bold text-stone-400 mb-1">Nama Panggilan</label>
-                    <input type="text" id="loginUserName" placeholder="Cth: Rojak" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100 focus:outline-none focus:border-yellow-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-stone-400 mb-1">Gelaran</label>
-                    <select id="loginUserGender" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100 focus:outline-none focus:border-yellow-500">
-                        <option value="Tuan">Tuan (Laki-laki)</option>
-                        <option value="Puan">Puan (Perempuan)</option>
-                    </select>
+            <div id="headerLogoContainer" class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-2xl overflow-hidden border-2 border-yellow-500 shadow-sm">
+                🌱
+            </div>
+
+            <div>
+                <h1 id="lblGardenName" class="text-xl sm:text-2xl font-black tracking-wide text-blue-900 uppercase">KEBUN BELIMBING WULUH</h1>
+                <h2 class="text-lg sm:text-xl font-extrabold text-blue-800 tracking-wider">MEDICAL PRO</h2>
+                <p id="lblSubHeader" class="text-xs font-bold text-blue-900/80 mt-1">Medicalpro Agro Management - Machap</p>
+                <div class="mt-2">
+                    <span id="lblPartnership" class="text-[10px] sm:text-xs font-semibold text-blue-900 bg-yellow-300/60 px-3 py-1 rounded-full inline-block border border-yellow-500/40">
+                        🤝 Kerjasama: NIBM & Gimba Sdn Bhd | Jabatan Pertanian (No. MyGAP: 24.0151)
+                    </span>
                 </div>
             </div>
 
-            <button onclick="handleUserLogin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold py-3.5 rounded-xl text-sm shadow transition">
-                Masuk ke Sistem Kebun 🚀
-            </button>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="bg-stone-900 text-stone-100 border-b border-stone-700">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div id="headerLogoContainer" class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-bold text-lg text-stone-950 overflow-hidden border-2 border-yellow-600">
-                    🌱
+            <div class="flex items-center gap-3 mt-2 pt-2 border-t border-yellow-500/50 w-full justify-center">
+                <button onclick="openAdminLogin()" class="bg-blue-900 hover:bg-blue-800 text-white px-3 py-1 rounded-lg text-xs font-bold shadow">
+                    🔐 Panel Admin Utama
+                </button>
+                <div class="flex items-center gap-1">
+                    <button onclick="changeLang('ms')" id="btnLangMs" class="px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold">MY</button>
+                    <button onclick="changeLang('id')" id="btnLangId" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">ID</button>
+                    <button onclick="changeLang('en')" id="btnLangEn" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">EN</button>
                 </div>
-                <h1 id="lblGardenName" class="text-xs sm:text-sm font-extrabold tracking-tight text-stone-100 uppercase">KEBUN BELIMBING WULUH MEDICALPRO</h1>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="openAdminLogin()" class="text-[10px] bg-amber-600 text-stone-950 px-2.5 py-1 rounded-lg font-bold">⚙️ Admin</button>
-                <span id="displayUserSession" class="text-xs font-bold bg-stone-800 text-yellow-400 px-3 py-1 rounded-full border border-stone-700">--</span>
-                <button onclick="logoutSession()" class="text-[10px] bg-rose-950 text-rose-300 px-2 py-1 rounded-lg border border-rose-800">Keluar</button>
-            </div>
+
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Cuaca Google Style -->
-        <div class="google-card p-6 space-y-5">
-            <div class="flex justify-between items-center border-b border-stone-700 pb-4">
-                <div>
-                    <div class="text-lg font-semibold google-text-primary tracking-wide">Cuaca & Info Pintar</div>
-                    <div class="text-sm google-text-secondary">MALAYSIA - MACHAP</div>
-                </div>
-                <span id="liveClock" class="text-sm font-mono google-text-accent bg-stone-800 px-4 py-1.5 rounded-xl font-bold">--:--:--</span>
-            </div>
-
-            <div class="space-y-5">
-                <div class="flex items-center gap-6 my-4">
-                    <div id="weatherIcon" class="text-8xl drop-shadow-lg">🌙</div>
-                    <div>
-                        <div class="text-8xl font-medium google-text-primary -ml-3" id="tempDisplay">--°C</div>
-                        <div class="text-3xl google-text-secondary mt-1" id="condDisplay">Malam Istirahat</div>
-                        <div class="text-xl google-text-secondary mt-1" id="feelsLikeDisplay">Terasa seperti --°C</div>
-                    </div>
-                </div>
-
-                <div class="bg-stone-900/50 p-4 rounded-2xl">
-                    <p id="rainForecastSummary" class="text-sm google-text-primary mb-3 font-medium">Hujan ringan hingga lebat dari pukul 7.00 PM akan terus berlanjut melebihi pukul 12.00 AM</p>
-                    <div class="rain-bar">
-                        <div class="rain-bar-segment h-4 active" title="7 PM"></div>
-                        <div class="rain-bar-segment h-5 active" title="8 PM"></div>
-                        <div class="rain-bar-segment h-8 active" title="9 PM"></div>
-                        <div class="rain-bar-segment h-10 active" title="10 PM"></div>
-                        <div class="rain-bar-segment h-10 active" title="11 PM"></div>
-                        <div class="rain-bar-segment h-12 active" title="12 AM"></div>
-                        <div class="rain-bar-segment h-14 active" title="1 AM"></div>
-                        <div class="rain-bar-segment h-14 active" title="2 AM"></div>
-                        <div class="rain-bar-segment h-12 active" title="3 AM"></div>
-                        <div class="rain-bar-segment h-10 active" title="4 AM"></div>
-                        <div class="rain-bar-segment h-5 active" title="5 AM"></div>
-                        <div class="rain-bar-segment h-4 active" title="6 AM"></div>
-                    </div>
-                    <div class="flex justify-between text-[11px] google-text-secondary mt-2 font-medium">
-                        <span>7 PM</span><span>8 PM</span><span>9 PM</span><span>10 PM</span><span>11 PM</span><span>12 AM</span><span>1 AM</span><span>2 AM</span><span>3 AM</span><span>4 AM</span><span>5 AM</span><span>6 AM</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-stone-700 text-center">
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Presipitasi</div>
-                    <div id="precipDisplay" class="text-sm google-text-primary font-bold mt-1">20%</div>
-                </div>
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Angin</div>
-                    <div id="windDisplay" class="text-sm google-text-primary font-bold mt-1">5 km/j</div>
-                </div>
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Kelembapan</div>
-                    <div id="humidityDisplay" class="text-sm google-text-primary font-bold mt-1">72%</div>
-                </div>
-            </div>
-            <a href="https://open-meteo.com/" target="_blank" class="text-[10px] google-text-secondary text-center block hover:underline">Data Cuaca oleh Open-Meteo</a>
+        <!-- Audio Unlock Banner untuk Walkie-Talkie Auto-Play & Ringtone Custom -->
+        <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
+            <span>🚨 Mod Walkie-Talkie Arahan Boss: Sila klik butang di Bawah sekali untuk membenarkan suara amaran masuk.</span>
+            <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Walkie-Talkie</button>
         </div>
 
-        <!-- PUSAT KOMUNIKASI AI CERDAS KEBUN -->
-        <section class="ai-chat-container shadow-xl border border-stone-700 space-y-4">
-            <h3 id="lblAiChatTitle" class="font-bold text-yellow-400 flex items-center gap-2 text-lg">🤖 Pusat Komunikasi AI Cerdas Kebun</h3>
-            
-            <div id="aiChatHistory" class="flex flex-col space-y-3 bg-stone-950 p-4 rounded-xl border border-stone-700 h-80 overflow-y-auto"></div>
-
-            <div class="flex gap-2">
-                <input type="text" id="aiInputMessage" placeholder="Tanya AI... (Cth: 'Kirim rekap pengeluaran')" class="flex-1 border border-stone-700 p-3 rounded-xl text-sm focus:outline-none bg-stone-950 text-stone-100 placeholder:text-stone-600">
-                <button type="button" onclick="startVoiceInput()" class="bg-stone-800 hover:bg-stone-700 text-yellow-400 px-4 py-3 rounded-xl text-lg shadow font-bold" title="Cakap dengan AI">🎙️</button>
-                <button type="button" onclick="sendUserQuery()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow">Hantar</button>
+        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (JEREBU, HARI KEBANGSAAN, REHAT) -->
+        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6">
+            <div class="flex justify-between items-center mb-3">
+                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & INFO PINTAR MALAYSIA - MACHAP</span>
+                <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
             </div>
-            <div id="aiTypingIndicator" class="ai-typing-indicator hidden">
-                <div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>
-                <span id="aiTypingText">AI sedang menganalisis pangkalan data kebun...</span>
+
+            <div class="flex items-center gap-4 my-4">
+                <div id="weatherIcon" class="text-5xl">🌙</div>
+                <div>
+                    <div class="text-3xl font-bold" id="tempDisplay">26.5°C</div>
+                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Malam Istirahat</div>
+                </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 border border-white/20">
+                <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
+                    <span>🤖 Pesan Pintar & Amaran Kesihatan Malaysia:</span>
+                    <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
+                </div>
+                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Malam ini waktu rehat & tidur. Bersedia untuk mula bekerja semula esok pagi jam 07:00 / 08:00.</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                <div class="bg-black/20 rounded-xl p-3 text-center">
+                    <div class="text-xs text-blue-200">Kecepatan Angin</div>
+                    <div id="windDisplay" class="text-sm font-bold">1.2 km/h</div>
+                </div>
+                <div class="bg-black/20 rounded-xl p-3 text-center">
+                    <div class="text-xs text-blue-200">Kelembapan Udara</div>
+                    <div id="humidityDisplay" class="text-sm font-bold">78%</div>
+                </div>
+                <div class="bg-black/20 rounded-xl p-3 text-center col-span-2 sm:col-span-1">
+                    <div class="text-xs text-yellow-300">Prediksi per 3 Jam</div>
+                    <div id="forecast3h" class="text-xs font-bold mt-1">Malam Tenang</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boss Portal & Walkie-Talkie Voice Note -->
+        <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4 mb-6">
+            <h3 id="lblBossPortalTitle" class="font-bold text-amber-900 flex items-center gap-2 text-lg">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
+            
+            <div class="flex gap-2 border-b border-amber-300 pb-2">
+                <button type="button" onclick="switchBossMode('text')" id="btnModeText" class="px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold">Mesej Teks</button>
+                <button type="button" onclick="switchBossMode('voice')" id="btnModeVoice" class="px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">🎙️ Rakaman Walkie-Talkie Suara</button>
+            </div>
+
+            <form id="bossOrderForm" class="flex gap-2">
+                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru (Cth: Ambil buah di blok A)..." required class="flex-1 border border-amber-300 p-2.5 rounded-xl text-sm focus:outline-none bg-white">
+                <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Hantar</button>
+            </form>
+
+            <div id="bossVoiceContainer" class="hidden flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl border border-amber-300">
+                <button type="button" id="btnRecordAudio" onclick="toggleRecording()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
+                    🔴 Mula Rakam Suara
+                </button>
+                <span id="recordingStatus" class="text-xs font-semibold text-slate-500">Tekan butang untuk rakam walkie-talkie.</span>
+                <button type="button" id="btnSendVoice" onclick="sendVoiceNote()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow hidden">Kirim Walkie-Talkie</button>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-800 uppercase tracking-wider">Riwayat Arahan & Voice Note:</h4>
+                <div id="bossHistoryContainer" class="space-y-2"></div>
             </div>
         </section>
 
-        <!-- Navigation Tabs -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sticky top-2 z-40 bg-stone-950/90 backdrop-blur p-2 rounded-2xl border border-stone-700">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
-            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
-            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Bio Baja</span></button>
-            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
-            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
+        <!-- Navigation Tabs (Sistem Halaman Terpisah) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
+            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
+            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Bio Baja</span></button>
+            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
+            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
         </div>
 
-        <!-- CONTAINER HALAMAN / TAB LENGKAP -->
-        <div id="tabContentContainer" class="space-y-6">
+        <!-- CONTAINER HALAMAN / TAB -->
+        <div id="tabContentContainer">
 
-            <!-- 1. Task Management Page -->
-            <section id="page-tasks" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
-                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
-                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="taskCategory" placeholder="Kategori" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="taskWorker" placeholder="Nama Pekerja" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="date" id="taskDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <div class="sm:col-span-4">
-                        <label class="block text-xs font-semibold text-stone-400 mb-1">Lampiran Foto (HD)</label>
-                        <input type="file" id="imageInput" accept="image/*" class="w-full border border-stone-700 p-2 rounded-lg text-sm bg-stone-950 text-stone-100">
+            <!-- Task Management Page -->
+            <section id="page-tasks" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 id="sectionTaskTitle" class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('tasks')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl font-semibold text-sm">Tambah Tugasan</button>
+                </div>
+
+                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border p-2 rounded-lg text-sm">
+                    <input type="text" id="taskCategory" placeholder="Kategori (Pemupukan/Siram)" required class="border p-2 rounded-lg text-sm">
+                    <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
+                        <option value="">Pilih Pekerja</option>
+                    </select>
+                    <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm">
+                    
+                    <div class="sm:col-span-2 grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Guna Stok Bio Baja?</label>
+                            <select id="taskStockItem" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                                <option value="">-- Tanpa Stok --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Jumlah Dipakai</label>
+                            <input type="number" id="taskStockQty" placeholder="0" min="1" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (Auto-Clean 1 Minggu)</label>
+                        <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
+                    </div>
+                    <button type="submit" id="btnAddTask" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Tambah Tugasan & Potong Stok Otomatis</button>
                 </form>
+
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-stone-300">
-                        <thead><tr class="bg-stone-950 text-stone-400 border-b border-stone-700"><th class="p-3">Foto</th><th class="p-3">Tugasan</th><th class="p-3">Kategori</th><th class="p-3">Pekerja</th><th class="p-3">Tarikh</th></tr></thead>
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-3">Foto</th>
+                                <th class="p-3">Tugasan</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Pekerja</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Info Stok</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
+                        </thead>
                         <tbody id="taskTableBody"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- 2. Supply Management Page -->
-            <section id="page-supply" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-stone-100">📦 Manajemen Stok & Suplai Kebun</h3>
-            </section>
+            <!-- Supply & Stock Management Page -->
+            <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
+                        <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
+                    </div>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sistem Mandiri</span>
+                </div>
 
-            <!-- 3. Inventory / Bio Baja Page -->
-            <section id="page-inventory" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold mb-4 text-emerald-400">🧪 Stok Bio Baja & Nutrisi Organik</h3>
-                <div id="inventoryContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="bg-stone-950 p-4 rounded-xl border border-stone-700">
-                        <div class="font-bold text-yellow-400">Baja AB Organik</div>
-                        <div class="text-sm text-stone-400 mt-1">Baki: 50 Liter (Kitaran 2 Minggu)</div>
+                <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
+                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru (Tuai / Suplai)</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
+                            <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
+                            <select id="inputItem" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                                <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
+                                <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
+                                <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
+                                <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh</option>
+                                <option value="Bunga Kantan">Bunga Kantan</option>
+                                <option value="Bunga Tajus">Bunga Tajus</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
+                            <select id="inputAction" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                                <option value="tuai">Hasil Tuai (Masuk Stok)</option>
+                                <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Jumlah (Kg / Pack)</label>
+                            <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-600 block mb-1">Keterangan / Tujuan</label>
+                            <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli / Panen blok A" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">
+                        Simpan Data ke Sistem
+                    </button>
+                </form>
+
+                <div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok di Gudang Kebun:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="stockSummaryContainer"></div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-xs font-bold text-slate-700 uppercase">📋 Riwayat & Rekap Data Suplai:</div>
+                        <div class="flex gap-1">
+                            <button onclick="filterData('all')" class="text-[10px] px-2 py-1 bg-slate-200 rounded-lg font-medium hover:bg-slate-300">Semua</button>
+                            <button onclick="filterData('weekly')" class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200">Mingguan</button>
+                            <button onclick="filterData('monthly')" class="text-[10px] px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200">Bulanan</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 border-b">
+                                    <th class="p-2">Tanggal</th>
+                                    <th class="p-2">Item</th>
+                                    <th class="p-2">Aksi</th>
+                                    <th class="p-2">Jumlah</th>
+                                    <th class="p-2">Keterangan</th>
+                                    <th class="p-2 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplyTableBody"></tbody>
+                        </table>
                     </div>
                 </div>
             </section>
 
-            <!-- 4. Assets Page -->
-            <section id="page-assets" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">🚜 Aset & Peralatan Kebun</h3>
+            <!-- Inventory / Stok Section Page -->
+            <section id="page-inventory" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <h3 class="text-lg font-bold mb-4 text-emerald-800">🧪 Stok Bio Baja & Nutrisi Organik (Real-Time)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="inventoryContainer"></div>
             </section>
 
-            <!-- 5. Expenses Page -->
-            <section id="page-expenses" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">💰 Perbelanjaan Kebun (Bulanan)</h3>
-                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
-                    <input type="text" id="expTitle" placeholder="Keterangan Belanja" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="date" id="expDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <button type="submit" class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl text-xs font-semibold">Tambah Rekod Perbelanjaan</button>
+            <!-- Assets Section Page -->
+            <section id="page-assets" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-emerald-800">🚜 Aset & Peralatan Kebun</h3>
+                    <button onclick="downloadGlobalAssetsReport()" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap Global</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="assetsContainer"></div>
+            </section>
+
+            <!-- Expenses Section Page -->
+            <section id="page-expenses" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('expenses')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
+                    </div>
+                </div>
+
+                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
+                    <input type="text" id="expTitle" placeholder="Keterangan Belanja (Cth: Minyak Mesin)" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="expAmount" placeholder="Jumlah Kos (Cth: RM 50)" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (Auto-Clean 2 Bln)</label>
+                        <input type="file" id="expReceiptInput" accept="image/*" capture="environment" class="w-full border p-1 rounded-lg text-xs bg-white">
+                    </div>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Tambah Rekod Perbelanjaan & Resit HD</button>
                 </form>
+
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-stone-300">
-                        <thead><tr class="bg-stone-950 text-stone-400 border-b border-stone-700"><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th></tr></thead>
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-3">Resit (HD)</th>
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3">Kos</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
+                        </thead>
                         <tbody id="expenseTableBody"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- 6. Income Page -->
-            <section id="page-income" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun</h3>
+            <!-- Income Section Page -->
+            <section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 class="text-lg font-bold text-emerald-800">💵 Pendapatan Hasil Kebun & Produk Medicalpro</h3>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <select id="filterIncomeMonth" onchange="renderIncome()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('income')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
+                    </div>
+                </div>
+
+                <div id="staffLoginPanel" class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <div>
+                        <h4 class="font-bold text-sm text-emerald-900">🔐 Akses Input Pendapatan (Staff / Kasir)</h4>
+                        <p class="text-xs text-emerald-700" id="staffStatusText">Status: Belum Log Masuk (Sila masukkan Kata Sandi Staff)</p>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <input type="password" id="staffPassInput" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-xs bg-white w-full sm:w-40">
+                        <button type="button" onclick="verifyStaffLogin()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow whitespace-nowrap">Masuk</button>
+                    </div>
+                </div>
+
+                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border opacity-50 pointer-events-none">
+                    <input type="text" id="incTitle" placeholder="Produk / Hasil" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="incAmount" placeholder="Jumlah Diterima (RM)" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="date" id="incDate" required class="border p-2 rounded-lg text-sm bg-white">
+                    <div>
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Bukti / Produk Terjual</label>
+                        <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border p-1 rounded-lg text-xs bg-white">
+                    </div>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Simpan Rekod Pendapatan</button>
+                </form>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-3">Bukti Foto</th>
+                                <th class="p-3">Keterangan Jualan</th>
+                                <th class="p-3">Penginput / Staff</th>
+                                <th class="p-3">Jumlah (RM)</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomeTableBody"></tbody>
+                    </table>
+                </div>
             </section>
 
         </div>
 
     </main>
 
-    <!-- MODAL LOGIN ADMIN -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-stone-900 border border-stone-700 p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4">
-            <h3 class="text-lg font-bold text-emerald-400">⚙️ Panel Admin Utama</h3>
-            <p class="text-xs text-stone-400">Sila masukkan kata sandi pentadbir (rojak123).</p>
-            <input type="password" id="adminPasswordInput" placeholder="Kata Sandi (rojak123)" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+    <!-- MODAL LOGIN ADMIN UTAMA -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-6 rounded-2xl max-w-sm w-full shadow-xl">
+            <h3 class="text-lg font-bold text-emerald-800 mb-2">🔐 Log Masuk Admin Utama</h3>
+            <p class="text-xs text-slate-500 mb-4">Sila masukkan kata sandi pentadbir rasmi.</p>
+            <input type="password" id="adminPasswordInput" placeholder="Kata Sandi Rahsia" class="w-full border p-2.5 rounded-xl text-sm mb-4">
             <div class="flex justify-end gap-2">
-                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-xl text-xs font-semibold">Batal</button>
-                <button onclick="verifyAdmin()" class="px-4 py-2 bg-emerald-600 text-stone-950 rounded-xl text-xs font-semibold">Masuk</button>
+                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-200 rounded-xl text-xs font-semibold">Batal</button>
+                <button onclick="verifyAdmin()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Masuk</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PANEL SETELAN ADMIN -->
+    <!-- PANEL ADMIN DASHBOARD UTAMA -->
     <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
-        <div class="bg-stone-900 border border-stone-700 max-w-2xl mx-auto rounded-3xl p-6 shadow-2xl my-8 space-y-6 text-stone-100">
-            <div class="flex justify-between items-center border-b border-stone-700 pb-4">
-                <h2 class="text-xl font-bold text-emerald-400">⚙️ Tetapan Admin & Stok Baja</h2>
-                <button onclick="closeAdminDashboard()" class="text-rose-400 font-bold px-3 py-1 bg-rose-950 rounded-lg text-sm">Tutup ✕</button>
+        <div class="bg-white max-w-4xl mx-auto rounded-2xl p-6 shadow-2xl my-8 space-y-6">
+            <div class="flex justify-between items-center border-b pb-4">
+                <h2 class="text-xl font-bold text-emerald-800">⚙️ Panel Tetapan Admin Utama</h2>
+                <button onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
-            <div class="space-y-4">
+
+            <!-- Upload Custom Ringtone Walkie-Talkie -->
+            <div class="bg-amber-50 p-4 rounded-xl border border-amber-300 space-y-3">
+                <h4 class="font-bold text-sm text-amber-900">🎙️ Upload Suara Ringtone Walkie-Talkie Custom</h4>
+                <p class="text-xs text-amber-700">Muat naik fail audio (MP3/WAV) ringtone amaran pilihan anda.</p>
+                <input type="file" id="customRingtoneInput" accept="audio/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                <button onclick="saveCustomRingtone()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Ringtone Custom</button>
+                <p id="ringtoneStatusText" class="text-xs font-bold text-emerald-700"></p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+                <h4 class="font-bold text-sm text-slate-700">Pengurusan Akses Staff / Admin Pendapatan</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="text" id="newStaffName" placeholder="Nama Staff" class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="newStaffPass" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-sm bg-white">
+                </div>
+                <button onclick="addStaffAccount()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Akaun Staff</button>
+                <div id="staffListContainer" class="flex flex-wrap gap-2 mt-2"></div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+                <h4 class="font-bold text-sm text-slate-700">Identitas Kebun & Keterangan Rasmi</h4>
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 mb-1">Kemaskini Nama Kebun</label>
-                    <input type="text" id="adminSetGardenName" value="KEBUN BELIMBING WULUH MEDICALPRO" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Sub-Tajuk / Lokasi</label>
+                    <input type="text" id="settingSubHeader" class="w-full border p-2 rounded-lg text-sm bg-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 mb-1">Tambah / Kemaskini Stok Bio Baja</label>
-                    <input type="text" id="adminSetStock" placeholder="Cth: Baja AB Organik - 100 Liter" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Keterangan Kerjasama & No. MyGAP</label>
+                    <input type="text" id="settingPartnership" class="w-full border p-2 rounded-lg text-sm bg-white">
                 </div>
-                <button onclick="saveAdminSettings()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold py-3 rounded-xl text-sm shadow">Simpan Tetapan Admin</button>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Upload Logo Kebun</label>
+                    <input type="file" id="settingLogoInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                </div>
+                <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
             </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun</h4>
+                <div class="flex gap-2">
+                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja Baru" class="flex-1 border p-2 rounded-lg text-sm bg-white">
+                    <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
+                </div>
+                <div id="workerListTags" class="flex flex-wrap gap-2 mt-3"></div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2" id="formInventoryTitle">Tambah Master Stok Bio Baja / Nutrisi</h4>
+                <form id="inventoryForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <input type="hidden" id="invEditIndex" value="">
+                    <input type="text" id="invName" placeholder="Nama Bio Baja / Nutrisi" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="number" id="invStock" placeholder="Jumlah Stok Awal" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="invAdvice" placeholder="Kegunaan / Saran" required class="border p-2 rounded-lg text-sm bg-white sm:col-span-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Foto Fisik Barang</label>
+                        <input type="file" id="invImageInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button type="submit" id="btnSaveInv" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Stok Baru</button>
+                        <button type="button" onclick="resetInventoryForm()" class="px-3 py-2 bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold">Batal</button>
+                    </div>
+                </form>
+                <div class="overflow-x-auto max-h-48 overflow-y-auto border rounded-lg bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b"><th class="p-2">Nama</th><th class="p-2">Stok Semasa</th><th class="p-2">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="adminInventoryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2" id="formAssetTitle">Tambah Aset & Peralatan Kebun</h4>
+                <form id="assetForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <input type="hidden" id="assetEditId" value="">
+                    <input type="text" id="assetName" placeholder="Nama Aset" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="assetCondition" placeholder="Kondisi" required class="border p-2 rounded-lg text-sm bg-white">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Foto Aset</label>
+                        <input type="file" id="assetImageInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button type="submit" id="btnSaveAsset" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Aset</button>
+                        <button type="button" onclick="resetAssetForm()" class="px-3 py-2 bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold">Batal</button>
+                    </div>
+                </form>
+                <div class="overflow-x-auto max-h-48 overflow-y-auto border rounded-lg bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b"><th class="p-2">Nama Aset</th><th class="p-2">Kondisi</th><th class="p-2">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="adminAssetTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <!-- Script JavaScript -->
     <script>
-        let currentUser = { name: "", gender: "Tuan" };
-
-        function handleUserLogin() {
-            const nameInput = document.getElementById('loginUserName').value.trim();
-            const genderSelect = document.getElementById('loginUserGender').value;
-            if (!nameInput) { alert("Sila masukkan nama panggilan anda!"); return; }
-
-            currentUser.name = nameInput;
-            currentUser.gender = genderSelect;
-            localStorage.setItem('kebunUserSession', JSON.stringify(currentUser));
-            document.getElementById('welcomeLoginModal').style.display = 'none';
-            document.getElementById('displayUserSession').innerText = `${currentUser.gender} ${currentUser.name}`;
-            triggerAutoAiGreeting();
-        }
-
-        function logoutSession() { localStorage.removeItem('kebunUserSession'); location.reload(); }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedSession = localStorage.getItem('kebunUserSession');
-            if (savedSession) {
-                currentUser = JSON.parse(savedSession);
-                document.getElementById('welcomeLoginModal').style.display = 'none';
-                document.getElementById('displayUserSession').innerText = `${currentUser.gender} ${currentUser.name}`;
-                triggerAutoAiGreeting();
-            }
-        });
-
+        // --- SISTEM TAB / HALAMAN TERPISAH ---
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-page').forEach(p => p.classList.add('hidden'));
+            const pages = document.querySelectorAll('.tab-page');
+            pages.forEach(p => p.classList.add('hidden'));
+
             document.getElementById('page-' + tabId).classList.remove('hidden');
-            document.querySelectorAll('[id^="tabBtn-"]').forEach(b => b.className = "bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95");
+
+            const buttons = document.querySelectorAll('[id^="tabBtn-"]');
+            buttons.forEach(b => {
+                b.className = "bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95";
+            });
+
             const activeBtn = document.getElementById('tabBtn-' + tabId);
-            if (activeBtn) activeBtn.className = "bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95";
+            if (activeBtn) {
+                activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95";
+            }
         }
 
-        // Admin Panel Controls
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
+            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
+            projectId: "kebun-belimbing-buluh-medical",
+            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
+            messagingSenderId: "101006363434",
+            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
+            measurementId: "G-5CX6N1K1GD"
+        };
+        
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch(e) {
+            console.log("Firebase init error");
+        }
+
+        // --- FITUR AUTO-CLEAN FOTO ---
+        function autoCleanOldPhotos() {
+            if (!db) return;
+            const now = new Date();
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(now.getDate() - 7);
+            const twoMonthsAgo = new Date();
+            twoMonthsAgo.setMonth(now.getMonth() - 2);
+
+            db.collection("tasks").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.date && data.photo && new Date(data.date) < oneWeekAgo) {
+                        doc.ref.update({ photo: "" });
+                    }
+                });
+            });
+
+            db.collection("expenses").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.date && data.receipt && new Date(data.date) < twoMonthsAgo) {
+                        doc.ref.update({ receipt: "" });
+                    }
+                });
+            });
+        }
+        setTimeout(autoCleanOldPhotos, 3000);
+
+        // --- JAM, LOGO CUACA DINAMIS & PESAN PINTAR MALAYSIA ---
+        function updateLiveClockAndSmartWeather() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            
+            document.getElementById('liveClock').innerText = 
+                String(hours).padStart(2, '0') + ':' + 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+
+            let icon = "🌙";
+            let condText = "Malam Istirahat";
+            let advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup. Siap sediakan tenaga untuk kembali bekerja esok pagi jam 07:00 / 08:00.";
+            let forecast3h = "Malam Tenang";
+            let showBroadcastBadge = false;
+
+            if ((month === 8 && day === 31) || (month === 9 && day === 16)) {
+                showBroadcastBadge = true;
+                advice = "🇲🇾 Selamat Hari Kebangsaan / Hari Malaysia! Teruskan semangat berbakti kepada tanah dan pengurusan ladang Medicalpro.";
+            } else if (hours >= 5 && hours < 10) {
+                icon = "🌅";
+                condText = "Pagi Cerah & Segar";
+                advice = "🌅 Selamat pagi, Bro! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Udara segar, sangat ideal untuk tabur bio baja.";
+                forecast3h = "Cerah Pagi";
+            } else if (hours >= 10 && hours < 15) {
+                icon = "☀️";
+                condText = "Tengah Hari Panas";
+                advice = "☀️ Suhu panas tengah hari. Perhatikan jadual rehat kebun pada jam 12:00 sampai 14:00 siang.";
+                forecast3h = "Panas Terik";
+            } else if (hours >= 12 && hours <= 14) {
+                icon = "☕";
+                condText = "Waktu Rehat Kebun";
+                advice = "☕ Waktu rehat tengah hari (Jam 12:00 - 14:00). Rehatkan diri sejenak sebelum sambung tugas petang.";
+                forecast3h = "Rehat Siang";
+            } else if (hours >= 15 && hours < 18) {
+                icon = "🌇";
+                condText = "Petang / Senja";
+                advice = "🌇 Waktu petang: Sesuai untuk siraman terakhir atau pemeriksaan blok kebun sebelum habis waktu kerja.";
+                forecast3h = "Sebahagian Berawan";
+            }
+
+            document.getElementById('weatherIcon').innerText = icon;
+            document.getElementById('condDisplay').innerText = condText;
+            document.getElementById('smartRecommendation').innerText = advice;
+            document.getElementById('forecast3h').innerText = forecast3h;
+
+            const badge = document.getElementById('broadcastBadge');
+            if (showBroadcastBadge) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
+                        document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
+                        document.getElementById('humidityDisplay').innerText = `72%`;
+                    }
+                }).catch(() => {
+                    document.getElementById('tempDisplay').innerText = "26.5°C";
+                    document.getElementById('windDisplay').innerText = "1.2 km/h";
+                    document.getElementById('humidityDisplay').innerText = "75%";
+                });
+        }
+        
+        setInterval(updateLiveClockAndSmartWeather, 1000);
+        updateLiveClockAndSmartWeather();
+
+        const dictionary = {
+            ms: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Perbelanjaan", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Arahan & Walkie-Talkie Boss", sendOrder: "Hantar", historyTitle: "Riwayat Arahan:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
+            id: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Pengeluaran", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Perintah & Walkie-Talkie Boss", sendOrder: "Kirim", historyTitle: "Riwayat Perintah:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
+            en: { tasks: "Daily Tasks", supply: "Supply Stock", stock: "Bio Fertilizer", assets: "Assets", expenses: "Expenses", income: "Income", bossPortalTitle: "⚠️ Boss's Direct Orders & Walkie-Talkie", sendOrder: "Send", historyTitle: "Orders History:", sectionTaskTitle: "📌 Daily Tasks & Routine Schedule" }
+        };
+
+        function changeLang(lang) {
+            document.getElementById('btnLangMs').className = lang === 'ms' ? "px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold" : "px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white";
+            document.getElementById('btnLangId').className = lang === 'id' ? "px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold" : "px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white";
+            document.getElementById('btnLangEn').className = lang === 'en' ? "px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold" : "px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white";
+
+            const t = dictionary[lang];
+            document.getElementById('navTasks').innerText = t.tasks;
+            document.getElementById('navSupply').innerText = t.supply;
+            document.getElementById('navStock').innerText = t.stock;
+            document.getElementById('navAssets').innerText = t.assets;
+            document.getElementById('navExpenses').innerText = t.expenses;
+            document.getElementById('navIncome').innerText = t.income;
+            document.getElementById('lblBossPortalTitle').innerText = t.bossPortalTitle;
+            document.getElementById('btnSendOrder').innerText = t.sendOrder;
+            document.getElementById('lblHistoryTitle').innerText = t.historyTitle;
+            document.getElementById('sectionTaskTitle').innerText = t.sectionTaskTitle;
+        }
+
+        function compressImage(file, callback) {
+            if (!file) { callback(""); return; }
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 250; 
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.25));
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        let audioUnlocked = false;
+        let audioCtx = null;
+        let customRingtoneBase64 = "";
+
+        function unlockAudioSystem() {
+            audioUnlocked = true;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } catch(e) {}
+            document.getElementById('audioUnlockBanner').style.display = 'none';
+            alert("Mod Walkie-Talkie Berjaya Diaktifkan!");
+        }
+
+        if (db) {
+            db.collection("settings").doc("ringtone").get().then((doc) => {
+                if (doc.exists && doc.data().audio) {
+                    customRingtoneBase64 = doc.data().audio;
+                    document.getElementById('ringtoneStatusText').innerText = "Status: Ringtone custom aktif tersimpan.";
+                }
+            }).catch(() => {});
+        }
+
+        function saveCustomRingtone() {
+            const file = document.getElementById('customRingtoneInput').files[0];
+            if (!file) { alert("Sila pilih fail audio!"); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                customRingtoneBase64 = e.target.result;
+                if (db) {
+                    db.collection("settings").doc("ringtone").set({ audio: customRingtoneBase64 }).then(() => {
+                        document.getElementById('ringtoneStatusText').innerText = "Status: Disimpan!";
+                        alert("Ringtone berjaya disimpan!");
+                    });
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function playCustomRingAndAudio(base64VoiceAudio) {
+            try {
+                if (customRingtoneBase64) {
+                    const ringAudio = new Audio(customRingtoneBase64);
+                    ringAudio.volume = 1.0;
+                    ringAudio.play().then(() => {
+                        ringAudio.onended = () => {
+                            if (base64VoiceAudio) {
+                                const voiceAudio = new Audio(base64VoiceAudio);
+                                voiceAudio.volume = 1.0;
+                                voiceAudio.play().catch(() => {});
+                            }
+                        };
+                    }).catch(() => {
+                        if (base64VoiceAudio) {
+                            const fallback = new Audio(base64VoiceAudio);
+                            fallback.play().catch(() => {});
+                        }
+                    });
+                } else if (base64VoiceAudio) {
+                    const vAudio = new Audio(base64VoiceAudio);
+                    vAudio.play().catch(() => {});
+                }
+            } catch(e) {}
+        }
+
+        const secretAdminCode = "rojak123"; 
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function closeAdminLogin() { document.getElementById('adminLoginModal').classList.add('hidden'); }
         function verifyAdmin() {
-            const pass = document.getElementById('adminPasswordInput').value;
-            if (pass === "rojak123") {
+            if (document.getElementById('adminPasswordInput').value === secretAdminCode) {
                 closeAdminLogin();
+                document.getElementById('adminPasswordInput').value = "";
                 document.getElementById('adminDashboardModal').classList.remove('hidden');
-            } else { alert("Kata sandi salah! Sila masukkan 'rojak123'."); }
+                renderWorkersAdmin();
+                renderStaffAdmin();
+                renderAdminInventoryTable();
+                renderAdminAssetTable();
+            } else { alert("Kata sandi salah!"); }
         }
         function closeAdminDashboard() { document.getElementById('adminDashboardModal').classList.add('hidden'); }
-        function saveAdminSettings() {
-            const newName = document.getElementById('adminSetGardenName').value;
-            if (newName) {
-                document.getElementById('lblGardenName').innerText = newName;
-                document.title = newName;
+
+        let gardenData = { name: "KEBUN BELIMBING WULUH", subheader: "Medicalpro Agro Management - Machap", partnership: "🤝 Kerjasama: NIBM & Gimba Sdn Bhd | Jabatan Pertanian (No. MyGAP: 24.0151)", logo: "" };
+
+        function applyGardenSettings() {
+            document.getElementById('lblSubHeader').innerText = gardenData.subheader || "";
+            document.getElementById('lblPartnership').innerText = gardenData.partnership || "";
+            document.getElementById('settingSubHeader').value = gardenData.subheader || "";
+            document.getElementById('settingPartnership').value = gardenData.partnership || "";
+            if (gardenData.logo) document.getElementById('headerLogoContainer').innerHTML = `<img src="${gardenData.logo}" class="w-full h-full object-cover">`;
+        }
+
+        if (db) {
+            db.collection("settings").doc("garden").get().then((doc) => {
+                if (doc.exists) { gardenData = doc.data(); applyGardenSettings(); }
+            }).catch(() => {});
+        } else { applyGardenSettings(); }
+
+        function saveGardenSettings() {
+            gardenData.subheader = document.getElementById('settingSubHeader').value;
+            gardenData.partnership = document.getElementById('settingPartnership').value;
+            compressImage(document.getElementById('settingLogoInput').files[0], function(base64Logo) {
+                if (base64Logo) gardenData.logo = base64Logo;
+                if (db) db.collection("settings").doc("garden").set(gardenData).catch(() => {});
+                applyGardenSettings();
+                alert("Identitas kebun berjaya dikemaskini!");
+            });
+        }
+
+        let staffAccounts = [{ name: "Kasir Utama", pass: "kasir123" }];
+        let activeStaffName = "";
+
+        function renderStaffAdmin() {
+            const container = document.getElementById('staffListContainer');
+            container.innerHTML = "";
+            staffAccounts.forEach((s, index) => {
+                container.innerHTML += `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">👤 ${s.name} (Pass: ${s.pass}) <button onclick="deleteStaff(${index})" class="text-rose-500 font-bold">×</button></span>`;
+            });
+        }
+
+        function addStaffAccount() {
+            const name = document.getElementById('newStaffName').value;
+            const pass = document.getElementById('newStaffPass').value;
+            if (name && pass) {
+                staffAccounts.push({ name, pass });
+                if (db) db.collection("settings").doc("staff").set({ list: staffAccounts });
+                document.getElementById('newStaffName').value = "";
+                document.getElementById('newStaffPass').value = "";
+                renderStaffAdmin();
+                alert("Akaun staff berjaya ditambah!");
             }
-            alert("Tetapan admin berjaya disimpan!");
-            closeAdminDashboard();
         }
 
-        function speakWithAiVoice(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ms-MY';
-                utterance.rate = 1.0;
-                utterance.pitch = currentUser.gender === 'Tuan' ? 0.8 : 1.1;
-                window.speechSynthesis.speak(utterance);
-            }
+        function deleteStaff(index) {
+            staffAccounts.splice(index, 1);
+            if (db) db.collection("settings").doc("staff").set({ list: staffAccounts });
+            renderStaffAdmin();
         }
 
-        function appendChatBubble(sender, text, waLink = null) {
-            const chatHistory = document.getElementById('aiChatHistory');
-            const isUser = sender === 'user';
-            const bubbleDiv = document.createElement('div');
-            bubbleDiv.className = `ai-chat-bubble ${isUser ? 'user-bubble' : 'ai-bubble'}`;
-            let htmlContent = `<div class="text-[10px] font-bold ${isUser ? 'text-stone-950' : 'google-text-accent'} uppercase tracking-wider mb-1">${isUser ? currentUser.name : 'AI Cerdas Kebun'}:</div><p>${text}</p>`;
-            if (waLink) {
-                htmlContent += `<div class="mt-3 pt-2 border-t border-stone-700"><a href="${waLink}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-stone-950 px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow">💬 Kirim Rekap ke WhatsApp Boss</a></div>`;
-            }
-            bubbleDiv.innerHTML = htmlContent;
-            chatHistory.appendChild(bubbleDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
+        if (db) {
+            db.collection("settings").doc("staff").get().then((doc) => {
+                if (doc.exists && doc.data().list) { staffAccounts = doc.data().list; renderStaffAdmin(); }
+            }).catch(() => {});
         }
 
-        function triggerAutoAiGreeting() {
-            const now = new Date();
-            const hours = now.getHours();
-            let timeGreeting = "Selamat pagi";
-            if (hours >= 12 && hours < 15) timeGreeting = "Selamat tengah hari";
-            else if (hours >= 15 && hours < 19) timeGreeting = "Selamat petang";
-            else if (hours >= 19 || hours < 5) timeGreeting = "Selamat malam";
-
-            const greetingText = `${timeGreeting}, ${currentUser.gender} ${currentUser.name}! Selamat datang ke pusat kawalan ladang KEBUN BELIMBING WULUH MEDICALPRO. Syor job desk untuk hari ini: Sila semak jadual taburan bio baja mengikut kitaran 2 minggu (14 hari) di blok utama, jalankan kerja siram pokok di sebelah pagi, dan teruskan pembersihan rumput di parit kebun. Apakah ada yang boleh saya bantu lagi, ${currentUser.gender}?`;
-
-            const waText = `*LAPORAN & JOB DESK KEBUN*\n\nKepada: ${currentUser.gender} ${currentUser.name}\nSyor Hari Ini: Tabur bio baja ikut kitaran 14 hari, siram pokok, dan bersih rumput parit kebun.\nStatus: Sistem AI Cerdas aktif memantau ladang Machap.`;
-            const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
-
-            document.getElementById('aiChatHistory').innerHTML = "";
-            appendChatBubble('ai', greetingText, waLink);
-            speakWithAiVoice(greetingText);
+        function verifyStaffLogin() {
+            const inputPass = document.getElementById('staffPassInput').value;
+            const found = staffAccounts.find(s => s.pass === inputPass);
+            if (found) {
+                activeStaffName = found.name;
+                document.getElementById('staffStatusText').innerText = `Status: Log Masuk Sebagai [ ${activeStaffName} ]`;
+                document.getElementById('staffStatusText').className = "text-xs font-bold text-emerald-800";
+                document.getElementById('staffLoginPanel').className = "bg-emerald-100 border-2 border-emerald-500 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3";
+                document.getElementById('incomeForm').classList.remove('opacity-50', 'pointer-events-none');
+                document.getElementById('staffPassInput').value = "";
+                alert(`Berjaya log masuk sebagai ${activeStaffName}!`);
+            } else { alert("Kata sandi staff salah!"); }
         }
 
-        function processAiQuery(query) {
-            const q = query.toLowerCase();
-            let responseText = "";
-            let waText = "";
+        let bossOrders = [];
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordedAudioBase64 = "";
+        let activeAudioStream = null;
 
-            if (q.includes('pagi') || q.includes('kerja') || q.includes('hari ini') || q.includes('syor') || q.includes('baja')) {
-                responseText = `Baik ${currentUser.gender} ${currentUser.name}. Syor job desk rasmi hari ini: Fokuskan pada taburan bio baja mengikut kitaran dua minggu serta pemeriksaan kelembapan blok tanaman.`;
-                waText = `*JOB DESK KEBUN*\n\nKepada: ${currentUser.gender} ${currentUser.name}\nTugas: Tabur bio baja kitaran 2 minggu & periksa kelembapan blok.`;
-            } else if (q.includes('pengeluaran') || q.includes('belanja') || q.includes('kos')) {
-                responseText = `${currentUser.gender}, data perbelanjaan dan kos operasi ladang telah direkodkan dengan terperinci di dalam sistem.`;
-                waText = `*REKAP KOS KEBUN*\n\nDiminta oleh: ${currentUser.gender} ${currentUser.name}\nStatus: Rekod perbelanjaan lengkap dalam sistem.`;
+        function switchBossMode(mode) {
+            if(mode === 'text') {
+                document.getElementById('bossOrderForm').style.display = 'flex';
+                document.getElementById('bossVoiceContainer').style.display = 'none';
+                document.getElementById('btnModeText').className = 'px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold';
+                document.getElementById('btnModeVoice').className = 'px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-xs font-bold';
             } else {
-                responseText = `Soalan diterima, ${currentUser.gender} ${currentUser.name}. Ada apa-apa lagi bahagian kebun yang ingin saya bantu semak?`;
-                waText = `*INFO KEBUN MEDICALPRO*\n\nPertanyaan oleh ${currentUser.gender} ${currentUser.name} telah diproses.`;
+                document.getElementById('bossOrderForm').style.display = 'none';
+                document.getElementById('bossVoiceContainer').style.display = 'flex';
+                document.getElementById('btnModeText').className = 'px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-xs font-bold';
+                document.getElementById('btnModeVoice').className = 'px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold';
+            }
+        }
+
+        let isRecording = false;
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    activeAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(activeAudioStream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            recordedAudioBase64 = reader.result;
+                            document.getElementById('btnSendVoice').style.display = 'inline-block';
+                            document.getElementById('recordingStatus').innerText = "Rakaman siap! Sila tekan Kirim.";
+                        };
+                        if (activeAudioStream) {
+                            activeAudioStream.getTracks().forEach(track => track.stop());
+                            activeAudioStream = null;
+                        }
+                    };
+                    mediaRecorder.start();
+                    isRecording = true;
+                    document.getElementById('btnRecordAudio').innerText = "⏹️ Berhenti Rakam";
+                } catch (err) { alert("Gagal mikrofon: " + err.message); }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                document.getElementById('btnRecordAudio').innerText = "🔴 Rakam Semula";
+            }
+        }
+
+        function sendVoiceNote() {
+            if (!recordedAudioBase64) return;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' }) + ' - ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const newOrder = { id: Date.now(), message: "🎙️ [Pesanan Suara Walkie-Talkie]", audio: recordedAudioBase64, date: dateStr, status: "Belum Dikerjakan" };
+            if (db) {
+                db.collection("boss_orders").add(newOrder).then(() => {
+                    recordedAudioBase64 = "";
+                    document.getElementById('btnSendVoice').style.display = 'none';
+                    document.getElementById('recordingStatus').innerText = "Berjaya dikirim!";
+                });
+            }
+        }
+
+        let firstLoadBoss = true;
+        function renderBossHistory() {
+            const container = document.getElementById('bossHistoryContainer');
+            container.innerHTML = "";
+            if(bossOrders.length === 0) { container.innerHTML = `<p class="text-xs text-slate-400 italic">Tiada arahan.</p>`; return; }
+            
+            bossOrders.forEach((o, index) => {
+                const isDone = o.status === "Sudah Dikerjakan";
+                if (!firstLoadBoss && index === 0 && o.audio && !o.played) {
+                    playCustomRingAndAudio(o.audio);
+                    o.played = true;
+                }
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
+                        <div>
+                            <p class="text-sm font-medium">"${o.message}"</p>
+                            ${o.audio ? `<div class="mt-2"><audio controls src="${o.audio}" class="w-full h-8"></audio></div>` : ''}
+                            <span class="text-xs text-slate-400">${o.date}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${o.status}</span>
+                            <button onclick="toggleOrderStatus(${o.id})" class="text-xs px-2.5 py-1 rounded border font-semibold ${isDone ? 'bg-slate-100 text-slate-600' : 'bg-emerald-600 text-white'}">${isDone ? 'Ubah Belum' : 'Selesai ✓'}</button>
+                            <button onclick="deleteBossOrder(${o.id})" class="text-xs px-2 py-1 bg-rose-500 text-white rounded font-bold">Hapus</button>
+                        </div>
+                    </div>
+                `;
+            });
+            firstLoadBoss = false;
+        }
+
+        if (db) {
+            db.collection("boss_orders").orderBy("id", "desc").onSnapshot((snapshot) => {
+                bossOrders = [];
+                snapshot.forEach((doc) => { bossOrders.push({ firestoreId: doc.id, ...doc.data() }); });
+                renderBossHistory();
+            }, () => {});
+        }
+
+        document.getElementById('bossOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msgInput = document.getElementById('bossInputMessage');
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' }) + ' - ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (db) db.collection("boss_orders").add({ id: Date.now(), message: msgInput.value, audio: "", date: dateStr, status: "Belum Dikerjakan" });
+            msgInput.value = "";
+        });
+
+        function toggleOrderStatus(id) {
+            if (db) {
+                db.collection("boss_orders").where("id", "==", id).get().then(snapshot => {
+                    snapshot.forEach(doc => {
+                        const current = doc.data().status;
+                        doc.ref.update({ status: current === "Belum Dikerjakan" ? "Sudah Dikerjakan" : "Belum Dikerjakan" });
+                    });
+                });
+            }
+        }
+        function deleteBossOrder(id) {
+            if (confirm("Padam arahan?")) {
+                if (db) db.collection("boss_orders").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+            }
+        }
+
+        let workers = ["Ahmad", "Budi", "Siti"];
+        function renderWorkersDropdown() {
+            const select = document.getElementById('taskWorkerSelect');
+            select.innerHTML = `<option value="">Pilih Pekerja</option>`;
+            workers.forEach(w => { select.innerHTML += `<option value="${w}">${w}</option>`; });
+        }
+        if (db) {
+            db.collection("settings").doc("workers").get().then((doc) => {
+                if (doc.exists && doc.data().list) { workers = doc.data().list; renderWorkersDropdown(); }
+            }).catch(() => {});
+        }
+        renderWorkersDropdown();
+
+        function renderWorkersAdmin() {
+            const container = document.getElementById('workerListTags');
+            container.innerHTML = "";
+            workers.forEach((w, index) => {
+                container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">${w} <button onclick="deleteWorker(${index})" class="text-rose-500 font-bold">×</button></span>`;
+            });
+            renderWorkersDropdown();
+        }
+        function addWorker() {
+            const nameInput = document.getElementById('newWorkerName');
+            if(nameInput.value) {
+                workers.push(nameInput.value);
+                if (db) db.collection("settings").doc("workers").set({ list: workers });
+                nameInput.value = "";
+                renderWorkersAdmin();
+            }
+        }
+        function deleteWorker(index) {
+            workers.splice(index, 1);
+            if (db) db.collection("settings").doc("workers").set({ list: workers });
+            renderWorkersAdmin();
+        }
+
+        // --- STOK & SUPLAI KEBUN ---
+        let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
+        document.getElementById('inputDate').valueAsDate = new Date();
+
+        document.getElementById('supplyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                id: Date.now(),
+                date: document.getElementById('inputDate').value,
+                item: document.getElementById('inputItem').value,
+                action: document.getElementById('inputAction').value,
+                qty: parseFloat(document.getElementById('inputQty').value),
+                desc: document.getElementById('inputDesc').value || '-'
+            };
+            supplyData.unshift(newItem);
+            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+            this.reset();
+            document.getElementById('inputDate').valueAsDate = new Date();
+            renderSupplyApp();
+        });
+
+        function deleteRecord(id) {
+            supplyData = supplyData.filter(item => item.id !== id);
+            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+            renderSupplyApp();
+        }
+
+        function renderSupplyApp(filterType = 'all') {
+            const tbody = document.getElementById('supplyTableBody');
+            const stockContainer = document.getElementById('stockSummaryContainer');
+            tbody.innerHTML = '';
+
+            let stocks = {};
+            supplyData.forEach(row => {
+                if (!stocks[row.item]) stocks[row.item] = 0;
+                if (row.action === 'tuai') stocks[row.item] += row.qty;
+                else if (row.action === 'suplai') stocks[row.item] -= row.qty;
+            });
+
+            stockContainer.innerHTML = '';
+            const defaultItems = [
+                "Buah Belimbing Buluh besar", 
+                "Buah Belimbing kismis", 
+                "Daun Teh Belimbing Buluh", 
+                "Daun obat/krim Belimbing Buluh",
+                "Bunga Kantan",
+                "Bunga Tajus"
+            ];
+
+            defaultItems.forEach(item => {
+                let currentStock = stocks[item] || 0;
+                stockContainer.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center">
+                        <div class="text-[10px] text-slate-500 truncate">${item}</div>
+                        <div class="text-sm font-bold text-blue-600 mt-1">${currentStock} <span class="text-[10px] font-normal">Unit/Kg</span></div>
+                    </div>
+                `;
+            });
+
+            let filteredData = supplyData;
+            const now = new Date();
+            if (filterType === 'weekly') {
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(now.getDate() - 7);
+                filteredData = supplyData.filter(row => new Date(row.date) >= oneWeekAgo);
+            } else if (filterType === 'monthly') {
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+                filteredData = supplyData.filter(row => {
+                    const d = new Date(row.date);
+                    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+                });
             }
 
-            const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
-            setTimeout(() => {
-                document.getElementById('aiTypingIndicator').classList.add('hidden');
-                appendChatBubble('ai', responseText, waLink);
-                speakWithAiVoice(responseText);
-            }, 800);
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada data tercatat.</td></tr>`;
+                return;
+            }
+
+            filteredData.forEach(row => {
+                let badgeColor = row.action === 'tuai' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700';
+                let actionText = row.action === 'tuai' ? '📥 Tuai' : '📤 Suplai';
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-2 text-slate-600">${row.date}</td>
+                        <td class="p-2 font-medium">${row.item}</td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${badgeColor}">${actionText}</span></td>
+                        <td class="p-2 font-bold">${row.qty}</td>
+                        <td class="p-2 text-slate-500 truncate max-w-[120px]">${row.desc}</td>
+                        <td class="p-2 text-center">
+                            <button onclick="deleteRecord(${row.id})" class="text-red-500 hover:text-red-700 text-xs px-1">✕</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        function filterData(type) { renderSupplyApp(type); }
+        renderSupplyApp();
+
+        // --- INVENTORY / STOK BIO BAJA ---
+        let inventory = [];
+        function renderInventory() {
+            const container = document.getElementById('inventoryContainer');
+            const taskStockSelect = document.getElementById('taskStockItem');
+            container.innerHTML = "";
+            taskStockSelect.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
+
+            if(inventory.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada data stok.</p>`;
+                return;
+            }
+            inventory.forEach(item => {
+                let currentStockNum = parseInt(item.stock) || 0;
+                taskStockSelect.innerHTML += `<option value="${item.name}">${item.name} (Sisa: ${currentStockNum})</option>`;
+                container.innerHTML += `
+                    <div class="bg-slate-50 border p-4 rounded-xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            ${item.photo ? `<img src="${item.photo}" class="w-full h-32 object-cover rounded-lg mb-3 shadow">` : ''}
+                            <h4 class="font-bold text-emerald-800">${item.name}</h4>
+                            <p class="text-xs font-semibold text-slate-600 mt-1">Sisa Stok: <span class="text-emerald-700 font-bold text-base">${currentStockNum}</span></p>
+                            <p class="text-xs text-slate-500 mt-2 bg-emerald-50 p-2 rounded border border-emerald-100">🌿 <b>Syor:</b> ${item.advice}</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        function sendUserQuery() {
-            const input = document.getElementById('aiInputMessage');
-            const query = input.value.trim();
-            if (!query) return;
-
-            appendChatBubble('user', query);
-            input.value = "";
-            document.getElementById('aiTypingIndicator').classList.remove('hidden');
-            processAiQuery(query);
+        if (db) {
+            db.collection("inventory").orderBy("id", "desc").onSnapshot((snapshot) => {
+                inventory = [];
+                snapshot.forEach((doc) => { inventory.push({ firestoreId: doc.id, ...doc.data() }); });
+                renderInventory();
+                renderAdminInventoryTable();
+            }, () => {});
         }
 
-        function startVoiceInput() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
-                recognition.lang = 'ms-MY';
-                recognition.start();
+        function renderAdminInventoryTable() {
+            const tbody = document.getElementById('adminInventoryTableBody');
+            tbody.innerHTML = "";
+            if (inventory.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="p-2 text-center text-slate-400">Tiada stok.</td></tr>`; return; }
+            inventory.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 font-medium">${item.name}</td>
+                        <td class="p-2 font-bold text-emerald-700">${item.stock}</td>
+                        <td class="p-2 flex gap-1">
+                            <button onclick="editInventory(${index})" class="px-2 py-1 bg-sky-500 text-white rounded text-[10px] font-bold">Edit</button>
+                            <button onclick="deleteInventory(${index})" class="px-2 py-1 bg-rose-500 text-white rounded text-[10px] font-bold">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
 
-                recognition.onresult = function(event) {
-                    document.getElementById('aiInputMessage').value = event.results[0][0].transcript;
-                    sendUserQuery();
+        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const editIndex = document.getElementById('invEditIndex').value;
+            const name = document.getElementById('invName').value;
+            const stockVal = parseInt(document.getElementById('invStock').value) || 0;
+            const advice = document.getElementById('invAdvice').value;
+            compressImage(document.getElementById('invImageInput').files[0], function(base64Img) {
+                if (editIndex === "") {
+                    if (db) db.collection("inventory").add({ id: Date.now(), name, stock: stockVal, advice, photo: base64Img });
+                    alert("Stok berjaya ditambah!");
+                } else {
+                    const item = inventory[parseInt(editIndex)];
+                    const updateData = { name, stock: stockVal, advice };
+                    if (base64Img) updateData.photo = base64Img;
+                    if (db) db.collection("inventory").doc(item.firestoreId).update(updateData);
+                    alert("Stok dikemaskini!");
+                    resetInventoryForm();
+                }
+                document.getElementById('inventoryForm').reset();
+            });
+        });
+
+        function editInventory(index) {
+            const item = inventory[index];
+            document.getElementById('invEditIndex').value = index;
+            document.getElementById('invName').value = item.name;
+            document.getElementById('invStock').value = item.stock;
+            document.getElementById('invAdvice').value = item.advice;
+        }
+        function resetInventoryForm() {
+            document.getElementById('inventoryForm').reset();
+            document.getElementById('invEditIndex').value = "";
+        }
+        function deleteInventory(index) {
+            if (confirm("Padam stok?")) {
+                const item = inventory[index];
+                if (db) db.collection("inventory").doc(item.firestoreId).delete();
+            }
+        }
+
+        // --- ASET KEBUN ---
+        let assets = [];
+        function renderAssets() {
+            const container = document.getElementById('assetsContainer');
+            container.innerHTML = "";
+            if (assets.length === 0) { container.innerHTML = `<p class="text-xs text-slate-400 italic">Tiada data aset.</p>`; return; }
+            assets.forEach(a => {
+                container.innerHTML += `
+                    <div class="bg-slate-50 border p-4 rounded-xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            ${a.photo ? `<img src="${a.photo}" class="w-full h-32 object-cover rounded-lg mb-3 shadow">` : ''}
+                            <h4 class="font-bold text-emerald-800">${a.name}</h4>
+                            <p class="text-xs font-semibold text-slate-600 mt-1">Kondisi: <span class="text-emerald-700 font-bold">${a.condition}</span></p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        if (db) {
+            db.collection("assets").orderBy("id", "desc").onSnapshot((snapshot) => {
+                assets = [];
+                snapshot.forEach((doc) => { assets.push({ firestoreId: doc.id, ...doc.data() }); });
+                renderAssets();
+                renderAdminAssetTable();
+            }, () => {});
+        }
+
+        function renderAdminAssetTable() {
+            const tbody = document.getElementById('adminAssetTableBody');
+            tbody.innerHTML = "";
+            if (assets.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="p-2 text-center text-slate-400">Tiada aset.</td></tr>`; return; }
+            assets.forEach((a, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 font-medium">${a.name}</td>
+                        <td class="p-2">${a.condition}</td>
+                        <td class="p-2 flex gap-1">
+                            <button onclick="editAsset(${index})" class="px-2 py-1 bg-sky-500 text-white rounded text-[10px] font-bold">Edit</button>
+                            <button onclick="deleteAsset(${index})" class="px-2 py-1 bg-rose-500 text-white rounded text-[10px] font-bold">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.getElementById('assetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('assetEditId').value;
+            const name = document.getElementById('assetName').value;
+            const condition = document.getElementById('assetCondition').value;
+            compressImage(document.getElementById('assetImageInput').files[0], function(base64Img) {
+                if (editId === "") {
+                    if (db) db.collection("assets").add({ id: Date.now(), name, condition, photo: base64Img });
+                    alert("Aset berjaya ditambah!");
+                } else {
+                    const idNum = parseInt(editId);
+                    const updateData = { name, condition };
+                    if (base64Img) updateData.photo = base64Img;
+                    if (db) db.collection("assets").where("id", "==", idNum).get().then(snapshot => snapshot.forEach(doc => doc.ref.update(updateData)));
+                    alert("Aset dikemaskini!");
+                    resetAssetForm();
+                }
+                document.getElementById('assetForm').reset();
+            });
+        });
+
+        function editAsset(index) {
+            const a = assets[index];
+            document.getElementById('assetEditId').value = a.id;
+            document.getElementById('assetName').value = a.name;
+            document.getElementById('assetCondition').value = a.condition;
+        }
+        function resetAssetForm() {
+            document.getElementById('assetForm').reset();
+            document.getElementById('assetEditId').value = "";
+        }
+        function deleteAsset(index) {
+            if (confirm("Padam aset?")) {
+                const a = assets[index];
+                if (db) db.collection("assets").where("id", "==", a.id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+            }
+        }
+        function downloadGlobalAssetsReport() {
+            let content = "REKAP GLOBAL ASET\n====================\n\n";
+            assets.forEach((a, i) => { content += `${i+1}. Nama: ${a.name} | Kondisi: ${a.condition}\n`; });
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Rekap_Aset_Kebun.txt";
+            a.click();
+            alert("📥 Berjaya Muat Turun!\nFail rekap aset telah disimpan ke folder Download HP anda.");
+        }
+
+        // --- TUGAS HARIAN ---
+        let tasks = [];
+        let taskPhotoBase64 = "";
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            compressImage(e.target.files[0], function(base64) { taskPhotoBase64 = base64; });
+        });
+
+        document.getElementById('taskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dateVal = document.getElementById('taskDate').value;
+            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+            const stockItemName = document.getElementById('taskStockItem').value;
+            const stockQtyUsed = parseInt(document.getElementById('taskStockQty').value) || 0;
+            const stockUsedText = stockItemName ? `${stockItemName} (Dipakai: ${stockQtyUsed})` : "Tiada";
+
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('taskTitle').value,
+                category: document.getElementById('taskCategory').value,
+                worker: document.getElementById('taskWorkerSelect').value,
+                date: dateVal,
+                month: monthKey,
+                stockUsed: stockUsedText,
+                photo: taskPhotoBase64 || "",
+                status: "Selesai ✓"
+            };
+
+            if (db) {
+                if (stockItemName && stockQtyUsed > 0) {
+                    const matchedInv = inventory.find(inv => inv.name === stockItemName);
+                    if (matchedInv) {
+                        let currentStockNum = parseInt(matchedInv.stock) || 0;
+                        let updatedStockNum = Math.max(0, currentStockNum - stockQtyUsed);
+                        db.collection("inventory").doc(matchedInv.firestoreId).update({ stock: updatedStockNum });
+                    }
+                }
+                db.collection("tasks").add(newTask).then(() => {
+                    document.getElementById('taskForm').reset();
+                    taskPhotoBase64 = "";
+                    alert("Tugasan berjaya ditambah!");
+                });
+            }
+        });
+
+        if (db) {
+            db.collection("tasks").orderBy("id", "desc").onSnapshot((snapshot) => {
+                tasks = [];
+                let monthsSet = new Set();
+                snapshot.forEach((doc) => {
+                    let d = doc.data();
+                    tasks.push({ firestoreId: doc.id, ...d });
+                    if (d.month) monthsSet.add(d.month);
+                });
+                updateMonthDropdown('filterTaskMonth', monthsSet);
+                renderTasks();
+            }, () => {});
+        }
+
+        function updateMonthDropdown(elementId, monthsSet) {
+            const select = document.getElementById(elementId);
+            const currentVal = select.value;
+            select.innerHTML = `<option value="all">Semua Bulan (Global)</option>`;
+            Array.from(monthsSet).sort().reverse().forEach(m => {
+                select.innerHTML += `<option value="${m}">Bulan: ${m}</option>`;
+            });
+            select.value = currentVal;
+        }
+
+        function renderTasks() {
+            const tbody = document.getElementById('taskTableBody');
+            const filterMonth = document.getElementById('filterTaskMonth').value;
+            tbody.innerHTML = "";
+            const filtered = tasks.filter(t => filterMonth === 'all' || t.month === filterMonth);
+            if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada tugasan.</td></tr>`; return; }
+            
+            filtered.forEach(t => {
+                const isDone = t.status === "Selesai ✓";
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50">
+                        <td class="p-3">
+                            ${t.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${t.photo}" class="w-10 h-10 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${t.photo}', 'Foto-Tugas-${t.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
+                        <td class="p-3 font-medium">${t.title}</td>
+                        <td class="p-3">${t.category}</td>
+                        <td class="p-3">${t.worker}</td>
+                        <td class="p-3">${t.date}</td>
+                        <td class="p-3 text-xs text-emerald-800 font-semibold">${t.stockUsed}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded text-xs font-semibold ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${t.status}</span></td>
+                        <td class="p-3 flex gap-1">
+                            <button onclick="toggleTaskStatus(${t.id})" class="text-[10px] px-2 py-1 rounded border font-semibold ${isDone ? 'bg-slate-100 text-slate-600' : 'bg-emerald-600 text-white'}">${isDone ? 'Pending' : 'Selesai ✓'}</button>
+                            <button onclick="deleteTask(${t.id})" class="text-[10px] px-2 py-1 bg-rose-500 text-white rounded font-bold">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        function toggleTaskStatus(id) {
+            if (db) db.collection("tasks").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.update({ status: doc.data().status === "Selesai ✓" ? "Pending" : "Selesai ✓" })));
+        }
+        function deleteTask(id) {
+            if (confirm("Padam tugas?")) {
+                if (db) db.collection("tasks").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+            }
+        }
+
+        // --- EXPENSES (PERBELANJAAN) ---
+        let expenses = [];
+        let expReceiptBase64 = "";
+        
+        document.getElementById('expReceiptInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    expReceiptBase64 = event.target.result;
                 };
-            } else {
-                alert("Peranti anda tidak menyokong pengecaman suara langsung.");
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dateVal = document.getElementById('expDate').value;
+            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+            const newExp = {
+                id: Date.now(),
+                title: document.getElementById('expTitle').value,
+                amount: document.getElementById('expAmount').value,
+                date: dateVal,
+                month: monthKey,
+                receipt: expReceiptBase64 || ""
+            };
+            if (db) {
+                db.collection("expenses").add(newExp).then(() => {
+                    document.getElementById('expenseForm').reset();
+                    expReceiptBase64 = "";
+                    alert("Perbelanjaan & resit Full HD berjaya direkod!");
+                });
+            }
+        });
+
+        if (db) {
+            db.collection("expenses").orderBy("id", "desc").onSnapshot((snapshot) => {
+                expenses = [];
+                let monthsSet = new Set();
+                snapshot.forEach((doc) => {
+                    let d = doc.data();
+                    expenses.push({ firestoreId: doc.id, ...d });
+                    if (d.month) monthsSet.add(d.month);
+                });
+                updateMonthDropdown('filterExpenseMonth', monthsSet);
+                renderExpenses();
+            }, () => {});
+        }
+
+        function renderExpenses() {
+            const tbody = document.getElementById('expenseTableBody');
+            const filterMonth = document.getElementById('filterExpenseMonth').value;
+            tbody.innerHTML = "";
+            const filtered = expenses.filter(ex => filterMonth === 'all' || ex.month === filterMonth);
+            if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
+            filtered.forEach(ex => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">
+                            ${ex.receipt ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${ex.receipt}', 'Resi-Belanja-HD-${ex.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline hover:text-blue-800">📥 Download HD</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
+                        <td class="p-3 font-medium">${ex.title}</td>
+                        <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
+                        <td class="p-3">${ex.date}</td>
+                        <td class="p-3"><button onclick="deleteExpense(${ex.id})" class="px-2 py-1 bg-rose-500 text-white rounded text-[10px] font-bold">Hapus</button></td>
+                    </tr>
+                `;
+            });
+        }
+        function deleteExpense(id) {
+            if (confirm("Padam rekod?")) {
+                if (db) db.collection("expenses").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
             }
         }
 
-        function updateLiveClock() {
-            const now = new Date();
-            document.getElementById('liveClock').innerText = 
-                String(now.getHours()).padStart(2, '0') + ':' + 
-                String(now.getMinutes()).padStart(2, '0') + ':' + 
-                String(now.getSeconds()).padStart(2, '0');
+        // --- PENDAPATAN ---
+        let incomeList = [];
+        let incPhotoBase64 = "";
+        document.getElementById('incPhotoInput').addEventListener('change', function(e) {
+            compressImage(e.target.files[0], function(base64) { incPhotoBase64 = base64; });
+        });
+
+        document.getElementById('incomeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!activeStaffName) { alert("Sila log masuk sebagai staff terlebih dahulu!"); return; }
+            const dateVal = document.getElementById('incDate').value;
+            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+            const newInc = {
+                id: Date.now(),
+                title: document.getElementById('incTitle').value,
+                amount: document.getElementById('incAmount').value,
+                date: dateVal,
+                month: monthKey,
+                staff: activeStaffName,
+                photo: incPhotoBase64 || ""
+            };
+            if (db) {
+                db.collection("income").add(newInc).then(() => {
+                    document.getElementById('incomeForm').reset();
+                    incPhotoBase64 = "";
+                    alert("Pendapatan berjaya direkod!");
+                });
+            }
+        });
+
+        if (db) {
+            db.collection("income").orderBy("id", "desc").onSnapshot((snapshot) => {
+                incomeList = [];
+                let monthsSet = new Set();
+                snapshot.forEach((doc) => {
+                    let d = doc.data();
+                    incomeList.push({ firestoreId: doc.id, ...d });
+                    if (d.month) monthsSet.add(d.month);
+                });
+                updateMonthDropdown('filterIncomeMonth', monthsSet);
+                renderIncome();
+            }, () => {});
         }
-        setInterval(updateLiveClock, 1000);
-        updateLiveClock();
+
+        function renderIncome() {
+            const tbody = document.getElementById('incomeTableBody');
+            const filterMonth = document.getElementById('filterIncomeMonth').value;
+            tbody.innerHTML = "";
+            const filtered = incomeList.filter(inc => filterMonth === 'all' || inc.month === filterMonth);
+            if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
+            filtered.forEach(inc => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">
+                            ${inc.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${inc.photo}" class="w-10 h-10 object-cover rounded shadow">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${inc.photo}', 'Bukti-Jualan-${inc.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
+                        <td class="p-3 font-medium">${inc.title}</td>
+                        <td class="p-3 text-xs font-bold text-blue-800">${inc.staff || 'Staff'}</td>
+                        <td class="p-3 font-bold text-emerald-600">${inc.amount}</td>
+                        <td class="p-3">${inc.date}</td>
+                        <td class="p-3"><button onclick="deleteIncome(${inc.id})" class="px-2 py-1 bg-rose-500 text-white rounded text-[10px] font-bold">Hapus</button></td>
+                    </tr>
+                `;
+            });
+        }
+        function deleteIncome(id) {
+            if (confirm("Padam rekod?")) {
+                if (db) db.collection("income").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+            }
+        }
+
+        // --- FUNGSI DOWNLOAD GAMBAR & REKAP DENGAN NOTIFIKASI POP-UP ---
+        function downloadImageFile(imageUrl, fileName) {
+            if (!imageUrl) {
+                alert("⚠️ Tiada fail gambar untuk dimuat turun!");
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.download = fileName || `Fail_Kebun_${Date.now()}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            alert(`📥 Berjaya Muat Turun!\nFail "${a.download}" telah disimpan ke peranti anda.`);
+        }
+
+        function downloadMonthlyReport(type) {
+            let filterVal = 'all';
+            if (type === 'tasks') filterVal = document.getElementById('filterTaskMonth').value;
+            else if (type === 'expenses') filterVal = document.getElementById('filterExpenseMonth').value;
+            else if (type === 'income') filterVal = document.getElementById('filterIncomeMonth').value;
+
+            if (filterVal === 'all') {
+                alert("Sila pilih bulan spesifik terlebih dahulu pada penapis bulan!");
+                return;
+            }
+
+            let reportContent = `REKAP KEBUN - ${type.toUpperCase()} (${filterVal})\n====================================\n\n`;
+            if (type === 'tasks') {
+                tasks.filter(t => t.month === filterVal).forEach((t, i) => {
+                    reportContent += `${i+1}. Tarikh: ${t.date} | Tugas: ${t.title} | Pekerja: ${t.worker} | Status: ${t.status}\n`;
+                });
+            } else if (type === 'expenses') {
+                expenses.filter(ex => ex.month === filterVal).forEach((ex, i) => {
+                    reportContent += `${i+1}. Tarikh: ${ex.date} | Belanja: ${ex.title} | Kos: ${ex.amount}\n`;
+                });
+            } else if (type === 'income') {
+                incomeList.filter(inc => inc.month === filterVal).forEach((inc, i) => {
+                    reportContent += `${i+1}. Tarikh: ${inc.date} | Jualan: ${inc.title} | Jumlah: ${inc.amount}\n`;
+                });
+            }
+
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const fileName = `Rekap_${type}_${filterVal}.txt`;
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            alert(`📥 Berjaya Muat Turun!\nFail "${fileName}" telah disimpan ke folder Download HP anda.`);
+        }
     </script>
 </body>
 </html>
