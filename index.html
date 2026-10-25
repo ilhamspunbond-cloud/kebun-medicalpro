@@ -18,10 +18,13 @@
         .google-text-primary { color: #e3e3e3; }
         .google-text-secondary { color: #9aa0a6; }
         .google-text-accent { color: #8ab4f8; }
-        .rain-bar { width: 100%; height: 60px; display: flex; align-items: flex-end; gap: 2px; }
-        .rain-bar-segment { flex: 1; background-color: #8ab4f8; border-top-left-radius: 4px; border-top-right-radius: 4px; opacity: 0.7; }
-        .rain-bar-segment.active { opacity: 1; }
         
+        /* Scroll Per Jam Horizontal yang Kompak */
+        .hourly-scroll { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 8px; scrollbar-width: thin; }
+        .hourly-scroll::-webkit-scrollbar { height: 4px; }
+        .hourly-scroll::-webkit-scrollbar-thumb { background: #444746; border-radius: 4px; }
+        .hourly-item { flex: 0 0 auto; text-align: center; background: #2a2c30; padding: 10px 12px; border-radius: 16px; min-width: 65px; }
+
         .ai-chat-container { background-color: #202124; border-radius: 28px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         .ai-chat-bubble { max-width: 85%; padding: 14px 18px; border-radius: 20px; margin-bottom: 12px; font-size: 13px; line-height: 1.5; }
         .ai-bubble { background-color: #303134; align-self: flex-start; border-bottom-left-radius: 4px; color: #e3e3e3; }
@@ -71,9 +74,10 @@
                 <div id="headerLogoContainer" class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-bold text-lg text-stone-950 overflow-hidden border-2 border-yellow-600">
                     🌱
                 </div>
-                <h1 id="lblGardenName" class="text-base font-extrabold tracking-tight text-stone-100 uppercase">KEBUN BELIMBING WULUH</h1>
+                <h1 id="lblGardenName" class="text-xs sm:text-sm font-extrabold tracking-tight text-stone-100 uppercase">KEBUN BELIMBING WULUH MEDICALPRO</h1>
             </div>
             <div class="flex items-center gap-2">
+                <button onclick="openAdminLogin()" class="text-[10px] bg-amber-600 text-stone-950 px-2.5 py-1 rounded-lg font-bold">⚙️ Admin</button>
                 <span id="displayUserSession" class="text-xs font-bold bg-stone-800 text-yellow-400 px-3 py-1 rounded-full border border-stone-700">--</span>
                 <button onclick="logoutSession()" class="text-[10px] bg-rose-950 text-rose-300 px-2 py-1 rounded-lg border border-rose-800">Keluar</button>
             </div>
@@ -82,60 +86,96 @@
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Cuaca Google Style -->
+        <!-- Cuaca Google Style (Sinkronisasi Otomatis Nama & Alamat Kebun) -->
         <div class="google-card p-6 space-y-5">
             <div class="flex justify-between items-center border-b border-stone-700 pb-4">
                 <div>
-                    <div class="text-lg font-semibold google-text-primary tracking-wide">Cuaca & Info Pintar</div>
-                    <div class="text-sm google-text-secondary">MALAYSIA - MACHAP</div>
+                    <div id="weatherCardTitle" class="text-lg font-semibold google-text-primary tracking-wide">Cuaca & Info Pintar</div>
+                    <div id="lblGardenAddress" class="text-sm google-text-secondary font-medium">MALAYSIA - MACAP, JOHOR</div>
                 </div>
                 <span id="liveClock" class="text-sm font-mono google-text-accent bg-stone-800 px-4 py-1.5 rounded-xl font-bold">--:--:--</span>
             </div>
 
-            <div class="space-y-5">
-                <div class="flex items-center gap-6 my-4">
-                    <div id="weatherIcon" class="text-8xl drop-shadow-lg">🌙</div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-6">
+                    <div id="weatherIcon" class="text-6xl drop-shadow-lg">🌙</div>
                     <div>
-                        <div class="text-8xl font-medium google-text-primary -ml-3" id="tempDisplay">--°C</div>
-                        <div class="text-3xl google-text-secondary mt-1" id="condDisplay">Malam Istirahat</div>
-                        <div class="text-xl google-text-secondary mt-1" id="feelsLikeDisplay">Terasa seperti --°C</div>
+                        <div class="text-6xl font-medium google-text-primary -ml-2" id="tempDisplay">--°C</div>
+                        <div class="text-xl google-text-secondary mt-0.5" id="condDisplay">Malam Istirahat</div>
+                        <div class="text-xs google-text-secondary mt-0.5" id="feelsLikeDisplay">Terasa seperti --°C</div>
                     </div>
                 </div>
 
-                <div class="bg-stone-900/50 p-4 rounded-2xl">
-                    <p id="rainForecastSummary" class="text-sm google-text-primary mb-3 font-medium">Hujan ringan hingga lebat dari pukul 7.00 PM akan terus berlanjut melebihi pukul 12.00 AM</p>
-                    <div class="rain-bar">
-                        <div class="rain-bar-segment h-4 active" title="7 PM"></div>
-                        <div class="rain-bar-segment h-5 active" title="8 PM"></div>
-                        <div class="rain-bar-segment h-8 active" title="9 PM"></div>
-                        <div class="rain-bar-segment h-10 active" title="10 PM"></div>
-                        <div class="rain-bar-segment h-10 active" title="11 PM"></div>
-                        <div class="rain-bar-segment h-12 active" title="12 AM"></div>
-                        <div class="rain-bar-segment h-14 active" title="1 AM"></div>
-                        <div class="rain-bar-segment h-14 active" title="2 AM"></div>
-                        <div class="rain-bar-segment h-12 active" title="3 AM"></div>
-                        <div class="rain-bar-segment h-10 active" title="4 AM"></div>
-                        <div class="rain-bar-segment h-5 active" title="5 AM"></div>
-                        <div class="rain-bar-segment h-4 active" title="6 AM"></div>
-                    </div>
-                    <div class="flex justify-between text-[11px] google-text-secondary mt-2 font-medium">
-                        <span>7 PM</span><span>8 PM</span><span>9 PM</span><span>10 PM</span><span>11 PM</span><span>12 AM</span><span>1 AM</span><span>2 AM</span><span>3 AM</span><span>4 AM</span><span>5 AM</span><span>6 AM</span>
+                <!-- Grafik Prediksi Per Jam (Horizontal / Kesamping, Kompak) -->
+                <div class="bg-stone-900/60 p-4 rounded-2xl space-y-2">
+                    <p id="rainForecastSummary" class="text-xs google-text-primary font-medium">Ramalan cuaca per jam di lokasi kebun:</p>
+                    <div class="hourly-scroll">
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">7 PM</div>
+                            <div class="text-lg my-1">🌧️</div>
+                            <div class="text-xs font-bold">26°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">8 PM</div>
+                            <div class="text-lg my-1">🌧️</div>
+                            <div class="text-xs font-bold">26°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">9 PM</div>
+                            <div class="text-lg my-1">🌧️</div>
+                            <div class="text-xs font-bold">25°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">10 PM</div>
+                            <div class="text-lg my-1">☁️</div>
+                            <div class="text-xs font-bold">25°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">11 PM</div>
+                            <div class="text-lg my-1">🌙</div>
+                            <div class="text-xs font-bold">24°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">12 AM</div>
+                            <div class="text-lg my-1">🌙</div>
+                            <div class="text-xs font-bold">24°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">1 AM</div>
+                            <div class="text-lg my-1">🌙</div>
+                            <div class="text-xs font-bold">23°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">2 AM</div>
+                            <div class="text-lg my-1">🌙</div>
+                            <div class="text-xs font-bold">23°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">3 AM</div>
+                            <div class="text-lg my-1">⛅</div>
+                            <div class="text-xs font-bold">23°</div>
+                        </div>
+                        <div class="hourly-item">
+                            <div class="text-[10px] google-text-secondary">4 AM</div>
+                            <div class="text-lg my-1">🌅</div>
+                            <div class="text-xs font-bold">24°</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-stone-700 text-center">
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Presipitasi</div>
-                    <div id="precipDisplay" class="text-sm google-text-primary font-bold mt-1">--%</div>
+            <div class="grid grid-cols-3 gap-3 pt-2 border-t border-stone-700 text-center">
+                <div class="bg-stone-900/30 rounded-xl p-2.5">
+                    <div class="text-[10px] google-text-secondary">Presipitasi</div>
+                    <div id="precipDisplay" class="text-xs google-text-primary font-bold mt-0.5">20%</div>
                 </div>
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Angin</div>
-                    <div id="windDisplay" class="text-sm google-text-primary font-bold mt-1">-- km/j</div>
+                <div class="bg-stone-900/30 rounded-xl p-2.5">
+                    <div class="text-[10px] google-text-secondary">Angin</div>
+                    <div id="windDisplay" class="text-xs google-text-primary font-bold mt-0.5">5 km/j</div>
                 </div>
-                <div class="bg-stone-900/30 rounded-xl p-3">
-                    <div class="text-xs google-text-secondary">Kelembapan</div>
-                    <div id="humidityDisplay" class="text-sm google-text-primary font-bold mt-1">--%</div>
+                <div class="bg-stone-900/30 rounded-xl p-2.5">
+                    <div class="text-[10px] google-text-secondary">Kelembapan</div>
+                    <div id="humidityDisplay" class="text-xs google-text-primary font-bold mt-0.5">72%</div>
                 </div>
             </div>
         </div>
@@ -144,12 +184,8 @@
         <section class="ai-chat-container shadow-xl border border-stone-700 space-y-4">
             <h3 id="lblAiChatTitle" class="font-bold text-yellow-400 flex items-center gap-2 text-lg">🤖 Pusat Komunikasi AI Cerdas Kebun</h3>
             
-            <!-- Area Chat -->
-            <div id="aiChatHistory" class="flex flex-col space-y-3 bg-stone-950 p-4 rounded-xl border border-stone-700 h-80 overflow-y-auto">
-                <!-- Sambutan Otomatis AI Masuk Sini -->
-            </div>
+            <div id="aiChatHistory" class="flex flex-col space-y-3 bg-stone-950 p-4 rounded-xl border border-stone-700 h-80 overflow-y-auto"></div>
 
-            <!-- Area Input -->
             <div class="flex gap-2">
                 <input type="text" id="aiInputMessage" placeholder="Tanya AI... (Cth: 'Kirim rekap pengeluaran')" class="flex-1 border border-stone-700 p-3 rounded-xl text-sm focus:outline-none bg-stone-950 text-stone-100 placeholder:text-stone-600">
                 <button type="button" onclick="startVoiceInput()" class="bg-stone-800 hover:bg-stone-700 text-yellow-400 px-4 py-3 rounded-xl text-lg shadow font-bold" title="Cakap dengan AI">🎙️</button>
@@ -163,76 +199,35 @@
 
         <!-- Navigation Tabs -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 sticky top-2 z-40 bg-stone-950/90 backdrop-blur p-2 rounded-2xl border border-stone-700">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
-            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
-            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Bio Baja</span></button>
-            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
-            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95">📋 <span>Tugas Harian</span></button>
+            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">📦 <span>Stok & Suplai</span></button>
+            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🧪 <span>Bio Baja</span></button>
+            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">🚜 <span>Aset Kebun</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95">💰 <span>Perbelanjaan</span></button>
+            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span>Pendapatan</span></button>
         </div>
 
         <!-- CONTAINER HALAMAN / TAB -->
         <div id="tabContentContainer" class="space-y-6">
-
-            <!-- 1. Task Management Page -->
             <section id="page-tasks" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
-                </div>
+                <h3 class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
                 <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
                     <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="taskCategory" placeholder="Kategori (Pemupukan/Siram)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="text" id="taskCategory" placeholder="Kategori" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
                     <input type="text" id="taskWorker" placeholder="Nama Pekerja" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
                     <input type="date" id="taskDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl font-semibold text-sm shadow">Tambah Tugasan Harian</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl font-semibold text-sm">Tambah Tugasan</button>
                 </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse text-stone-300">
-                        <thead>
-                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
-                                <th class="p-3">Tugasan</th>
-                                <th class="p-3">Kategori</th>
-                                <th class="p-3">Pekerja</th>
-                                <th class="p-3">Tarikh</th>
-                                <th class="p-3">Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="taskTableBody"></tbody>
-                    </table>
-                </div>
+                <div class="overflow-x-auto"><table class="w-full text-left text-sm text-stone-300"><thead><tr class="bg-stone-950 text-stone-400 border-b border-stone-700"><th class="p-3">Tugasan</th><th class="p-3">Kategori</th><th class="p-3">Pekerja</th><th class="p-3">Tarikh</th></tr></thead><tbody id="taskTableBody"></tbody></table></div>
             </section>
 
-            <!-- 2. Supply Management Page -->
             <section id="page-supply" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <div class="flex justify-between items-center border-b border-stone-700 pb-3">
-                    <h3 class="text-lg font-bold text-stone-100">📦 Manajemen Stok & Suplai Kebun</h3>
-                </div>
-                <form id="supplyForm" class="bg-stone-950 p-4 rounded-2xl space-y-3 border border-stone-700">
-                    <input type="text" id="supplyItem" placeholder="Nama Hasil / Suplai (Cth: Buah Belimbing Buluh)" required class="w-full text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="number" id="supplyQty" placeholder="Jumlah (Kg/Pack)" required class="text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
-                        <input type="date" id="supplyDate" required class="text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
-                    </div>
-                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-3.5 rounded-xl">Simpan Stok Suplai</button>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse text-stone-300">
-                        <thead>
-                            <tr class="bg-stone-950 text-stone-400 border-b border-stone-700">
-                                <th class="p-2">Item</th>
-                                <th class="p-2">Jumlah</th>
-                                <th class="p-2">Tarikh</th>
-                            </tr>
-                        </thead>
-                        <tbody id="supplyTableBody"></tbody>
-                    </table>
-                </div>
+                <h3 class="text-lg font-bold text-stone-100">📦 Manajemen Stok & Suplai Kebun</h3>
             </section>
 
-            <!-- 3. Inventory / Bio Baja Page -->
             <section id="page-inventory" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold mb-4 text-emerald-400">🧪 Stok Bio Baja & Nutrisi Organik</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="inventoryContainer">
+                <div id="inventoryContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div class="bg-stone-950 p-4 rounded-xl border border-stone-700">
                         <div class="font-bold text-yellow-400">Baja AB Organik</div>
                         <div class="text-sm text-stone-400 mt-1">Baki: 50 Liter (Kitaran 2 Minggu)</div>
@@ -240,98 +235,89 @@
                 </div>
             </section>
 
-            <!-- 4. Assets Page -->
             <section id="page-assets" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold text-emerald-400">🚜 Aset & Peralatan Kebun</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="assetsContainer">
-                    <div class="bg-stone-950 p-4 rounded-xl border border-stone-700">
-                        <div class="font-bold text-teal-400">Mesin Pemotong Rumput / Brush Cutter</div>
-                        <div class="text-sm text-stone-400 mt-1">Status: Baik & Berfungsi</div>
-                    </div>
-                </div>
             </section>
 
-            <!-- 5. Expenses Page -->
             <section id="page-expenses" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold text-emerald-400">💰 Perbelanjaan Kebun (Bulanan)</h3>
-                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
-                    <input type="text" id="expTitle" placeholder="Keterangan Belanja (Cth: Minyak Mesin)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="date" id="expDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <button type="submit" class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl text-xs font-semibold">Tambah Rekod Perbelanjaan</button>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse text-stone-300">
-                        <thead>
-                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
-                                <th class="p-3">Keterangan</th>
-                                <th class="p-3">Kos</th>
-                                <th class="p-3">Tarikh</th>
-                            </tr>
-                        </thead>
-                        <tbody id="expenseTableBody"></tbody>
-                    </table>
-                </div>
             </section>
 
-            <!-- 6. Income Page -->
             <section id="page-income" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun & Produk Medicalpro</h3>
-                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
-                    <input type="text" id="incTitle" placeholder="Produk / Hasil Jualan" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="text" id="incAmount" placeholder="Jumlah Diterima (RM)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <input type="date" id="incDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
-                    <button type="submit" class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl text-xs font-semibold">Simpan Rekod Pendapatan</button>
-                </form>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse text-stone-300">
-                        <thead>
-                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
-                                <th class="p-3">Keterangan Jualan</th>
-                                <th class="p-3">Jumlah (RM)</th>
-                                <th class="p-3">Tarikh</th>
-                            </tr>
-                        </thead>
-                        <tbody id="incomeTableBody"></tbody>
-                    </table>
-                </div>
+                <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun</h3>
             </section>
-
         </div>
 
     </main>
 
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-stone-900 border border-stone-700 p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-emerald-400">⚙️ Panel Admin Utama</h3>
+            <p class="text-xs text-stone-400">Sila masukkan kata sandi pentadbir (rojak123).</p>
+            <input type="password" id="adminPasswordInput" placeholder="Kata Sandi (rojak123)" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-stone-800 text-stone-300 rounded-xl text-xs font-semibold">Batal</button>
+                <button onclick="verifyAdmin()" class="px-4 py-2 bg-emerald-600 text-stone-950 rounded-xl text-xs font-semibold">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PANEL SETELAN ADMIN -->
+    <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
+        <div class="bg-stone-900 border border-stone-700 max-w-2xl mx-auto rounded-3xl p-6 shadow-2xl my-8 space-y-6 text-stone-100">
+            <div class="flex justify-between items-center border-b border-stone-700 pb-4">
+                <h2 class="text-xl font-bold text-emerald-400">⚙️ Tetapan Admin & Lokasi Kebun</h2>
+                <button onclick="closeAdminDashboard()" class="text-rose-400 font-bold px-3 py-1 bg-rose-950 rounded-lg text-sm">Tutup ✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 mb-1">Nama Kebun Rasmi</label>
+                    <input type="text" id="adminSetGardenName" value="KEBUN BELIMBING WULUH MEDICALPRO" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 mb-1">Alamat & Lokasi Presisi</label>
+                    <input type="text" id="adminSetGardenAddress" value="MALAYSIA - MACAP, JOHOR" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-400 mb-1">Latitude (Koordinat)</label>
+                        <input type="text" id="adminSetLat" value="2.3833" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-stone-400 mb-1">Longitude (Koordinat)</label>
+                        <input type="text" id="adminSetLon" value="102.2167" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100">
+                    </div>
+                </div>
+                <button onclick="saveAdminSettings()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold py-3 rounded-xl text-sm shadow">Simpan & Kemaskini Sistem</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script JavaScript -->
     <script>
         let currentUser = { name: "", gender: "Tuan" };
-        let tasks = [];
-        let expenses = [];
-        let incomeList = [];
-        let supplyData = [];
+        let gardenConfig = {
+            name: "KEBUN BELIMBING WULUH MEDICALPRO",
+            address: "MALAYSIA - MACAP, JOHOR",
+            lat: 2.3833,
+            lon: 102.2167
+        };
 
         function handleUserLogin() {
             const nameInput = document.getElementById('loginUserName').value.trim();
             const genderSelect = document.getElementById('loginUserGender').value;
-
-            if (!nameInput) {
-                alert("Sila masukkan nama panggilan anda!");
-                return;
-            }
+            if (!nameInput) { alert("Sila masukkan nama panggilan anda!"); return; }
 
             currentUser.name = nameInput;
             currentUser.gender = genderSelect;
-
             localStorage.setItem('kebunUserSession', JSON.stringify(currentUser));
             document.getElementById('welcomeLoginModal').style.display = 'none';
             document.getElementById('displayUserSession').innerText = `${currentUser.gender} ${currentUser.name}`;
-
             triggerAutoAiGreeting();
         }
 
-        function logoutSession() {
-            localStorage.removeItem('kebunUserSession');
-            location.reload();
-        }
+        function logoutSession() { localStorage.removeItem('kebunUserSession'); location.reload(); }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = localStorage.getItem('kebunUserSession');
@@ -341,34 +327,67 @@
                 document.getElementById('displayUserSession').innerText = `${currentUser.gender} ${currentUser.name}`;
                 triggerAutoAiGreeting();
             }
+
+            const savedConfig = localStorage.getItem('kebunGardenConfig');
+            if (savedConfig) {
+                gardenConfig = JSON.parse(savedConfig);
+                applyGardenConfig();
+            }
         });
 
-        function switchTab(tabId) {
-            const pages = document.querySelectorAll('.tab-page');
-            pages.forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + tabId).classList.remove('hidden');
-
-            const buttons = document.querySelectorAll('[id^="tabBtn-"]');
-            buttons.forEach(b => {
-                b.className = "bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95";
-            });
-            const activeBtn = document.getElementById('tabBtn-' + tabId);
-            if (activeBtn) {
-                activeBtn.className = "bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95";
-            }
+        function applyGardenConfig() {
+            document.getElementById('lblGardenName').innerText = gardenConfig.name;
+            document.getElementById('lblGardenAddress').innerText = gardenConfig.address;
+            document.title = gardenConfig.name;
+            document.getElementById('adminSetGardenName').value = gardenConfig.name;
+            document.getElementById('adminSetGardenAddress').value = gardenConfig.address;
+            document.getElementById('adminSetLat').value = gardenConfig.lat;
+            document.getElementById('adminSetLon').value = gardenConfig.lon;
+            fetchWeatherData();
         }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
-            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
-            projectId: "kebun-belimbing-buluh-medical",
-            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
-            messagingSenderId: "101006363434",
-            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
-            measurementId: "G-5CX6N1K1GD"
-        };
-        let db = null;
-        try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch(e) {}
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-page').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-' + tabId).classList.remove('hidden');
+            document.querySelectorAll('[id^="tabBtn-"]').forEach(b => b.className = "bg-stone-800 text-emerald-400 p-3 rounded-xl shadow-sm border border-stone-700 text-center font-semibold text-xs transition active:scale-95");
+            const activeBtn = document.getElementById('tabBtn-' + tabId);
+            if (activeBtn) activeBtn.className = "bg-emerald-600 text-stone-950 p-3 rounded-xl shadow-md border border-emerald-700 text-center font-bold text-xs transition active:scale-95";
+        }
+
+        // Admin Panel Controls
+        function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
+        function closeAdminLogin() { document.getElementById('adminLoginModal').classList.add('hidden'); }
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPasswordInput').value;
+            if (pass === "rojak123") {
+                closeAdminLogin();
+                document.getElementById('adminDashboardModal').classList.remove('hidden');
+            } else { alert("Kata sandi salah! Sila masukkan 'rojak123'."); }
+        }
+        function closeAdminDashboard() { document.getElementById('adminDashboardModal').classList.add('hidden'); }
+        function saveAdminSettings() {
+            gardenConfig.name = document.getElementById('adminSetGardenName').value;
+            gardenConfig.address = document.getElementById('adminSetGardenAddress').value;
+            gardenConfig.lat = parseFloat(document.getElementById('adminSetLat').value) || 2.3833;
+            gardenConfig.lon = parseFloat(document.getElementById('adminSetLon').value) || 102.2167;
+
+            localStorage.setItem('kebunGardenConfig', JSON.stringify(gardenConfig));
+            applyGardenConfig();
+            alert("Tetapan nama & lokasi kebun berjaya dikemaskini!");
+            closeAdminDashboard();
+        }
+
+        // Fetch Cuaca Presisi dari Open-Meteo berdasarkan koordinat
+        function fetchWeatherData() {
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${gardenConfig.lat}&longitude=${gardenConfig.lon}&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
+                        document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/j`;
+                    }
+                }).catch(() => {});
+        }
 
         function speakWithAiVoice(text) {
             if ('speechSynthesis' in window) {
@@ -386,7 +405,6 @@
             const isUser = sender === 'user';
             const bubbleDiv = document.createElement('div');
             bubbleDiv.className = `ai-chat-bubble ${isUser ? 'user-bubble' : 'ai-bubble'}`;
-            
             let htmlContent = `<div class="text-[10px] font-bold ${isUser ? 'text-stone-950' : 'google-text-accent'} uppercase tracking-wider mb-1">${isUser ? currentUser.name : 'AI Cerdas Kebun'}:</div><p>${text}</p>`;
             if (waLink) {
                 htmlContent += `<div class="mt-3 pt-2 border-t border-stone-700"><a href="${waLink}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-stone-950 px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow">💬 Kirim Rekap ke WhatsApp Boss</a></div>`;
@@ -404,9 +422,9 @@
             else if (hours >= 15 && hours < 19) timeGreeting = "Selamat petang";
             else if (hours >= 19 || hours < 5) timeGreeting = "Selamat malam";
 
-            const greetingText = `${timeGreeting}, ${currentUser.gender} ${currentUser.name}! Selamat datang ke pusat kawalan ladang Medicalpro Machap. Syor job desk untuk hari ini: Sila semak jadual taburan bio baja mengikut kitaran 2 minggu (14 hari) di blok utama, jalankan kerja siram pokok di sebelah pagi, dan teruskan pembersihan rumput di parit kebun. Apakah ada yang boleh saya bantu lagi, ${currentUser.gender}?`;
+            const greetingText = `${timeGreeting}, ${currentUser.gender} ${currentUser.name}! Selamat datang ke pusat kawalan ladang ${gardenConfig.name} (${gardenConfig.address}). Syor job desk untuk hari ini: Sila semak jadual taburan bio baja mengikut kitaran 2 minggu (14 hari) di blok utama, jalankan kerja siram pokok di sebelah pagi, dan teruskan pembersihan rumput di parit kebun. Apakah ada yang boleh saya bantu lagi, ${currentUser.gender}?`;
 
-            const waText = `*LAPORAN & JOB DESK KEBUN*\n\nKepada: ${currentUser.gender} ${currentUser.name}\nSyor Hari Ini: Tabur bio baja ikut kitaran 14 hari, siram pokok, dan bersih rumput parit kebun.\nStatus: Sistem AI Cerdas aktif memantau ladang Machap.`;
+            const waText = `*LAPORAN & JOB DESK KEBUN*\n\nKebun: ${gardenConfig.name}\nLokasi: ${gardenConfig.address}\nKepada: ${currentUser.gender} ${currentUser.name}\nSyor Hari Ini: Tabur bio baja ikut kitaran 14 hari, siram pokok, dan bersih rumput parit kebun.`;
             const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
 
             document.getElementById('aiChatHistory').innerHTML = "";
@@ -420,14 +438,14 @@
             let waText = "";
 
             if (q.includes('pagi') || q.includes('kerja') || q.includes('hari ini') || q.includes('syor') || q.includes('baja')) {
-                responseText = `Baik ${currentUser.gender} ${currentUser.name}. Syor job desk rasmi hari ini: Fokuskan pada taburan bio baja mengikut kitaran dua minggu serta pemeriksaan kelembapan blok tanaman.`;
-                waText = `*JOB DESK KEBUN*\n\nKepada: ${currentUser.gender} ${currentUser.name}\nTugas: Tabur bio baja kitaran 2 minggu & periksa kelembapan blok.`;
+                responseText = `Baik ${currentUser.gender} ${currentUser.name}. Syor job desk rasmi hari ini di ${gardenConfig.address}: Fokuskan pada taburan bio baja mengikut kitaran dua minggu serta pemeriksaan kelembapan blok tanaman.`;
+                waText = `*JOB DESK KEBUN*\n\nLokasi: ${gardenConfig.address}\nKepada: ${currentUser.gender} ${currentUser.name}\nTugas: Tabur bio baja kitaran 2 minggu & periksa kelembapan blok.`;
             } else if (q.includes('pengeluaran') || q.includes('belanja') || q.includes('kos')) {
-                responseText = `${currentUser.gender}, data perbelanjaan dan kos operasi ladang telah direkodkan dengan terperinci di dalam sistem.`;
-                waText = `*REKAP KOS KEBUN*\n\nDiminta oleh: ${currentUser.gender} ${currentUser.name}\nStatus: Rekod perbelanjaan lengkap dalam sistem.`;
+                responseText = `${currentUser.gender}, data perbelanjaan dan kos operasi ${gardenConfig.name} telah direkodkan dengan terperinci di dalam sistem.`;
+                waText = `*REKAP KOS KEBUN*\n\nKebun: ${gardenConfig.name}\nDiminta oleh: ${currentUser.gender} ${currentUser.name}\nStatus: Rekod perbelanjaan lengkap.`;
             } else {
                 responseText = `Soalan diterima, ${currentUser.gender} ${currentUser.name}. Ada apa-apa lagi bahagian kebun yang ingin saya bantu semak?`;
-                waText = `*INFO KEBUN MEDICALPRO*\n\nPertanyaan oleh ${currentUser.gender} ${currentUser.name} telah diproses.`;
+                waText = `*INFO KEBUN*\n\nPertanyaan oleh ${currentUser.gender} ${currentUser.name} telah diproses.`;
             }
 
             const waLink = `https://wa.me/?text=${encodeURIComponent(waText)}`;
