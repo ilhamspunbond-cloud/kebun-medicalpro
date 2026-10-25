@@ -47,7 +47,7 @@
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-stone-400 mb-1">Nama Panggilan</label>
-                    <input type="text" id="loginUserName" placeholder="Cth: Adam" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100 focus:outline-none focus:border-yellow-500">
+                    <input type="text" id="loginUserName" placeholder="Cth: Rojak" class="w-full border border-stone-700 p-3 rounded-xl text-sm bg-stone-950 text-stone-100 focus:outline-none focus:border-yellow-500">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-stone-400 mb-1">Gelaran</label>
@@ -173,24 +173,130 @@
 
         <!-- CONTAINER HALAMAN / TAB -->
         <div id="tabContentContainer" class="space-y-6">
+
+            <!-- 1. Task Management Page -->
             <section id="page-tasks" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
+                </div>
+                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
+                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="text" id="taskCategory" placeholder="Kategori (Pemupukan/Siram)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="text" id="taskWorker" placeholder="Nama Pekerja" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="date" id="taskDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl font-semibold text-sm shadow">Tambah Tugasan Harian</button>
+                </form>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse text-stone-300">
+                        <thead>
+                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
+                                <th class="p-3">Tugasan</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Pekerja</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBody"></tbody>
+                    </table>
+                </div>
             </section>
+
+            <!-- 2. Supply Management Page -->
             <section id="page-supply" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-stone-100">📦 Manajemen Stok & Suplai Kebun</h3>
+                <div class="flex justify-between items-center border-b border-stone-700 pb-3">
+                    <h3 class="text-lg font-bold text-stone-100">📦 Manajemen Stok & Suplai Kebun</h3>
+                </div>
+                <form id="supplyForm" class="bg-stone-950 p-4 rounded-2xl space-y-3 border border-stone-700">
+                    <input type="text" id="supplyItem" placeholder="Nama Hasil / Suplai (Cth: Buah Belimbing Buluh)" required class="w-full text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="supplyQty" placeholder="Jumlah (Kg/Pack)" required class="text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
+                        <input type="date" id="supplyDate" required class="text-xs p-3 rounded-xl border border-stone-700 bg-stone-950 text-stone-100">
+                    </div>
+                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold py-3.5 rounded-xl">Simpan Stok Suplai</button>
+                </form>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse text-stone-300">
+                        <thead>
+                            <tr class="bg-stone-950 text-stone-400 border-b border-stone-700">
+                                <th class="p-2">Item</th>
+                                <th class="p-2">Jumlah</th>
+                                <th class="p-2">Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supplyTableBody"></tbody>
+                    </table>
+                </div>
             </section>
+
+            <!-- 3. Inventory / Bio Baja Page -->
             <section id="page-inventory" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold mb-4 text-emerald-400">🧪 Stok Bio Baja & Nutrisi Organik</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="inventoryContainer">
+                    <div class="bg-stone-950 p-4 rounded-xl border border-stone-700">
+                        <div class="font-bold text-yellow-400">Baja AB Organik</div>
+                        <div class="text-sm text-stone-400 mt-1">Baki: 50 Liter (Kitaran 2 Minggu)</div>
+                    </div>
+                </div>
             </section>
+
+            <!-- 4. Assets Page -->
             <section id="page-assets" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold text-emerald-400">🚜 Aset & Peralatan Kebun</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="assetsContainer">
+                    <div class="bg-stone-950 p-4 rounded-xl border border-stone-700">
+                        <div class="font-bold text-teal-400">Mesin Pemotong Rumput / Brush Cutter</div>
+                        <div class="text-sm text-stone-400 mt-1">Status: Baik & Berfungsi</div>
+                    </div>
+                </div>
             </section>
+
+            <!-- 5. Expenses Page -->
             <section id="page-expenses" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
                 <h3 class="text-lg font-bold text-emerald-400">💰 Perbelanjaan Kebun (Bulanan)</h3>
+                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
+                    <input type="text" id="expTitle" placeholder="Keterangan Belanja (Cth: Minyak Mesin)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="date" id="expDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <button type="submit" class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl text-xs font-semibold">Tambah Rekod Perbelanjaan</button>
+                </form>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse text-stone-300">
+                        <thead>
+                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3">Kos</th>
+                                <th class="p-3">Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTableBody"></tbody>
+                    </table>
+                </div>
             </section>
+
+            <!-- 6. Income Page -->
             <section id="page-income" class="tab-page bg-stone-900 p-6 rounded-3xl shadow-lg border border-stone-700 hidden space-y-4">
-                <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun</h3>
+                <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun & Produk Medicalpro</h3>
+                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-950 p-4 rounded-xl border border-stone-700">
+                    <input type="text" id="incTitle" placeholder="Produk / Hasil Jualan" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="text" id="incAmount" placeholder="Jumlah Diterima (RM)" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <input type="date" id="incDate" required class="border border-stone-700 p-3 rounded-lg text-sm bg-stone-950 text-stone-100">
+                    <button type="submit" class="sm:col-span-3 bg-emerald-600 hover:bg-emerald-500 text-stone-950 py-3 rounded-xl text-xs font-semibold">Simpan Rekod Pendapatan</button>
+                </form>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse text-stone-300">
+                        <thead>
+                            <tr class="bg-stone-950 border-b border-stone-700 text-stone-400">
+                                <th class="p-3">Keterangan Jualan</th>
+                                <th class="p-3">Jumlah (RM)</th>
+                                <th class="p-3">Tarikh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomeTableBody"></tbody>
+                    </table>
+                </div>
             </section>
+
         </div>
 
     </main>
@@ -198,6 +304,10 @@
     <!-- Script JavaScript -->
     <script>
         let currentUser = { name: "", gender: "Tuan" };
+        let tasks = [];
+        let expenses = [];
+        let incomeList = [];
+        let supplyData = [];
 
         function handleUserLogin() {
             const nameInput = document.getElementById('loginUserName').value.trim();
@@ -286,7 +396,6 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
-        // --- AI SAMBUTAN OTOMATIS BERBAHASA MALAYSIA & JOB DESK ---
         function triggerAutoAiGreeting() {
             const now = new Date();
             const hours = now.getHours();
