@@ -125,10 +125,11 @@
 
             <!-- Butang Rekomendasi Pintar Cepat -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Syor Tugas Berasaskan Cuaca</button>
+                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Kerja Harian & Pekerja</button>
                 <button onclick="askAi('penyelenggaraan stor')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧹 Kemas Stor & Mesin</button>
                 <button onclick="askAi('jadual tuai')" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-xl border border-indigo-500 text-white font-semibold">🌾 Jadual Tuai & Panen</button>
-                <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Kewangan</button>
+                <button onclick="askAi('stok baja')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">🧪 Stok Baja</button>
+                <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Kewangan & Rekap</button>
             </div>
 
             <!-- Input Chat Manual ke AI -->
@@ -636,11 +637,11 @@
             console.log("Firebase init error");
         }
 
-        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI (KHUSUS BOSS / PEMILIK) ---
+        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI (KHUSUS SAPAAN SAHAJA TANPA NAMA) ---
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
         function checkUserProfile() {
-            if (!currentUser || !currentUser.name) {
+            if (!currentUser || !currentUser.gender) {
                 document.getElementById('userProfileModal').classList.remove('hidden');
             } else {
                 initAiGreeting();
@@ -650,9 +651,8 @@
         function saveUserProfile() {
             const name = document.getElementById('inputUserRealName').value.trim();
             const gender = document.getElementById('inputUserGender').value;
-            if (!name) { alert("Sila masukkan nama anda!"); return; }
             
-            currentUser = { name, gender };
+            currentUser = { name: name || gender, gender };
             localStorage.setItem('medicalpro_user_profile', JSON.stringify(currentUser));
             document.getElementById('userProfileModal').classList.add('hidden');
             initAiGreeting();
@@ -711,7 +711,7 @@
         }
 
         function getTitlePrefix() {
-            if (!currentUser || !currentUser.gender) return "Tuan/Puan";
+            if (!currentUser || !currentUser.gender) return "Tuan";
             return currentUser.gender; // Mengambil pilihan: Abang, Akak, Tuan, Puan, Pachi, Machi, Datu
         }
 
@@ -720,7 +720,6 @@
         // --- LOGIKA CERDAS BERDASARKAN RIWAYAT HUJAN SEMALAM ---
         function generateSmartAgronomyRecommendation(topic = 'general') {
             const title = getTitlePrefix();
-            const name = currentUser ? currentUser.name : "Rojak";
             
             let wasRainingNight = currentWeatherData.nightRain;
             let weatherNotice = wasRainingNight 
@@ -729,9 +728,9 @@
 
             let userInstruction = "";
             if (wasRainingNight) {
-                userInstruction = `Oleh kerana semalam hujan deras, ${title} ${name} boleh langsung fokus ke kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
+                userInstruction = `Oleh kerana semalam hujan deras, ${title} boleh langsung fokus ke kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
             } else {
-                userInstruction = `Pagi ini ${title} ${name} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua.`;
+                userInstruction = `Pagi ini ${title} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua.`;
             }
 
             let workerInstructions = [];
@@ -749,19 +748,24 @@
             let workerText = workerInstructions.length > 0 ? workerInstructions.join(' ') : "";
 
             if (topic === 'pekerja' || topic === 'general') {
-                return `Arahan Harian, ${title} ${name}: ${weatherNotice} ${userInstruction} ${workerText}`;
+                return `Arahan Harian, ${title}: ${weatherNotice} ${userInstruction} ${workerText} ${title} boleh menguruskan kerja harian kebun, pekerja, stok baja, perbelanjaan, pemasukan, atau menyemak rekap data bulanan melalui menu sistem.`;
             } else if (topic === 'penyelenggaraan stor') {
-                return `Cadangan Penyelenggaraan: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air, serta cek mesin potong rumput, ${title} ${name}!`;
+                return `Cadangan Penyelenggaraan: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air, serta cek mesin potong rumput, ${title}!`;
             } else if (topic === 'jadual tuai') {
-                return `Jadual Tuai & Panen: Kitaran tuai belimbing wuluh dan bunga berjalan lancar, ${title} ${name}.`;
+                return `Jadual Tuai & Panen: Kitaran tuai belimbing wuluh dan bunga berjalan lancar, ${title}.`;
+            } else if (topic === 'stok baja') {
+                const totalInv = inventory.reduce((sum, i) => sum + (parseInt(i.stock) || 0), 0);
+                return `Semakan Stok Baja: Jumlah keseluruhan baki stok bio baja di gudang adalah ${totalInv} unit, ${title}. Sila semak tab Bio Baja untuk butiran lanjut.`;
             } else if (topic === 'kewangan') {
                 const currentMonth = new Date().toISOString().substring(0, 7);
                 const monthInc = incomeList.filter(i => i.month === currentMonth);
                 let totalInc = monthInc.reduce((sum, i) => sum + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                return `Ringkasan kewangan bulan ini: Pendapatan tercatat RM ${totalInc.toFixed(2)}, ${title} ${name}.`;
+                const monthExp = expenses.filter(e => e.month === currentMonth);
+                let totalExp = monthExp.reduce((sum, e) => sum + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
+                return `Ringkasan kewangan bulan ini: Pendapatan RM ${totalInc.toFixed(2)}, Perbelanjaan RM ${totalExp.toFixed(2)}, ${title}. ${title} juga boleh mengunduh rekap data bulanan melalui butang unduh di setiap menu.`;
             }
 
-            return `Selamat ${title} ${name}. ${weatherNotice} ${userInstruction}`;
+            return `Selamat ${title}. ${weatherNotice} ${userInstruction} Ada apa-apa mengenai kerja harian, pekerja, stok baja, pengeluaran, pemasukan atau report data bulanan yang boleh saya bantu?`;
         }
 
         function initAiGreeting() {
@@ -773,17 +777,16 @@
             else if (hours >= 15 && hours < 19) timeGreeting = "Selamat petang";
 
             const title = getTitlePrefix();
-            const name = currentUser ? currentUser.name : "Rojak";
             
-            let openingWelcome = `${timeGreeting} ${title} ${name}! Senang berjumpa dengan ${title} hari ini. Saya ${aiConfig.name}, sedia membantu ${title} menguruskan kebun Bio Medicalpro.`;
+            let openingWelcome = `${timeGreeting} ${title}! Senang berjumpa dengan ${title} hari ini. Saya ${aiConfig.name}, sedia membantu ${title} menguruskan kebun Bio Medicalpro.`;
             let recommendation = generateSmartAgronomyRecommendation('general');
 
-            const greeting = `${openingWelcome} ${recommendation} Ada apa-apa yang boleh saya bantu untuk ${title} hari ini?`;
+            const greeting = `${openingWelcome} ${recommendation}`;
             
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = greeting;
             const greetText = document.getElementById('aiGreetingText');
-            if (greetText) greetText.innerText = `Pakar Agronomi AI untuk ${title} ${name}`;
+            if (greetText) greetText.innerText = `Pakar Agronomi AI untuk ${title}`;
             speakText(greeting);
         }
 
@@ -795,6 +798,8 @@
                 response = generateSmartAgronomyRecommendation('penyelenggaraan stor');
             } else if (queryType === 'jadual tuai') {
                 response = generateSmartAgronomyRecommendation('jadual tuai');
+            } else if (queryType === 'stok baja') {
+                response = generateSmartAgronomyRecommendation('stok baja');
             } else if (queryType === 'status kewangan') {
                 response = generateSmartAgronomyRecommendation('kewangan');
             }
@@ -855,18 +860,19 @@
             const input = rawText.toLowerCase();
             let response = "";
             const title = getTitlePrefix();
-            const name = currentUser ? currentUser.name : "Rojak";
 
-            if (input.includes('stor') || input.includes('bilik air') || input.includes('mesin') || input.includes('racun') || input.includes('baja') || input.includes('kemas')) {
+            if (input.includes('stor') || input.includes('bilik air') || input.includes('mesin') || input.includes('racun') || input.includes('kemas')) {
                 response = generateSmartAgronomyRecommendation('penyelenggaraan stor');
-            } else if (input.includes('rojak') || input.includes('pekerja') || input.includes('kerja') || input.includes('siram') || input.includes('hujan')) {
+            } else if (input.includes('baja') || input.includes('stok')) {
+                response = generateSmartAgronomyRecommendation('stok baja');
+            } else if (input.includes('pekerja') || input.includes('kerja') || input.includes('siram') || input.includes('hujan')) {
                 response = generateSmartAgronomyRecommendation('pekerja');
             } else if (input.includes('tuai') || input.includes('panen') || input.includes('bunga') || input.includes('buah')) {
                 response = generateSmartAgronomyRecommendation('jadual tuai');
-            } else if (input.includes('kewangan') || input.includes('duit')) {
+            } else if (input.includes('kewangan') || input.includes('duit') || input.includes('rekap') || input.includes('pengeluaran') || input.includes('pemasukan')) {
                 response = generateSmartAgronomyRecommendation('kewangan');
             } else {
-                response = `Baik ${title} ${name}, saya faham soalan "${rawText}". ${generateSmartAgronomyRecommendation('general')}`;
+                response = `Baik ${title}, saya faham soalan "${rawText}". ${generateSmartAgronomyRecommendation('general')}`;
             }
 
             const chatBox = document.getElementById('aiChatResponseBox');
@@ -1860,8 +1866,8 @@
             }
         }
 
-        // --- EXPENSES ---
-        let expenses = [];
+        // --- EXPENSES (PERBELANJAAN DENGAN LOCALSTORAGE BACKUP & FIRESTORE) ---
+        let expenses = JSON.parse(localStorage.getItem('medicalpro_expenses')) || [];
         let expReceiptBase64 = "";
         
         const expReceiptInputEl = document.getElementById('expReceiptInput');
@@ -1892,28 +1898,41 @@
                     month: monthKey,
                     receipt: expReceiptBase64 || ""
                 };
+                
+                expenses.unshift(newExp);
+                localStorage.setItem('medicalpro_expenses', JSON.stringify(expenses));
+
                 if (db) {
-                    db.collection("expenses").add(newExp).then(() => {
-                        expenseFormEl.reset();
-                        expReceiptBase64 = "";
-                        alert("Perbelanjaan & resit Full HD berjaya direkod!");
-                    });
+                    db.collection("expenses").add(newExp).catch(() => {});
                 }
+
+                expenseFormEl.reset();
+                expReceiptBase64 = "";
+                renderExpenses();
+                alert("Perbelanjaan & resit Full HD berjaya direkod!");
             });
         }
 
         if (db) {
             db.collection("expenses").orderBy("id", "desc").onSnapshot((snapshot) => {
-                expenses = [];
+                let fetchedExpenses = [];
                 let monthsSet = new Set();
                 snapshot.forEach((doc) => {
                     let d = doc.data();
-                    expenses.push({ firestoreId: doc.id, ...d });
+                    fetchedExpenses.push({ firestoreId: doc.id, ...d });
                     if (d.month) monthsSet.add(d.month);
                 });
+                if(fetchedExpenses.length > 0) {
+                    expenses = fetchedExpenses;
+                    localStorage.setItem('medicalpro_expenses', JSON.stringify(expenses));
+                }
                 updateMonthDropdown('filterExpenseMonth', monthsSet);
                 renderExpenses();
-            }, () => {});
+            }, () => {
+                renderExpenses();
+            });
+        } else {
+            renderExpenses();
         }
 
         function renderExpenses() {
@@ -1945,12 +1964,17 @@
         }
         function deleteExpense(id) {
             if (confirm("Padam rekod?")) {
-                if (db) db.collection("expenses").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+                expenses = expenses.filter(ex => ex.id !== id);
+                localStorage.setItem('medicalpro_expenses', JSON.stringify(expenses));
+                renderExpenses();
+                if (db) {
+                    db.collection("expenses").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+                }
             }
         }
 
         // --- PENDAPATAN ---
-        let incomeList = [];
+        let incomeList = JSON.parse(localStorage.getItem('medicalpro_income')) || [];
         let incPhotoBase64 = "";
         const incPhotoInputEl = document.getElementById('incPhotoInput');
         if(incPhotoInputEl) {
@@ -1975,28 +1999,41 @@
                     staff: activeStaffName,
                     photo: incPhotoBase64 || ""
                 };
+                
+                incomeList.unshift(newInc);
+                localStorage.setItem('medicalpro_income', JSON.stringify(incomeList));
+
                 if (db) {
-                    db.collection("income").add(newInc).then(() => {
-                        incomeFormEl.reset();
-                        incPhotoBase64 = "";
-                        alert("Pendapatan berjaya direkod!");
-                    });
+                    db.collection("income").add(newInc).catch(() => {});
                 }
+
+                incomeFormEl.reset();
+                incPhotoBase64 = "";
+                renderIncome();
+                alert("Pendapatan berjaya direkod!");
             });
         }
 
         if (db) {
             db.collection("income").orderBy("id", "desc").onSnapshot((snapshot) => {
-                incomeList = [];
+                let fetchedIncome = [];
                 let monthsSet = new Set();
                 snapshot.forEach((doc) => {
                     let d = doc.data();
-                    incomeList.push({ firestoreId: doc.id, ...d });
+                    fetchedIncome.push({ firestoreId: doc.id, ...d });
                     if (d.month) monthsSet.add(d.month);
                 });
+                if(fetchedIncome.length > 0) {
+                    incomeList = fetchedIncome;
+                    localStorage.setItem('medicalpro_income', JSON.stringify(incomeList));
+                }
                 updateMonthDropdown('filterIncomeMonth', monthsSet);
                 renderIncome();
-            }, () => {});
+            }, () => {
+                renderIncome();
+            });
+        } else {
+            renderIncome();
         }
 
         function renderIncome() {
@@ -2029,7 +2066,12 @@
         }
         function deleteIncome(id) {
             if (confirm("Padam rekod?")) {
-                if (db) db.collection("income").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+                incomeList = incomeList.filter(inc => inc.id !== id);
+                localStorage.setItem('medicalpro_income', JSON.stringify(incomeList));
+                renderIncome();
+                if (db) {
+                    db.collection("income").where("id", "==", id).get().then(snapshot => snapshot.forEach(doc => doc.ref.delete()));
+                }
             }
         }
 
