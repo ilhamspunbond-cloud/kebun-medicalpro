@@ -83,7 +83,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI PINTAR & BERPIKIR MANDIRI -->
+        <!-- WIDGET ASISTEN AI PINTAR & BERPIKIR MANDIRI (WEATHER-ADAPTIVE) -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -93,9 +93,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Pekerja Aktif</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Cuaca Otomatis</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menyusun tugas berasaskan nama input sebenar.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menganalisis riwayat hujan & tanah kebun.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -115,12 +115,12 @@
 
             <!-- Kotak Perbualan / Analisis AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang memeriksa senarai pekerja rasmi...
+                AI sedang memeriksa data cuaca dan kelembapan tanah...
             </div>
 
             <!-- Butang Rekomendasi Pintar Cepat -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Syor Tugas Pekerja Aktif</button>
+                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Syor Tugas Berasaskan Cuaca</button>
                 <button onclick="askAi('penyelenggaraan stor')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧹 Kemas Stor & Mesin</button>
                 <button onclick="askAi('jadual tuai')" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-xl border border-indigo-500 text-white font-semibold">🌾 Jadual Tuai & Panen</button>
                 <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Kewangan</button>
@@ -128,7 +128,7 @@
 
             <!-- Input Chat Manual ke AI -->
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa kerja tambahan hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Semalam hujan, apa tugas hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
             </form>
         </section>
@@ -166,8 +166,8 @@
                     <div id="humidityDisplay" class="text-sm font-bold">78%</div>
                 </div>
                 <div class="bg-black/20 rounded-xl p-3 text-center col-span-2 sm:col-span-1">
-                    <div class="text-xs text-yellow-300">Prediksi per 3 Jam</div>
-                    <div id="forecast3h" class="text-xs font-bold mt-1">Malam Tenang</div>
+                    <div class="text-xs text-yellow-300">Riwayat Cuaca Semalam</div>
+                    <div id="rainHistoryDisplay" class="text-xs font-bold mt-1 text-emerald-300">Tanah Normal</div>
                 </div>
             </div>
         </div>
@@ -537,7 +537,7 @@
                 <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
             </div>
 
-            <!-- PENGURUSAN PEKERJA (HANYA NAMA YANG DIINPUT ADMIN) -->
+            <!-- PENGURUSAN PEKERJA -->
             <div class="bg-slate-50 p-4 rounded-xl border">
                 <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun (Dinamis Sesuai Input Admin)</h4>
                 <p class="text-xs text-slate-500 mb-2">AI hanya akan menyebutkan nama pekerja yang ada dalam senarai di bawah ini.</p>
@@ -645,10 +645,10 @@
             initAiGreeting();
         }
 
-        // --- SISTEM AI AGRONOMIST & BERPIKIR MANDIRI ---
+        // --- SISTEM AI AGRONOMIST & BERPIKIR MANDIRI (WEATHER-ADAPTIVE) ---
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
-        let currentWeatherData = { condition: "Cerah", isRain: false };
+        let currentWeatherData = { condition: "Cerah", isRain: false, nightRain: false };
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -668,6 +668,7 @@
         function saveAiSettings() {
             aiConfig.name = document.getElementById('settingAiName').value;
             compressImage(document.getElementById('settingAiAvatarInput').files[0], function(base64Img) {
+                if (base64Img) aiConfig.avatar = base64Tab; // fallback
                 if (base64Img) aiConfig.avatar = base64Img;
                 if (db) db.collection("settings").doc("ai_config").set(aiConfig).catch(() => {});
                 applyAiSettings();
@@ -679,7 +680,6 @@
             lastSpokenText = text;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                // Hapus simbol asteris (*) untuk text yang dibacakan suara
                 const cleanTextForSpeech = text.replace(/[*_#]/g, '');
                 const utterance = new SpeechSynthesisUtterance(cleanTextForSpeech);
                 utterance.lang = 'ms-MY';
@@ -703,58 +703,47 @@
             return currentUser.gender === 'female' ? "Puan" : "Tuan";
         }
 
-        // --- DAFTAR PEKERJA AKTIF (HANYA DARI INPUT ADMIN) ---
         let workers = [];
 
-        // --- LOGIKA BERFIKIR CERDAS AI (TANPA BINTANG PADA NAMA, HANYA PEKERJA INPUT) ---
+        // --- LOGIKA CERDAS BERDASARKAN RIWAYAT HUJAN SEMALAM ---
         function generateSmartAgronomyRecommendation(topic = 'general') {
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "Rojak";
-            const todayStr = new Date().toISOString().substring(0, 10);
+            
+            let wasRainingNight = currentWeatherData.nightRain;
+            let weatherNotice = wasRainingNight 
+                ? "Semalam ada rekod hujan / tanah kebun lembap. Jadi pagi ini TIDAK PERLU siram pokok."
+                : "Keadaan tanah kering / normal. Pagi ini wajib jalankan rutin siram pokok seperti biasa.";
 
-            // Cek tugas hari ini yang sudah diinput untuk user (Rojak)
-            let rojakTasksToday = tasks.filter(t => t.date === todayStr && t.worker && t.worker.toLowerCase().includes(name.toLowerCase()));
-            let hasWatered = rojakTasksToday.some(t => t.title.toLowerCase().includes('siram'));
-            let hasDoneSecondTask = rojakTasksToday.length >= 2;
-
-            let weatherAdvice = currentWeatherData.isRain 
-                ? "Cuaca sedang hujan. Kerja luar ditangguhkan."
-                : "Cuaca cerah dan baik untuk aktiviti ladang.";
-
-            // Aturan harian Rojak (Wajib siram + tugas kedua)
-            let rojakInstruction = "";
-            if (!hasWatered) {
-                rojakInstruction = `Untuk ${name}, prioritas pertama pagi ini wajib siram pokok belimbing wuluh terlebih dahulu. Selepas siram selesai dan diinput ke sistem, teruskan ke pekerjaan kedua seperti pruning dahan, tuai buah, atau cek aset kebun.`;
-            } else if (!hasDoneSecondTask) {
-                rojakInstruction = `Bagus, ${name} sudah selesai siram pokok hari ini! Mengikut aturan harian minimum 2 kerja, cadangan tugas seterusnya: kemas stor, cuci bilik air, atau lakukan pruning supaya kebun bersih dan teratur.`;
+            let userInstruction = "";
+            if (wasRainingNight) {
+                userInstruction = `Oleh kerana semalam hujan, ${name} boleh terus fokus ke kerja-kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
             } else {
-                rojakInstruction = `Kerja harian ${name} hari ini sudah lengkap. Sila semak semula hasil tuai atau rehat sebentar.`;
+                userInstruction = `Pagi ini ${name} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua (pruning, tuai bunga, atau kemas stor).`;
             }
 
-            // Menyusun instruksi HANYA untuk pekerja yang benar-benar di-input di dalam array workers
             let workerInstructions = [];
             if (workers && workers.length > 0) {
                 workers.forEach(w => {
                     let wLower = w.toLowerCase();
                     if (!wLower.includes(name.toLowerCase())) {
-                        // Jika pekerja selain user (Cth: Holil atau pekerja lain yang diinput)
                         if (wLower.includes('holil')) {
-                            workerInstructions.push(`${w}: Fokus utama memotong rumput dan merapikan kawasan batas kebun agar tampak bersih.`);
+                            workerInstructions.push(`${w}: Fokus utama potong rumput dan kemas batas kebun.`);
                         } else {
-                            workerInstructions.push(`${w}: Sila bantu kerja-kerja sokongan seperti angkut hasil tuai atau susun tempat baja.`);
+                            workerInstructions.push(`${w}: Bantu kerja sokongan angkut hasil atau susun baja.`);
                         }
                     }
                 });
             }
 
-            let workerText = workerInstructions.length > 0 ? workerInstructions.join(' ') : "Tiada pekerja tambahan didaftarkan buat masa ini.";
+            let workerText = workerInstructions.length > 0 ? workerInstructions.join(' ') : "";
 
             if (topic === 'pekerja' || topic === 'general') {
-                return `Arahan Pengurusan Hari Ini, ${title} ${name}: ${rojakInstruction} ${workerText} ${weatherAdvice}`;
+                return `Arahan Harian, ${title} ${name}: ${weatherNotice} ${userInstruction} ${workerText}`;
             } else if (topic === 'penyelenggaraan stor') {
-                return `Cadangan Penyelenggaraan Aset & Stor: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air kebun, serta cek enjin mesin potong rumput agar peralatan tahan lama dan bersih, ${title} ${name}!`;
+                return `Cadangan Penyelenggaraan: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air, serta cek mesin potong rumput, ${title} ${name}!`;
             } else if (topic === 'jadual tuai') {
-                return `Jadual Tuai & Panen: Kitaran tuai buah belimbing wuluh dan bunga kantan berjalan setiap minggu. Pastikan hasil dituai tepat masa, ${title} ${name}.`;
+                return `Jadual Tuai & Panen: Kitaran tuai belimbing wuluh dan bunga berjalan lancar, ${title} ${name}.`;
             } else if (topic === 'kewangan') {
                 const currentMonth = new Date().toISOString().substring(0, 7);
                 const monthInc = incomeList.filter(i => i.month === currentMonth);
@@ -762,7 +751,7 @@
                 return `Ringkasan kewangan bulan ini: Pendapatan tercatat RM ${totalInc.toFixed(2)}, ${title} ${name}.`;
             }
 
-            return `Selamat ${title} ${name}. ${weatherAdvice} ${rojakInstruction}`;
+            return `Selamat ${title} ${name}. ${weatherNotice} ${userInstruction}`;
         }
 
         function initAiGreeting() {
@@ -803,11 +792,11 @@
             speakText(response);
         }
 
-        // --- FITUR VOICE CHAT INTERAKTIF (SPEECH RECOGNITION) ---
+        // --- FITUR VOICE CHAT INTERAKTIF ---
         function startVoiceChat() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                alert("Maaf, browser peranti anda tidak menyokong pengecaman suara AI. Sila gunakan Google Chrome.");
+                alert("Maaf, pelayar peranti anda tidak menyokong pengecaman suara AI.");
                 return;
             }
 
@@ -851,7 +840,7 @@
 
             if (input.includes('stor') || input.includes('bilik air') || input.includes('mesin') || input.includes('racun') || input.includes('baja') || input.includes('kemas')) {
                 response = generateSmartAgronomyRecommendation('penyelenggaraan stor');
-            } else if (input.includes('rojak') || input.includes('holil') || input.includes('pekerja') || input.includes('kerja') || input.includes('siram')) {
+            } else if (input.includes('rojak') || input.includes('pekerja') || input.includes('kerja') || input.includes('siram') || input.includes('hujan')) {
                 response = generateSmartAgronomyRecommendation('pekerja');
             } else if (input.includes('tuai') || input.includes('panen') || input.includes('bunga') || input.includes('buah')) {
                 response = generateSmartAgronomyRecommendation('jadual tuai');
@@ -873,7 +862,7 @@
             if(text) processAiQuery(text);
         }
 
-        // --- SISTEM TAB / HALAMAN TERPISAH ---
+        // --- SISTEM TAB ---
         function switchTab(tabId) {
             const pages = document.querySelectorAll('.tab-page');
             pages.forEach(p => p.classList.add('hidden'));
@@ -921,7 +910,7 @@
         }
         setTimeout(autoCleanOldPhotos, 3000);
 
-        // --- JAM & CUACA REAL-TIME ---
+        // --- JAM & PENGESANAN RIWAYAT CUACA / HUJAN REAL-TIME ---
         function updateLiveClockAndSmartWeather() {
             const now = new Date();
             const hours = now.getHours();
@@ -940,36 +929,12 @@
 
             let icon = "🌙";
             let condText = "Malam Istirahat";
-            let advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup. Siap sediakan tenaga untuk kembali bekerja esok pagi jam 07:00 / 08:00.";
+            let advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup.";
             let forecast3h = "Malam Tenang";
             let showBroadcastBadge = false;
 
-            if ((month === 8 && day === 31) || (month === 9 && day === 16)) {
-                showBroadcastBadge = true;
-                advice = "🇲🇾 Selamat Hari Kebangsaan / Hari Malaysia! Teruskan semangat berbakti kepada tanah dan pengurusan ladang Medicalpro.";
-            } else if (hours >= 5 && hours < 10) {
-                icon = "🌅";
-                condText = "Pagi Cerah & Segar";
-                advice = "🌅 Selamat pagi, Bro! Pagi ini Rojak wajib mula dengan siram pokok.";
-                forecast3h = "Cerah Pagi";
-            } else if (hours >= 10 && hours < 15) {
-                icon = "☀️";
-                condText = "Tengah Hari Panas";
-                advice = "☀️ Suhu panas tengah hari. Sesuai untuk kemas stor, cuci bilik air, atau rehat tengah hari.";
-                forecast3h = "Panas Terik";
-            } else if (hours >= 12 && hours <= 14) {
-                icon = "☕";
-                condText = "Waktu Rehat Kebun";
-                advice = "☕ Waktu rehat tengah hari (Jam 12:00 - 14:00).";
-                forecast3h = "Rehat Siang";
-            } else if (hours >= 15 && hours < 18) {
-                icon = "🌇";
-                condText = "Petang / Senja";
-                advice = "🌇 Waktu petang: Sesuai untuk semak tugas kedua atau pemeriksaan blok kebun.";
-                forecast3h = "Sebahagian Berawan";
-            }
-
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true')
+            // Memanggil API Cuaca Machap untuk cek kondisi semasa & riwayat hujan
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=precipitation')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather) {
@@ -977,31 +942,47 @@
                         const wind = data.current_weather.windspeed;
                         const weatherCode = data.current_weather.weathercode;
                         
-                        if (weatherCode >= 50) {
-                            currentWeatherData = { condition: "Hujan / Mendung Lebat", isRain: true };
+                        // Cek adakah ada rekod hujan pada jam-jam sebelumnya (riwayat malam tadi)
+                        let hadRainNight = false;
+                        if (data.hourly && data.hourly.precipitation) {
+                            const precipList = data.hourly.precipitation;
+                            // Cek 6 jam ke belakang
+                            for(let i = Math.max(0, precipList.length - 12); i < precipList.length; i++) {
+                                if (precipList[i] > 0.1) { hadRainNight = true; break; }
+                            }
+                        }
+
+                        if (weatherCode >= 50 || hadRainNight) {
+                            currentWeatherData = { condition: "Hujan / Tanah Lembap", isRain: true, nightRain: hadRainNight };
                             icon = "🌧️";
-                            condText = "Cuaca Hujan";
-                            advice = "🌧️ Amaran Hujan di Machap! Kerja luar ditangguhkan, fokus kemas stor dalam bumbung.";
+                            condText = hadRainNight ? "Semalam Hujan / Tanah Lembap" : "Cuaca Hujan";
+                            advice = "🌧️ Semalam ada rekod hujan. Tanah kebun lembap, pagi ini TIDAK PERLU siram pokok. Fokus pada pruning, tuai bunga, atau kemas stor.";
+                            const rainDisplay = document.getElementById('rainHistoryDisplay');
+                            if(rainDisplay) {
+                                rainDisplay.innerText = "Semalam Hujan 🌧️";
+                                rainDisplay.className = "text-xs font-bold mt-1 text-sky-300";
+                            }
                         } else {
-                            currentWeatherData = { condition: "Cerah / Normal", isRain: false };
+                            currentWeatherData = { condition: "Cerah / Normal", isRain: false, nightRain: false };
+                            const rainDisplay = document.getElementById('rainHistoryDisplay');
+                            if(rainDisplay) {
+                                rainDisplay.innerText = "Tanah Kering / Normal";
+                                rainDisplay.className = "text-xs font-bold mt-1 text-emerald-300";
+                            }
                         }
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°C`;
                         if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = `${wind} km/h`;
-                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `72%`;
+                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `78%`;
                     }
                 }).catch(() => {});
 
             if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = icon;
             if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
-            if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerText = advice;
-            if (document.getElementById('forecast3h')) document.getElementById('forecast3h').innerText = forecast3h;
-
-            const badge = document.getElementById('broadcastBadge');
-            if (badge) {
-                if (showBroadcastBadge) badge.classList.remove('hidden');
-                else badge.classList.add('hidden');
+            if (document.getElementById('smartRecommendation') && !currentWeatherData.nightRain) {
+                document.getElementById('smartRecommendation').innerText = advice;
             }
+            if (document.getElementById('forecast3h')) document.getElementById('forecast3h').innerText = forecast3h;
         }
         
         setInterval(updateLiveClockAndSmartWeather, 1000);
@@ -1351,7 +1332,6 @@
             }
         }
 
-        // Sinkronisasi Pekerja dari Firebase / Default Kosong jika belum diinput
         function renderWorkersDropdown() {
             const select = document.getElementById('taskWorkerSelect');
             if(!select) return;
@@ -1364,7 +1344,7 @@
                 if (doc.exists && doc.data().list) {
                     workers = doc.data().list;
                 } else {
-                    workers = []; // Kosong secara default jika admin belum input
+                    workers = [];
                 }
                 renderWorkersDropdown();
                 renderWorkersAdmin();
@@ -1829,7 +1809,7 @@
             }
         }
 
-        // --- EXPENSES (PERBELANJAAN) ---
+        // --- EXPENSES ---
         let expenses = [];
         let expReceiptBase64 = "";
         
