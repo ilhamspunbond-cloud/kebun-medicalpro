@@ -143,7 +143,7 @@
             </form>
         </section>
 
-        <!-- KOTAK CUACA LIVE & PREDIKSI 5 JAM KE DEPAN (PER 1 JAM) -->
+        <!-- KOTAK CUACA LIVE & PREDIKSI 5 JAM KE DEPAN REAL-TIME -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
             <div class="flex justify-between items-center mb-1">
                 <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA LIVE & PREDIKSI 5 JAM KE DEPAN - MACHAP</span>
@@ -759,7 +759,7 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        // --- PREDIKSI CUACA LIVE & 5 JAM KE DEPAN (PER 1 JAM) ---
+        // --- PREDIKSI CUACA LIVE & 5 JAM KE DEPAN (PER 1 JAM SINKRON WAKTU LOKAL HP) ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
@@ -774,9 +774,20 @@
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
 
-                        const currentIsoStr = now.toISOString().substring(0, 13);
-                        let idx = hourlyTime.findIndex(t => t.startsWith(currentIsoStr));
-                        if (idx === -1) idx = 0;
+                        // Sinkronkan waktu lokal HP secara persis dengan data API (format YYYY-MM-DDTHH:00)
+                        const year = now.getFullYear();
+                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const hour = String(now.getHours()).padStart(2, '0');
+                        const currentExactIsoStr = `${year}-${month}-${day}T${hour}:00`;
+
+                        let idx = hourlyTime.findIndex(t => t === currentExactIsoStr);
+                        if (idx === -1) {
+                            // Fallback cari berdasarkan jam saja jika format meleset
+                            const currentHourStr = `T${hour}:`;
+                            idx = hourlyTime.findIndex(t => t.includes(currentHourStr));
+                            if (idx === -1) idx = 0;
+                        }
 
                         let rainSoon = false;
                         for(let i = idx; i < idx + 5; i++) {
@@ -788,7 +799,7 @@
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = rainSoon ? "Potensi Hujan Jam Ini" : "Cerah Estet Machap";
                         if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = rainSoon ? "🌧️" : "☀️";
 
-                        // Tepat 5 jam ke depan, per 1 jam
+                        // Tepat 5 jam ke depan, persis mulai dari jam sekarang perangkat (Real-time)
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
