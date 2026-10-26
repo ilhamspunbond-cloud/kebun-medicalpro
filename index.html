@@ -139,7 +139,7 @@
             </div>
         </div>
 
-        <!-- 🌟 ASISTEN AI PINTAR IKLIMAH (BISA NGOMONG & DI-EDIT FOTONYA) -->
+        <!-- 🌟 ASISTEN AI PINTAR IKLIMAH (SUARA WANITA & TEKS) -->
         <section class="bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-indigo-500 p-5 rounded-2xl shadow-xl text-white space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700 pb-3">
                 <div class="flex items-center gap-3">
@@ -148,7 +148,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-base text-yellow-300">Asisten AI Iklimah (Suara & Teks)</h3>
-                        <p class="text-[11px] text-indigo-200">Tanya apa saja, Iklimah akan menjawab melalui suara dan teks!</p>
+                        <p class="text-[11px] text-indigo-200">Tanya apa saja, Iklimah akan menjawab melalui suara wanita & teks!</p>
                     </div>
                 </div>
                 <span class="bg-indigo-600/60 text-indigo-200 text-[10px] px-2.5 py-1 rounded-full border border-indigo-400">Live Voice AI</span>
@@ -163,7 +163,7 @@
 
             <!-- Chat Output Box -->
             <div id="aiChatResponseBox" class="bg-slate-950/60 p-4 rounded-xl border border-indigo-500/40 text-sm text-indigo-100 min-h-[80px] max-h-48 overflow-y-auto leading-relaxed">
-                Halo! Saya Iklimah, asisten AI kebun anda. Ketik pertanyaan atau klik tombol di atas, saya akan jawab dengan suara!
+                Halo! Saya Iklimah, asisten AI kebun anda. Ketik pertanyaan atau klik tombol di atas, saya akan jawab dengan suara wanita!
             </div>
 
             <!-- Input Chat -->
@@ -596,7 +596,7 @@
 
     <!-- Script JavaScript -->
     <script>
-        // --- SISTEM GREETING & SUARA AI IKLIMAH ---
+        // --- SISTEM GREETING & SUARA WANITA AI IKLIMAH ---
         let customAIAvatarBase64 = "";
 
         function checkUserGreeting() {
@@ -621,7 +621,7 @@
             document.getElementById('welcomeUserModal').classList.add('hidden');
             updateGreetingBanner(profile);
 
-            // AI Iklimah Langsung Ngomong / Menyapa
+            // AI Iklimah Langsung Ngomong dengan suara wanita
             const greetingMsg = getGreetingText(profile);
             speakAI(greetingMsg);
         }
@@ -648,16 +648,29 @@
             document.getElementById('greetingTitleText').innerText = text.split('.')[0] + "!";
         }
 
-        // Fungsi Text-to-Speech agar AI Iklimah Bisa Ngomong
+        // Fungsi Text-to-Speech Suara Perempuan (Iklimah)
         function speakAI(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ms-MY';
                 utterance.rate = 1.0;
-                utterance.pitch = 1.0;
+                utterance.pitch = 1.3; // Pitch dinaikkan agar pas bersuara wanita
+
+                // Deteksi otomatis suara perempuan di perangkat
+                const voices = window.speechSynthesis.getVoices();
+                const femaleVoice = voices.find(v => (v.lang.includes('ms') || v.lang.includes('id') || v.lang.includes('en')) && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('amelia') || v.name.toLowerCase().includes('siti') || v.name.toLowerCase().includes('google')));
+                
+                if (femaleVoice) {
+                    utterance.voice = femaleVoice;
+                }
+
                 window.speechSynthesis.speak(utterance);
             }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {};
         }
 
         // Simpan & Muat Avatar AI Iklimah
@@ -740,7 +753,7 @@
                 chatBox.innerHTML += `<div class="mt-2 text-indigo-200 bg-indigo-950/60 p-2.5 rounded-lg border border-indigo-500/30"><b>Iklimah AI:</b> ${aiReply}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
                 
-                // AI Iklimah Ngomong jawabannya secara suara
+                // AI Iklimah Ngomong dengan suara wanita
                 speakAI(aiReply);
             }, 300);
         }
