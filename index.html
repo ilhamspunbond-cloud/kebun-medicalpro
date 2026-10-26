@@ -15,21 +15,21 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans pb-24">
 
-    <!-- MODAL PENDAFTARAN NAMA & SAPAAN PERTAMA KALI -->
+    <!-- MODAL PENDAFTARAN NAMA & SAPAAN BOS (PEMILIK APLIKASI) -->
     <div id="userProfileModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
         <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 border-2 border-emerald-500">
             <div class="text-center">
                 <span class="text-4xl">🌱</span>
                 <h3 class="text-lg font-bold text-emerald-900 mt-2">Selamat Datang ke Medicalpro</h3>
-                <p class="text-xs text-slate-500">Sila masukkan nama & pilih sapaan hormat anda untuk memulakan sistem.</p>
+                <p class="text-xs text-slate-500">Sila masukkan nama & sapaan anda (Boss/Pemilik) untuk memulakan sistem.</p>
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh Anda</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh Anda (Boss)</label>
                     <input type="text" id="inputUserRealName" placeholder="Cth: Abdul Rojak" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Sapaan / Gelaran</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Sapaan / Gelaran Anda</label>
                     <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                         <option value="Abang">Abang</option>
                         <option value="Akak">Akak</option>
@@ -242,7 +242,7 @@
                     <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Siram Pokok / Kemas Stor)" required class="border p-2 rounded-lg text-sm">
                     <input type="text" id="taskCategory" placeholder="Kategori (Penyiraman/Penyelenggaraan/Tuai)" required class="border p-2 rounded-lg text-sm">
                     <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
-                        <option value="">Pilih Pekerja</option>
+                        <option value="">Pilih Pekerja (Dari Master Admin)</option>
                     </select>
                     <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm">
                     
@@ -550,12 +550,12 @@
                 <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
             </div>
 
-            <!-- PENGURUSAN PEKERJA -->
+            <!-- PENGURUSAN PEKERJA LAPANGAN -->
             <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun (Dinamis Sesuai Input Admin)</h4>
-                <p class="text-xs text-slate-500 mb-2">AI hanya akan menyebutkan nama pekerja yang ada dalam senarai di bawah ini.</p>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Lapangan (Master Admin)</h4>
+                <p class="text-xs text-slate-500 mb-2">Nama-nama di sini khusus untuk dipilih dalam senarai tugasan harian pekerja.</p>
                 <div class="flex gap-2">
-                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja Baru (Cth: Holil)" class="flex-1 border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja (Cth: Holil)" class="flex-1 border p-2 rounded-lg text-sm bg-white">
                     <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
                 </div>
                 <div id="workerListTags" class="flex flex-wrap gap-2 mt-3"></div>
@@ -636,7 +636,7 @@
             console.log("Firebase init error");
         }
 
-        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI ---
+        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI (KHUSUS BOSS / PEMILIK) ---
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
         function checkUserProfile() {
@@ -712,7 +712,7 @@
 
         function getTitlePrefix() {
             if (!currentUser || !currentUser.gender) return "Tuan/Puan";
-            return currentUser.gender; // Mengambil langsung nilai pilihan: Abang, Akak, Tuan, Puan, Pachi, Machi, Datu
+            return currentUser.gender; // Mengambil pilihan: Abang, Akak, Tuan, Puan, Pachi, Machi, Datu
         }
 
         let workers = [];
@@ -738,12 +738,10 @@
             if (workers && workers.length > 0) {
                 workers.forEach(w => {
                     let wLower = w.toLowerCase();
-                    if (!wLower.includes(name.toLowerCase())) {
-                        if (wLower.includes('holil')) {
-                            workerInstructions.push(`${w}: Fokus utama potong rumput dan kemas batas kebun.`);
-                        } else {
-                            workerInstructions.push(`${w}: Bantu kerja sokongan angkut hasil atau susun baja.`);
-                        }
+                    if (wLower.includes('holil')) {
+                        workerInstructions.push(`${w}: Fokus utama potong rumput dan kemas batas kebun.`);
+                    } else {
+                        workerInstructions.push(`${w}: Bantu kerja sokongan angkut hasil atau susun baja.`);
                     }
                 });
             }
@@ -777,7 +775,6 @@
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "Rojak";
             
-            // Sambutan ramah interaktif sesuai sapaan pilihan
             let openingWelcome = `${timeGreeting} ${title} ${name}! Senang berjumpa dengan ${title} hari ini. Saya ${aiConfig.name}, sedia membantu ${title} menguruskan kebun Bio Medicalpro.`;
             let recommendation = generateSmartAgronomyRecommendation('general');
 
@@ -792,9 +789,6 @@
 
         function askAi(queryType) {
             let response = "";
-            const title = getTitlePrefix();
-            const name = currentUser ? currentUser.name : "Rojak";
-
             if (queryType === 'rekomendasi pekerja') {
                 response = generateSmartAgronomyRecommendation('pekerja');
             } else if (queryType === 'penyelenggaraan stor') {
@@ -810,7 +804,7 @@
             speakText(response);
         }
 
-        // --- FITUR VOICE CHAT INTERAKTIF YANG DIPERBAIKI & DIOPTIMALKAN ---
+        // --- FITUR VOICE CHAT INTERAKTIF ---
         function startVoiceChat() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
@@ -839,10 +833,9 @@
                 processAiQuery(speechToText);
             };
 
-            recognition.onerror = function(event) {
+            recognition.onerror = function() {
                 statusNotice.classList.add('hidden');
                 btnVoice.classList.remove('animate-bounce');
-                console.log("Speech recognition error", event.error);
             };
 
             recognition.onend = function() {
@@ -1393,7 +1386,7 @@
         function renderWorkersDropdown() {
             const select = document.getElementById('taskWorkerSelect');
             if(!select) return;
-            select.innerHTML = `<option value="">Pilih Pekerja</option>`;
+            select.innerHTML = `<option value="">Pilih Pekerja (Dari Master Admin)</option>`;
             workers.forEach(w => { select.innerHTML += `<option value="${w}">${w}</option>`; });
         }
 
@@ -1432,7 +1425,7 @@
                 if (db) db.collection("settings").doc("workers").set({ list: workers });
                 nameInput.value = "";
                 renderWorkersAdmin();
-                alert("Pekerja baru berjaya ditambah!");
+                alert("Pekerja baru berjaya ditambah ke senarai tugas!");
             }
         }
 
@@ -1792,7 +1785,7 @@
                     db.collection("tasks").add(newTask).then(() => {
                         taskFormEl.reset();
                         taskPhotoBase64 = "";
-                        alert("Tugasan berjaya ditambah dan diingati oleh AI!");
+                        alert("Tugasan berjaya ditambah dan direkod!");
                     });
                 }
             });
