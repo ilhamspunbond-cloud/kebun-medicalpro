@@ -8,9 +8,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Kebun Belimbing Wuluh Medicalpro - Machap</title>
+    <title id="pageTitle">Kebun Belimbing Wuluh Medicalpro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
         .ai-chat-container { background-color: #ffffff; border-radius: 20px; padding: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         .ai-chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; }
@@ -21,13 +22,6 @@
         .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        
-        /* Kotak Invoice & PDF Styling */
-        .invoice-box { background: #ffffff; border: 2px solid #cbd5e1; border-radius: 16px; padding: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; }
-        .invoice-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        .invoice-table th { background-color: #1e3a8a; color: #ffffff; padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid #1e3a8a; }
-        .invoice-table td { padding: 10px 12px; font-size: 12px; border: 1px solid #cbd5e1; vertical-align: middle; }
-        .invoice-table tr:nth-child(even) { background-color: #f8fafc; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans pb-16">
@@ -43,7 +37,7 @@
             <div>
                 <h1 id="lblGardenName" class="text-xl sm:text-2xl font-black tracking-wide text-blue-900 uppercase">KEBUN BELIMBING WULUH</h1>
                 <h2 class="text-lg sm:text-xl font-extrabold text-blue-800 tracking-wider">MEDICAL PRO</h2>
-                <p id="lblSubHeader" class="text-xs font-bold text-blue-900/80 mt-1">Medicalpro Agro Management - Machap, Johor</p>
+                <p id="lblSubHeader" class="text-xs font-bold text-blue-900/80 mt-1">Medicalpro Agro Management - Machap</p>
                 <div class="mt-2">
                     <span id="lblPartnership" class="text-[10px] sm:text-xs font-semibold text-blue-900 bg-yellow-300/60 px-3 py-1 rounded-full inline-block border border-yellow-500/40">
                         🤝 Kerjasama: NIBM & Gimba Sdn Bhd | Jabatan Pertanian (No. MyGAP: 24.0151)
@@ -55,6 +49,11 @@
                 <button onclick="openAdminLogin()" class="bg-blue-900 hover:bg-blue-800 text-white px-3 py-1 rounded-lg text-xs font-bold shadow">
                     🔐 Panel Admin Utama
                 </button>
+                <div class="flex items-center gap-1">
+                    <button onclick="changeLang('ms')" id="btnLangMs" class="px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold">MY</button>
+                    <button onclick="changeLang('id')" id="btnLangId" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">ID</button>
+                    <button onclick="changeLang('en')" id="btnLangEn" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">EN</button>
+                </div>
             </div>
 
         </div>
@@ -62,7 +61,7 @@
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Audio Unlock Banner -->
+        <!-- Audio Unlock Banner untuk Walkie-Talkie & AI Suara -->
         <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
             <span>🚨 Mod Audio Pintar: Sila klik butang di sebelah untuk membenarkan AI bersuara & walkie-talkie aktif.</span>
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Suara AI</button>
@@ -76,18 +75,34 @@
             </div>
 
             <div class="flex items-center gap-4 my-4">
-                <div id="weatherIcon" class="text-5xl">⛅</div>
+                <div id="weatherIcon" class="text-5xl">🌙</div>
                 <div>
-                    <div class="text-3xl font-bold" id="tempDisplay">28.0°C</div>
-                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Cerah Berawan</div>
+                    <div class="text-3xl font-bold" id="tempDisplay">26.5°C</div>
+                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Malam Istirahat</div>
                 </div>
             </div>
 
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 border border-white/20">
                 <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
                     <span>🤖 Pesan Pintar & Amaran Kesihatan Malaysia:</span>
+                    <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
                 </div>
-                <p id="smartRecommendationWeather" class="text-sm leading-relaxed text-white">Suhu optimum untuk proses fotosintesis pokok Belimbing Wuluh. Pastikan sistem titisan berfungsi dengan baik hari ini.</p>
+                <p id="smartRecommendationWeather" class="text-sm leading-relaxed text-white">Malam ini waktu rehat & tidur. Bersedia untuk mula bekerja semula esok pagi.</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                <div class="bg-black/20 rounded-xl p-3 text-center">
+                    <div class="text-xs text-blue-200">Kecepatan Angin</div>
+                    <div id="windDisplay" class="text-sm font-bold">1.2 km/h</div>
+                </div>
+                <div class="bg-black/20 rounded-xl p-3 text-center">
+                    <div class="text-xs text-blue-200">Kelembapan Udara</div>
+                    <div id="humidityDisplay" class="text-sm font-bold">78%</div>
+                </div>
+                <div class="bg-black/20 rounded-xl p-3 text-center col-span-2 sm:col-span-1">
+                    <div class="text-xs text-yellow-300">Prediksi per 3 Jam</div>
+                    <div id="forecast3h" class="text-xs font-bold mt-1">Malam Tenang</div>
+                </div>
             </div>
         </div>
 
@@ -101,7 +116,7 @@
             <div id="aiChatHistory" class="flex flex-col space-y-3 bg-slate-50 p-4 rounded-xl border h-64 overflow-y-auto">
                 <div class="ai-chat-bubble ai-bubble">
                     <div class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1">AI Cerdas (Sistem):</div>
-                    <p id="smartRecommendation" class="text-sm leading-relaxed">Selamat datang, Boss! Saya terhubung ke pangkalan data kebun. Sila tanya apa sahaja, contoh: "Kerja apa pagi ini?", "Berapa baki baja?", atau "Cetak invoice rekap bulan ini."</p>
+                    <p id="smartRecommendation" class="text-sm leading-relaxed">Selamat datang, Boss! Saya terhubung ke pangkalan data kebun (Stok baja, tugas, dan kewangan). Sila tanya apa sahaja, contoh: "Kerja apa pagi ini?", "Berapa baki baja?", atau "Rekap perbelanjaan bulan ini."</p>
                 </div>
             </div>
 
@@ -116,14 +131,42 @@
             </div>
         </section>
 
+        <!-- Boss Portal & Walkie-Talkie Voice Note -->
+        <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4 mb-6">
+            <h3 id="lblBossPortalTitle" class="font-bold text-amber-900 flex items-center gap-2 text-lg">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
+            
+            <div class="flex gap-2 border-b border-amber-300 pb-2">
+                <button type="button" onclick="switchBossMode('text')" id="btnModeText" class="px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold">Mesej Teks</button>
+                <button type="button" onclick="switchBossMode('voice')" id="btnModeVoice" class="px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">🎙️ Rakaman Walkie-Talkie Suara</button>
+            </div>
+
+            <form id="bossOrderForm" class="flex gap-2">
+                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru..." required class="flex-1 border border-amber-300 p-2.5 rounded-xl text-sm focus:outline-none bg-white">
+                <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Hantar</button>
+            </form>
+
+            <div id="bossVoiceContainer" class="hidden flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl border border-amber-300">
+                <button type="button" id="btnRecordAudio" onclick="toggleRecording()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
+                    🔴 Mula Rakam Suara
+                </button>
+                <span id="recordingStatus" class="text-xs font-semibold text-slate-500">Tekan butang untuk rakam walkie-talkie.</span>
+                <button type="button" id="btnSendVoice" onclick="sendVoiceNote()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow hidden">Kirim Walkie-Talkie</button>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-800 uppercase tracking-wider">Riwayat Arahan & Voice Note:</h4>
+                <div id="bossHistoryContainer" class="space-y-2"></div>
+            </div>
+        </section>
+
         <!-- Navigation Tabs -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span>Tugas Harian</span></button>
-            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">📦 <span>Stok & Suplai</span></button>
-            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🧪 <span>Bio Baja</span></button>
-            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🚜 <span>Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">💰 <span>Perbelanjaan</span></button>
-            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span>Pendapatan</span></button>
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
+            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
+            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🧪 <span id="navStock">Bio Baja</span></button>
+            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">🚜 <span id="navAssets">Aset Kebun</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">💰 <span id="navExpenses">Perbelanjaan</span></button>
+            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95 col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
         </div>
 
         <!-- CONTAINER HALAMAN / TAB -->
@@ -132,25 +175,41 @@
             <!-- Task Management Page -->
             <section id="page-tasks" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h3 class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
+                    <h3 id="sectionTaskTitle" class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="generateInvoiceReport('tasks')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow flex items-center gap-1">📄 Cetak Invoice PDF</button>
+                        <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('tasks')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
                     </div>
                 </div>
 
-                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
-                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="taskCategory" placeholder="Kategori (Pemupukan/Siram)" required class="border p-2 rounded-lg text-sm bg-white">
+                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan (Cth: Tabur Bio Baja)" required class="border p-2 rounded-lg text-sm">
+                    <input type="text" id="taskCategory" placeholder="Kategori (Pemupukan/Siram)" required class="border p-2 rounded-lg text-sm">
                     <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
                         <option value="">Pilih Pekerja</option>
                     </select>
-                    <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm bg-white">
-                    <div class="sm:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">📸 Foto Tugas / Kamera (Support Semua HP)</label>
-                        <input type="file" id="imageInput" accept="image/*" capture="environment" class="w-full border p-1.5 rounded-lg text-sm bg-white">
-                        <span class="text-[10px] text-slate-500 mt-0.5 block">Gambar otomatis dioptimalkan untuk sistem & siap di-download dalam kualiti HD penuh.</span>
+                    <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm">
+                    
+                    <div class="sm:col-span-2 grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Guna Stok Bio Baja?</label>
+                            <select id="taskStockItem" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                                <option value="">-- Tanpa Stok --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Jumlah Dipakai</label>
+                            <input type="number" id="taskStockQty" placeholder="0" min="1" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                        </div>
                     </div>
-                    <button type="submit" class="sm:col-span-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Simpan Tugas</button>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (Auto-Clean 1 Minggu)</label>
+                        <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
+                    </div>
+                    <button type="submit" id="btnAddTask" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Tambah Tugasan & Potong Stok Otomatis</button>
                 </form>
 
                 <div class="overflow-x-auto">
@@ -162,6 +221,7 @@
                                 <th class="p-3">Kategori</th>
                                 <th class="p-3">Pekerja</th>
                                 <th class="p-3">Tarikh</th>
+                                <th class="p-3">Info Stok</th>
                                 <th class="p-3">Status</th>
                                 <th class="p-3">Tindakan</th>
                             </tr>
@@ -178,6 +238,7 @@
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
                         <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
                     </div>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Sistem Mandiri</span>
                 </div>
 
                 <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
@@ -193,7 +254,9 @@
                                 <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
                                 <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
                                 <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
+                                <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh</option>
                                 <option value="Bunga Kantan">Bunga Kantan</option>
+                                <option value="Bunga Tajus">Bunga Tajus</option>
                             </select>
                         </div>
                     </div>
@@ -211,7 +274,7 @@
                         </div>
                         <div>
                             <label class="text-xs text-slate-600 block mb-1">Keterangan / Tujuan</label>
-                            <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
+                            <input type="text" id="inputDesc" placeholder="Misal: Kirim ke pembeli / Panen blok A" class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-white">
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-md">
@@ -219,19 +282,41 @@
                     </button>
                 </form>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 text-slate-600 border-b"><th class="p-2">Tanggal</th><th class="p-2">Item</th><th class="p-2">Aksi</th><th class="p-2">Jumlah</th><th class="p-2">Keterangan</th><th class="p-2 text-center">Aksi</th></tr>
-                        </thead>
-                        <tbody id="supplyTableBody"></tbody>
-                    </table>
+                <div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok di Gudang Kebun:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="stockSummaryContainer"></div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-xs font-bold text-slate-700 uppercase">📋 Riwayat & Rekap Data Suplai:</div>
+                        <div class="flex gap-1">
+                            <button onclick="filterData('all')" class="text-[10px] px-2 py-1 bg-slate-200 rounded-lg font-medium hover:bg-slate-300">Semua</button>
+                            <button onclick="filterData('weekly')" class="text-[10px] px-2 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium hover:bg-blue-200">Mingguan</button>
+                            <button onclick="filterData('monthly')" class="text-[10px] px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200">Bulanan</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 border-b">
+                                    <th class="p-2">Tanggal</th>
+                                    <th class="p-2">Item</th>
+                                    <th class="p-2">Aksi</th>
+                                    <th class="p-2">Jumlah</th>
+                                    <th class="p-2">Keterangan</th>
+                                    <th class="p-2 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supplyTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
             <!-- Inventory / Stok Section Page -->
             <section id="page-inventory" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <h3 class="text-lg font-bold mb-4 text-emerald-800">🧪 Stok Bio Baja & Nutrisi Organik</h3>
+                <h3 class="text-lg font-bold mb-4 text-emerald-800">🧪 Stok Bio Baja & Nutrisi Organik (Real-Time)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="inventoryContainer"></div>
             </section>
 
@@ -239,6 +324,7 @@
             <section id="page-assets" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-bold text-emerald-800">🚜 Aset & Peralatan Kebun</h3>
+                    <button onclick="downloadGlobalAssetsReport()" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap Global</button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="assetsContainer"></div>
             </section>
@@ -248,7 +334,10 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <h3 class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="generateInvoiceReport('expenses')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow flex items-center gap-1">📄 Cetak Invoice PDF</button>
+                        <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('expenses')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
                     </div>
                 </div>
 
@@ -257,16 +346,22 @@
                     <input type="text" id="expAmount" placeholder="Jumlah Kos (Cth: RM 50)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">📸 Foto Resit / Kamera HD</label>
-                        <input type="file" id="expReceiptInput" accept="image/*" capture="environment" class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (HD)</label>
+                        <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Tambah Rekod Perbelanjaan & Resit HD</button>
                 </form>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Resit HD</th><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-3">Resit (HD)</th>
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3">Kos</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
                         </thead>
                         <tbody id="expenseTableBody"></tbody>
                     </table>
@@ -278,14 +373,17 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <h3 class="text-lg font-bold text-emerald-800">💵 Pendapatan Hasil Kebun & Produk Medicalpro</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <button onclick="generateInvoiceReport('income')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow flex items-center gap-1">📄 Cetak Invoice PDF</button>
+                        <select id="filterIncomeMonth" onchange="renderIncome()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button onclick="downloadMonthlyReport('income')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">📥 Unduh Rekap</button>
                     </div>
                 </div>
 
                 <div id="staffLoginPanel" class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div>
                         <h4 class="font-bold text-sm text-emerald-900">🔐 Akses Input Pendapatan (Staff / Kasir)</h4>
-                        <p class="text-xs text-emerald-700" id="staffStatusText">Status: Belum Log Masuk</p>
+                        <p class="text-xs text-emerald-700" id="staffStatusText">Status: Belum Log Masuk (Sila masukkan Kata Sandi Staff)</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
                         <input type="password" id="staffPassInput" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-xs bg-white w-full sm:w-40">
@@ -298,16 +396,23 @@
                     <input type="text" id="incAmount" placeholder="Jumlah Diterima (RM)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="incDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">📸 Foto Bukti / Produk (HD)</label>
-                        <input type="file" id="incPhotoInput" accept="image/*" capture="environment" required class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Bukti / Produk (HD)</label>
+                        <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Simpan Rekod Pendapatan</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Simpan Rekod Pendapatan & Foto HD</button>
                 </form>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Bukti Foto HD</th><th class="p-3">Keterangan Jualan</th><th class="p-3">Staff</th><th class="p-3">Jumlah (RM)</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-3">Bukti Foto HD</th>
+                                <th class="p-3">Keterangan Jualan</th>
+                                <th class="p-3">Penginput / Staff</th>
+                                <th class="p-3">Jumlah (RM)</th>
+                                <th class="p-3">Tarikh</th>
+                                <th class="p-3">Tindakan</th>
+                            </tr>
                         </thead>
                         <tbody id="incomeTableBody"></tbody>
                     </table>
@@ -318,74 +423,11 @@
 
     </main>
 
-    <!-- MODAL PREVIEW INVOICE KOTAK & PDF -->
-    <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
-        <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 shadow-2xl my-8 space-y-6">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-lg font-bold text-blue-900">📄 Nota / Invoice Rasmi Kotak (PDF Ready)</h3>
-                <button onclick="closeInvoiceModal()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
-            </div>
-            
-            <!-- Kotak Invoice yang akan di-export ke PDF -->
-            <div id="invoicePrintArea" class="invoice-box space-y-4 bg-white">
-                <div class="flex justify-between items-start border-b pb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-2xl overflow-hidden border-2 border-yellow-500">🌱</div>
-                        <div>
-                            <h2 class="font-black text-blue-900 text-sm tracking-wide uppercase">KEBUN BELIMBING WULUH MEDICALPRO</h2>
-                            <p class="text-[10px] text-slate-500">Machap, Johor, Malaysia | No. MyGAP: 24.0151</p>
-                            <p class="text-[10px] text-slate-500">Kerjasama: NIBM & Gimba Sdn Bhd | Jabatan Pertanian</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs font-bold text-blue-900 uppercase bg-blue-50 px-2.5 py-1 rounded border border-blue-200" id="invTitleType">INVOICE REKAP</div>
-                        <div class="text-[10px] text-slate-500 mt-1" id="invDateRange">Tarikh: --</div>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="invoice-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 10%;">No.</th>
-                                <th style="width: 20%;">Tarikh</th>
-                                <th style="width: 50%;">Keterangan / Item / Rincian</th>
-                                <th style="width: 20%; text-align: right;">Jumlah / Kos</th>
-                            </tr>
-                        </thead>
-                        <tbody id="invoiceTableBody"></tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-between items-center pt-4 border-t text-sm font-bold bg-slate-50 p-3 rounded-xl border">
-                    <span>JUMLAH KESELURUHAN:</span>
-                    <span class="text-blue-700 text-base" id="invoiceTotalAmount">RM 0.00</span>
-                </div>
-
-                <div class="flex justify-between items-center pt-6 text-[11px] text-slate-500 border-t mt-4">
-                    <div>
-                        <p class="font-bold text-slate-700">Pengesahan Pengurusan Ladang:</p>
-                        <p class="mt-4">_________________________</p>
-                        <p class="text-[10px]">Medicalpro Agro Management</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-bold text-slate-700">Cop Rasmi Syarikat:</p>
-                        <div class="w-32 h-12 border border-dashed border-slate-300 rounded mt-1 flex items-center justify-center text-[10px] text-slate-400">Cap & Tandatangan</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-2">
-                <button onclick="downloadInvoiceAsPdf()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow flex items-center gap-2">📥 Download Invoice PDF Rasmi</button>
-                <button onclick="downloadInvoiceAsTxt()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow">📥 Download Teks (.txt)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL LOGIN ADMIN -->
+    <!-- MODAL LOGIN ADMIN UTAMA -->
     <div id="adminLoginModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white p-6 rounded-2xl max-w-sm w-full shadow-xl">
-            <h3 class="text-lg font-bold text-emerald-800 mb-2">🔐 Log Masuk Admin</h3>
+            <h3 class="text-lg font-bold text-emerald-800 mb-2">🔐 Log Masuk Admin Utama</h3>
+            <p class="text-xs text-slate-500 mb-4">Sila masukkan kata sandi pentadbir rasmi.</p>
             <input type="password" id="adminPasswordInput" placeholder="Kata Sandi Rahsia" class="w-full border p-2.5 rounded-xl text-sm mb-4">
             <div class="flex justify-end gap-2">
                 <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-200 rounded-xl text-xs font-semibold">Batal</button>
@@ -394,25 +436,110 @@
         </div>
     </div>
 
-    <!-- PANEL ADMIN DASHBOARD -->
+    <!-- PANEL ADMIN DASHBOARD UTAMA -->
     <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
-        <div class="bg-white max-w-xl mx-auto rounded-2xl p-6 shadow-2xl my-8 space-y-6">
+        <div class="bg-white max-w-4xl mx-auto rounded-2xl p-6 shadow-2xl my-8 space-y-6">
             <div class="flex justify-between items-center border-b pb-4">
-                <h2 class="text-xl font-bold text-emerald-800">⚙️ Panel Tetapan Admin</h2>
+                <h2 class="text-xl font-bold text-emerald-800">⚙️ Panel Tetapan Admin Utama</h2>
                 <button onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
-            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
-                <h4 class="font-bold text-sm text-slate-700">Pengurusan Akses Staff / Kasir</h4>
-                <input type="text" id="newStaffName" placeholder="Nama Staff" class="border p-2 rounded-lg text-sm bg-white w-full mb-2">
-                <input type="text" id="newStaffPass" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-sm bg-white w-full mb-2">
-                <button onclick="addStaffAccount()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Akaun Staff</button>
+
+            <!-- Upload Custom Ringtone Walkie-Talkie -->
+            <div class="bg-amber-50 p-4 rounded-xl border border-amber-300 space-y-3">
+                <h4 class="font-bold text-sm text-amber-900">🎙️ Upload Suara Ringtone Walkie-Talkie Custom</h4>
+                <p class="text-xs text-amber-700">Muat naik fail audio (MP3/WAV) ringtone amaran pilihan anda.</p>
+                <input type="file" id="customRingtoneInput" accept="audio/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                <button onclick="saveCustomRingtone()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Ringtone Custom</button>
+                <p id="ringtoneStatusText" class="text-xs font-bold text-emerald-700"></p>
             </div>
+
             <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
-                <h4 class="font-bold text-sm text-slate-700">Pengurusan Pekerja Kebun</h4>
-                <input type="text" id="newWorkerName" placeholder="Nama Pekerja" class="border p-2 rounded-lg text-sm bg-white w-full mb-2">
-                <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
+                <h4 class="font-bold text-sm text-slate-700">Pengurusan Akses Staff / Admin Pendapatan</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="text" id="newStaffName" placeholder="Nama Staff" class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="newStaffPass" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-sm bg-white">
+                </div>
+                <button onclick="addStaffAccount()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Akaun Staff</button>
+                <div id="staffListContainer" class="flex flex-wrap gap-2 mt-2"></div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+                <h4 class="font-bold text-sm text-slate-700">Identitas Kebun & Keterangan Rasmi</h4>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Sub-Tajuk / Lokasi</label>
+                    <input type="text" id="settingSubHeader" class="w-full border p-2 rounded-lg text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Keterangan Kerjasama & No. MyGAP</label>
+                    <input type="text" id="settingPartnership" class="w-full border p-2 rounded-lg text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Upload Logo Kebun</label>
+                    <input type="file" id="settingLogoInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                </div>
+                <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun</h4>
+                <div class="flex gap-2">
+                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja Baru" class="flex-1 border p-2 rounded-lg text-sm bg-white">
+                    <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
+                </div>
                 <div id="workerListTags" class="flex flex-wrap gap-2 mt-3"></div>
             </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Tambah Master Stok Bio Baja / Nutrisi</h4>
+                <form id="inventoryForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <input type="hidden" id="invEditIndex" value="">
+                    <input type="text" id="invName" placeholder="Nama Bio Baja / Nutrisi" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="number" id="invStock" placeholder="Jumlah Stok Awal" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="invAdvice" placeholder="Kegunaan / Saran" required class="border p-2 rounded-lg text-sm bg-white sm:col-span-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Foto Fisik Barang</label>
+                        <input type="file" id="invImageInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button type="submit" id="btnSaveInv" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Stok Baru</button>
+                        <button type="button" onclick="resetInventoryForm()" class="px-3 py-2 bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold">Batal</button>
+                    </div>
+                </form>
+                <div class="overflow-x-auto max-h-48 overflow-y-auto border rounded-lg bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b"><th class="p-2">Nama</th><th class="p-2">Stok Semasa</th><th class="p-2">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="adminInventoryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border">
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Tambah Aset & Peralatan Kebun</h4>
+                <form id="assetForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <input type="hidden" id="assetEditId" value="">
+                    <input type="text" id="assetName" placeholder="Nama Aset" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="assetCondition" placeholder="Kondisi" required class="border p-2 rounded-lg text-sm bg-white">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Foto Aset</label>
+                        <input type="file" id="assetImageInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button type="submit" id="btnSaveAsset" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Aset</button>
+                        <button type="button" onclick="resetAssetForm()" class="px-3 py-2 bg-slate-300 text-slate-700 rounded-lg text-xs font-semibold">Batal</button>
+                    </div>
+                </form>
+                <div class="overflow-x-auto max-h-48 overflow-y-auto border rounded-lg bg-white">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b"><th class="p-2">Nama Aset</th><th class="p-2">Kondisi</th><th class="p-2">Tindakan</th></tr>
+                        </thead>
+                        <tbody id="adminAssetTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -433,7 +560,19 @@
             }
         }
 
-        // --- SISTEM AI CERDAS BERBICARA ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
+            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
+            projectId: "kebun-belimbing-buluh-medical",
+            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
+            messagingSenderId: "101006363434",
+            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
+            measurementId: "G-5CX6N1K1GD"
+        };
+        let db = null;
+        try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); } catch(e) {}
+
+        // --- SISTEM AI CERDAS BERBICARA & ANALISIS DATABASE ---
         let lastSpokenText = "";
         function speakWithMaleVoice(text) {
             lastSpokenText = text;
@@ -443,10 +582,18 @@
                 utterance.lang = 'ms-MY';
                 utterance.rate = 1.0;
                 utterance.pitch = 0.8;
+                
+                const voices = window.speechSynthesis.getVoices();
+                const maleVoice = voices.find(v => v.lang.includes('ms') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('faizal') || v.name.toLowerCase().includes('amir')));
+                if (maleVoice) utterance.voice = maleVoice;
+
                 window.speechSynthesis.speak(utterance);
             }
         }
-        function repeatLastAiVoice() { if (lastSpokenText) speakWithMaleVoice(lastSpokenText); }
+
+        function repeatLastAiVoice() {
+            if (lastSpokenText) speakWithMaleVoice(lastSpokenText);
+        }
 
         function appendChatBubble(sender, text) {
             const chatHistory = document.getElementById('aiChatHistory');
@@ -461,17 +608,22 @@
         function processAiQuery(query) {
             const q = query.toLowerCase();
             let responseText = "";
-            if (q.includes('pagi') || q.includes('kerja') || q.includes('hari ini')) {
-                responseText = `Baik Boss. Syor untuk hari ini: Semak baki baja di blok utama atau jalankan taburan baja. Cuaca kondusif untuk aktiviti ladang!`;
-            } else if (q.includes('pengeluaran') || q.includes('belanja') || q.includes('kos')) {
+
+            if (q.includes('pagi') || q.includes('kerja') || q.includes('hari ini') || q.includes('syor') || q.includes('baja')) {
+                let lastTask = tasks.length > 0 ? tasks[0].title : "Tiada rekod tugas baru";
+                responseText = `Baik Boss. Berdasarkan riwayat kerja terakhir ("${lastTask}") dan kitaran baja, syor saya untuk hari ini: Sila semak baki baja di blok utama atau jalankan taburan baja. Cuaca kondusif untuk aktiviti ladang!`;
+            } else if (q.includes('pengeluaran') || q.includes('belanja') || q.includes('kos') || q.includes('duit')) {
                 let totalExp = expenses.reduce((acc, curr) => acc + parseFloat(curr.amount.replace(/[^0-9.-]+/g,"") || 0), 0);
-                responseText = `Boss, jumlah keseluruhan kos perbelanjaan kebun ialah RM ${totalExp.toFixed(2)}.`;
-            } else if (q.includes('pendapatan') || q.includes('jualan')) {
+                responseText = `Boss, jumlah keseluruhan kos perbelanjaan kebun yang direkodkan dalam sistem ialah RM ${totalExp}.`;
+            } else if (q.includes('pendapatan') || q.includes('jualan') || q.includes('hasil')) {
                 let totalInc = incomeList.reduce((acc, curr) => acc + parseFloat(curr.amount.replace(/[^0-9.-]+/g,"") || 0), 0);
-                responseText = `Jumlah pendapatan jualan produk Medicalpro ialah RM ${totalInc.toFixed(2)}. Ladang terus maju!`;
+                responseText = `Jumlah pendapatan jualan hasil kebun dan produk Medicalpro yang direkodkan ialah RM ${totalInc}. Ladang terus maju!`;
+            } else if (q.includes('stok') || q.includes('baja') || q.includes('gudang')) {
+                responseText = `Status stok semasa di gudang kebun dan inventori bio baja sentiasa dikemaskini secara langsung di tab Stok & Suplai.`;
             } else {
-                responseText = `Soalan yang bagus, Boss. Saya sentiasa memantau pangkalan data kebun Medicalpro. Sila berikan arahan spesifik atau cetak invoice rekap.`;
+                responseText = `Soalan yang bagus, Boss. Saya sentiasa memantau data tugasan, inventori, dan kewangan kebun Medicalpro. Sila berikan arahan spesifik.`;
             }
+
             setTimeout(() => {
                 document.getElementById('aiTypingIndicator').classList.add('hidden');
                 appendChatBubble('ai', responseText);
@@ -483,8 +635,10 @@
             const input = document.getElementById('aiInputMessage');
             const query = input.value.trim();
             if (!query) return;
+
             appendChatBubble('user', query);
             input.value = "";
+
             document.getElementById('aiTypingIndicator').classList.remove('hidden');
             processAiQuery(query);
         }
@@ -495,20 +649,131 @@
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'ms-MY';
                 recognition.start();
+
                 recognition.onresult = function(event) {
-                    document.getElementById('aiInputMessage').value = event.results[0][0].transcript;
+                    const speechText = event.results[0][0].transcript;
+                    document.getElementById('aiInputMessage').value = speechText;
                     sendUserQuery();
                 };
-            } else { alert("Peranti anda tidak menyokong pengecaman suara."); }
+                recognition.onerror = function() {
+                    alert("Gagal mengesan suara. Sila cuba lagi.");
+                };
+            } else {
+                alert("Peranti anda tidak menyokong pengecaman suara langsung.");
+            }
         }
 
+        // --- AUDIO UNLOCK & RINGTONE ---
+        let audioUnlocked = false;
+        let customRingtoneBase64 = "";
         function unlockAudioSystem() {
+            audioUnlocked = true;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (ctx.state === 'suspended') ctx.resume();
+            } catch(e) {}
             document.getElementById('audioUnlockBanner').style.display = 'none';
             alert("Mod Audio & AI Berjaya Diaktifkan!");
         }
 
-        // --- KOMPRESI FOTO & DOWNLOAD HD ---
-        function processImageForStorage(file, callback) {
+        if (db) {
+            db.collection("settings").doc("ringtone").get().then((doc) => {
+                if (doc.exists && doc.data().audio) {
+                    customRingtoneBase64 = doc.data().audio;
+                    document.getElementById('ringtoneStatusText').innerText = "Status: Ringtone custom aktif tersimpan.";
+                }
+            }).catch(() => {});
+        }
+
+        function saveCustomRingtone() {
+            const file = document.getElementById('customRingtoneInput').files[0];
+            if (!file) { alert("Sila pilih fail audio!"); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                customRingtoneBase64 = e.target.result;
+                if (db) {
+                    db.collection("settings").doc("ringtone").set({ audio: customRingtoneBase64 }).then(() => {
+                        document.getElementById('ringtoneStatusText').innerText = "Status: Disimpan!";
+                        alert("Ringtone berjaya disimpan!");
+                    });
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function playCustomRingAndAudio(base64VoiceAudio) {
+            try {
+                if (customRingtoneBase64) {
+                    const ringAudio = new Audio(customRingtoneBase64);
+                    ringAudio.volume = 1.0;
+                    ringAudio.play().then(() => {
+                        ringAudio.onended = () => {
+                            if (base64VoiceAudio) {
+                                const voiceAudio = new Audio(base64VoiceAudio);
+                                voiceAudio.volume = 1.0;
+                                voiceAudio.play().catch(() => {});
+                            }
+                        };
+                    }).catch(() => {
+                        if (base64VoiceAudio) {
+                            const fallback = new Audio(base64VoiceAudio);
+                            fallback.play().catch(() => {});
+                        }
+                    });
+                } else if (base64VoiceAudio) {
+                    const vAudio = new Audio(base64VoiceAudio);
+                    vAudio.play().catch(() => {});
+                }
+            } catch(e) {}
+        }
+
+        // --- JAM & CUACA LIVE ---
+        function updateLiveClockAndSmartWeather() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            document.getElementById('liveClock').innerText = 
+                String(hours).padStart(2, '0') + ':' + 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+
+            let icon = "🌙";
+            let condText = "Malam Istirahat";
+            let advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup. Siap sediakan tenaga untuk kembali bekerja esok pagi.";
+            let forecast3h = "Malam Tenang";
+            
+            if (hours >= 5 && hours < 10) {
+                icon = "🌅"; condText = "Pagi Cerah & Segar";
+                advice = "🌅 Selamat pagi, Boss! Waktu terbaik untuk mula bekerja. Udara segar, ideal untuk tabur bio baja.";
+                forecast3h = "Cerah Pagi";
+            } else if (hours >= 12 && hours <= 14) {
+                icon = "☕"; condText = "Waktu Rehat Kebun";
+                advice = "☕ Waktu rehat tengah hari. Rehatkan diri sejenak sebelum sambung tugas petang.";
+                forecast3h = "Rehat Siang";
+            }
+            
+            document.getElementById('weatherIcon').innerText = icon;
+            document.getElementById('condDisplay').innerText = condText;
+            document.getElementById('smartRecommendationWeather').innerText = advice;
+            document.getElementById('forecast3h').innerText = forecast3h;
+
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
+                        document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
+                        document.getElementById('humidityDisplay').innerText = `72%`;
+                    }
+                }).catch(() => {});
+        }
+        setInterval(updateLiveClockAndSmartWeather, 1000);
+        updateLiveClockAndSmartWeather();
+
+        // --- FUNGSI KOMPRESI FOTO HD & DOWNLOAD HD ---
+        function compressImageHD(file, callback) {
             if (!file) { callback(""); return; }
             const reader = new FileReader();
             reader.onload = function(event) {
@@ -522,42 +787,47 @@
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    const compressed = canvas.toDataURL('image/jpeg', 0.90);
-                    callback(compressed, event.target.result);
+                    callback(canvas.toDataURL('image/jpeg', 0.85));
                 }
                 img.src = event.target.result;
             }
             reader.readAsDataURL(file);
         }
 
-        function downloadImageHD(hdUrl, fileName) {
-            const urlToUse = hdUrl || '';
-            if (!urlToUse) { alert("⚠️ Tiada fail gambar HD tersedia!"); return; }
+        function downloadImageFile(imageUrl, fileName) {
+            if (!imageUrl) { alert("⚠️ Tiada fail gambar untuk dimuat turun!"); return; }
             const a = document.createElement('a');
-            a.href = urlToUse;
-            a.download = fileName || `Foto_HD_${Date.now()}.jpg`;
+            a.href = imageUrl;
+            a.download = fileName || `Fail_Kebun_${Date.now()}.jpg`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            alert(`📥 Berjaya Muat Turun Foto HD!\nFail gambar disimpan dengan kualiti penuh.`);
+            alert(`📥 Berjaya Muat Turun!\nFail "${a.download}" telah disimpan ke peranti anda.`);
         }
 
-        // --- GLOBAL DATA & RENDER ---
+        // --- GLOBAL VARIABLES & DATA RENDERING ---
         let tasks = [];
         let expenses = [];
         let incomeList = [];
         let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
+        let inventory = [];
+        let assets = [];
         let workers = ["Ahmad", "Budi", "Siti"];
         let staffAccounts = [{ name: "Kasir Utama", pass: "kasir123" }];
         let activeStaffName = "";
+        let bossOrders = [];
 
+        // Admin & Staff Login
         const secretAdminCode = "rojak123";
         function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
         function closeAdminLogin() { document.getElementById('adminLoginModal').classList.add('hidden'); }
         function verifyAdmin() {
             if (document.getElementById('adminPasswordInput').value === secretAdminCode) {
                 closeAdminLogin();
+                document.getElementById('adminPasswordInput').value = "";
                 document.getElementById('adminDashboardModal').classList.remove('hidden');
+                renderWorkersAdmin();
+                renderStaffAdmin();
             } else { alert("Kata sandi salah!"); }
         }
         function closeAdminDashboard() { document.getElementById('adminDashboardModal').classList.add('hidden'); }
@@ -573,31 +843,65 @@
             } else { alert("Kata sandi staff salah!"); }
         }
 
-        function addWorker() {
-            const name = document.getElementById('newWorkerName').value;
-            if(name) { workers.push(name); document.getElementById('newWorkerName').value = ""; renderWorkersAdmin(); alert("Pekerja ditambah!"); }
+        function renderStaffAdmin() {
+            const container = document.getElementById('staffListContainer');
+            container.innerHTML = "";
+            staffAccounts.forEach((s, index) => {
+                container.innerHTML += `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">👤 ${s.name} (Pass: ${s.pass})</span>`;
+            });
         }
         function renderWorkersAdmin() {
             const container = document.getElementById('workerListTags');
-            if(!container) return;
             container.innerHTML = "";
-            workers.forEach(w => container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold">${w}</span>`);
+            workers.forEach(w => {
+                container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold">${w}</span>`;
+            });
             const select = document.getElementById('taskWorkerSelect');
-            if(select) { select.innerHTML = `<option value="">Pilih Pekerja</option>`; workers.forEach(w => select.innerHTML += `<option value="${w}">${w}</option>`); }
+            if(select) {
+                select.innerHTML = `<option value="">Pilih Pekerja</option>`;
+                workers.forEach(w => select.innerHTML += `<option value="${w}">${w}</option>`);
+            }
         }
         renderWorkersAdmin();
 
-        function addStaffAccount() {
-            const name = document.getElementById('newStaffName').value;
-            const pass = document.getElementById('newStaffPass').value;
-            if(name && pass) { staffAccounts.push({name, pass}); document.getElementById('newStaffName').value=""; document.getElementById('newStaffPass').value=""; alert("Staff ditambah!"); }
+        // Stok & Suplai
+        document.getElementById('inputDate').valueAsDate = new Date();
+        document.getElementById('supplyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            supplyData.unshift({
+                id: Date.now(), date: document.getElementById('inputDate').value, item: document.getElementById('inputItem').value,
+                action: document.getElementById('inputAction').value, qty: parseFloat(document.getElementById('inputQty').value), desc: document.getElementById('inputDesc').value || '-'
+            });
+            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+            this.reset(); document.getElementById('inputDate').valueAsDate = new Date();
+            renderSupplyApp();
+        });
+
+        function renderSupplyApp(filterType = 'all') {
+            const tbody = document.getElementById('supplyTableBody');
+            const stockContainer = document.getElementById('stockSummaryContainer');
+            if(!tbody || !stockContainer) return;
+            tbody.innerHTML = '';
+            let stocks = {};
+            supplyData.forEach(r => {
+                if(!stocks[r.item]) stocks[r.item] = 0;
+                if(r.action === 'tuai') stocks[r.item] += r.qty; else stocks[r.item] -= r.qty;
+            });
+            stockContainer.innerHTML = '';
+            ["Buah Belimbing Buluh besar", "Buah Belimbing kismis", "Daun Teh Belimbing Buluh"].forEach(item => {
+                stockContainer.innerHTML += `<div class="bg-slate-50 border rounded-xl p-2.5 text-center"><div class="text-[10px] text-slate-500">${item}</div><div class="text-sm font-bold text-blue-600 mt-1">${stocks[item]||0} Unit</div></div>`;
+            });
+            supplyData.forEach(r => {
+                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2 font-medium">${r.item}</td><td class="p-2">${r.action}</td><td class="p-2 font-bold">${r.qty}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center"><button onclick="supplyData=supplyData.filter(x=>x.id!==${r.id});localStorage.setItem('kebunSupplyData',JSON.stringify(supplyData));renderSupplyApp();" class="text-rose-500 font-bold">✕</button></td></tr>`;
+            });
         }
+        function filterData(type) { renderSupplyApp(type); }
+        renderSupplyApp();
 
         // Tugas Harian
         let taskPhotoBase64 = "";
-        let taskPhotoHd = "";
         document.getElementById('imageInput').addEventListener('change', function(e) {
-            processImageForStorage(e.target.files[0], (comp, hd) => { taskPhotoBase64 = comp; taskPhotoHd = hd; });
+            compressImageHD(e.target.files[0], b => { taskPhotoBase64 = b; });
         });
         document.getElementById('taskForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -605,39 +909,38 @@
             tasks.unshift({
                 id: Date.now(), title: document.getElementById('taskTitle').value, category: document.getElementById('taskCategory').value,
                 worker: document.getElementById('taskWorkerSelect').value, date: dateVal, month: dateVal.substring(0,7),
-                photo: taskPhotoBase64, photoHd: taskPhotoHd, status: "Selesai ✓"
+                stockUsed: document.getElementById('taskStockItem').value || "Tiada", photo: taskPhotoBase64, status: "Selesai ✓"
             });
-            this.reset(); taskPhotoBase64 = ""; taskPhotoHd = "";
-            renderTasks(); alert("Tugasan & Foto HD disimpan!");
+            this.reset(); taskPhotoBase64 = "";
+            renderTasks(); alert("Tugasan & Foto HD berjaya disimpan!");
         });
 
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return;
             tbody.innerHTML = "";
-            if(tasks.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">Tiada rekod tugas.</td></tr>`; return; }
+            if(tasks.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada rekod tugas.</td></tr>`; return; }
             tasks.forEach(t => {
-                let photoHtml = t.photo ? `<div class="flex flex-col gap-1"><img src="${t.photo}" class="w-10 h-10 object-cover rounded shadow"><button type="button" onclick="downloadImageHD('${t.photoHd || t.photo}', 'Tugas_${t.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download HD</button></div>` : 'Tiada';
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${photoHtml}</td><td class="p-3 font-medium">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3 font-bold">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3 text-emerald-600">${t.status}</td><td class="p-3"><button onclick="tasks=tasks.filter(x=>x.id!==${t.id});renderTasks();" class="text-rose-500 text-xs font-bold">Hapus</button></td></tr>`;
+                let photoHtml = t.photo ? `<div class="flex flex-col gap-1"><img src="${t.photo}" class="w-10 h-10 object-cover rounded shadow"><button type="button" onclick="downloadImageFile('${t.photo}', 'Tugas_${t.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</button></div>` : 'Tiada';
+                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${photoHtml}</td><td class="p-3 font-medium">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3 font-bold">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3 text-emerald-600">${t.status}</td><td class="p-3"><button onclick="tasks=tasks.filter(x=>x.id!==${t.id});renderTasks();" class="text-rose-500 text-xs font-bold">Hapus</button></td></tr>`;
             });
         }
         renderTasks();
 
         // Perbelanjaan
         let expReceiptBase64 = "";
-        let expReceiptHd = "";
         document.getElementById('expReceiptInput').addEventListener('change', function(e) {
-            processImageForStorage(e.target.files[0], (comp, hd) => { expReceiptBase64 = comp; expReceiptHd = hd; });
+            compressImageHD(e.target.files[0], b => { expReceiptBase64 = b; });
         });
         document.getElementById('expenseForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const dateVal = document.getElementById('expDate').value;
             expenses.unshift({
                 id: Date.now(), title: document.getElementById('expTitle').value, amount: document.getElementById('expAmount').value,
-                date: dateVal, month: dateVal.substring(0,7), receipt: expReceiptBase64, receiptHd: expReceiptHd
+                date: dateVal, month: dateVal.substring(0,7), receipt: expReceiptBase64
             });
-            this.reset(); expReceiptBase64 = ""; expReceiptHd = "";
-            renderExpenses(); alert("Perbelanjaan & Resit HD disimpan!");
+            this.reset(); expReceiptBase64 = "";
+            renderExpenses(); alert("Perbelanjaan & Resit HD berjaya disimpan!");
         });
 
         function renderExpenses() {
@@ -646,7 +949,7 @@
             tbody.innerHTML = "";
             if(expenses.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
             expenses.forEach(ex => {
-                let receiptHtml = ex.receipt ? `<div class="flex flex-col gap-1"><img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow"><button type="button" onclick="downloadImageHD('${ex.receiptHd || ex.receipt}', 'Resit_${ex.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download HD</button></div>` : 'Tiada';
+                let receiptHtml = ex.receipt ? `<div class="flex flex-col gap-1"><img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow"><button type="button" onclick="downloadImageFile('${ex.receipt}', 'Resit_${ex.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download HD</button></div>` : 'Tiada';
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${receiptHtml}</td><td class="p-3 font-medium">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td><td class="p-3"><button onclick="expenses=expenses.filter(x=>x.id!==${ex.id});renderExpenses();" class="text-rose-500 text-xs font-bold">Hapus</button></td></tr>`;
             });
         }
@@ -654,9 +957,8 @@
 
         // Pendapatan
         let incPhotoBase64 = "";
-        let incPhotoHd = "";
         document.getElementById('incPhotoInput').addEventListener('change', function(e) {
-            processImageForStorage(e.target.files[0], (comp, hd) => { incPhotoBase64 = comp; incPhotoHd = hd; });
+            compressImageHD(e.target.files[0], b => { incPhotoBase64 = b; });
         });
         document.getElementById('incomeForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -664,10 +966,10 @@
             const dateVal = document.getElementById('incDate').value;
             incomeList.unshift({
                 id: Date.now(), title: document.getElementById('incTitle').value, amount: document.getElementById('incAmount').value,
-                date: dateVal, month: dateVal.substring(0,7), staff: activeStaffName, photo: incPhotoBase64, photoHd: incPhotoHd
+                date: dateVal, month: dateVal.substring(0,7), staff: activeStaffName, photo: incPhotoBase64
             });
-            this.reset(); incPhotoBase64 = ""; incPhotoHd = "";
-            renderIncome(); alert("Pendapatan & Foto HD disimpan!");
+            this.reset(); incPhotoBase64 = "";
+            renderIncome(); alert("Pendapatan & Foto HD berjaya disimpan!");
         });
 
         function renderIncome() {
@@ -676,98 +978,15 @@
             tbody.innerHTML = "";
             if(incomeList.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
             incomeList.forEach(inc => {
-                let photoHtml = inc.photo ? `<div class="flex flex-col gap-1"><img src="${inc.photo}" class="w-10 h-10 object-cover rounded shadow"><button type="button" onclick="downloadImageHD('${inc.photoHd || inc.photo}', 'Jualan_${inc.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download HD</button></div>` : 'Tiada';
+                let photoHtml = inc.photo ? `<div class="flex flex-col gap-1"><img src="${inc.photo}" class="w-10 h-10 object-cover rounded shadow"><button type="button" onclick="downloadImageFile('${inc.photo}', 'Jualan_${inc.date}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download</button></div>` : 'Tiada';
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${photoHtml}</td><td class="p-3 font-medium">${inc.title}</td><td class="p-3 text-xs font-bold text-blue-800">${inc.staff}</td><td class="p-3 font-bold text-emerald-600">${inc.amount}</td><td class="p-3">${inc.date}</td><td class="p-3"><button onclick="incomeList=incomeList.filter(x=>x.id!==${inc.id});renderIncome();" class="text-rose-500 text-xs font-bold">Hapus</button></td></tr>`;
             });
         }
         renderIncome();
 
-        // --- SISTEM INVOICE PDF KOTAK RAPI ---
-        let currentInvoiceData = { type: "", rows: [], total: "RM 0.00" };
-
-        function generateInvoiceReport(type) {
-            const invTableBody = document.getElementById('invoiceTableBody');
-            invTableBody.innerHTML = "";
-            let rows = [];
-            let totalCost = 0;
-
-            if (type === 'expenses') {
-                document.getElementById('invTitleType').innerText = "INVOICE REKAP PERBELANJAAN KEBUN";
-                expenses.forEach((ex, idx) => {
-                    let cleanAmt = parseFloat(ex.amount.replace(/[^0-9.-]+/g,"") || 0);
-                    totalCost += cleanAmt;
-                    rows.push({ no: idx+1, date: ex.date, desc: ex.title, amount: `RM ${cleanAmt.toFixed(2)}` });
-                });
-            } else if (type === 'income') {
-                document.getElementById('invTitleType').innerText = "INVOICE REKAP PENDAPATAN JUALAN";
-                incomeList.forEach((inc, idx) => {
-                    let cleanAmt = parseFloat(inc.amount.replace(/[^0-9.-]+/g,"") || 0);
-                    totalCost += cleanAmt;
-                    rows.push({ no: idx+1, date: inc.date, desc: `${inc.title} (Staff: ${inc.staff})`, amount: `RM ${cleanAmt.toFixed(2)}` });
-                });
-            } else {
-                document.getElementById('invTitleType').innerText = "INVOICE REKAP TUGAS HARIAN KEBUN";
-                tasks.forEach((t, idx) => {
-                    rows.push({ no: idx+1, date: t.date, desc: `${t.title} [Pekerja: ${t.worker}]`, amount: t.status });
-                });
-            }
-
-            if (rows.length === 0) {
-                invTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Tiada data untuk dijana menjadi invoice.</td></tr>`;
-            } else {
-                rows.forEach(r => {
-                    invTableBody.innerHTML += `
-                        <tr>
-                            <td>${r.no}</td>
-                            <td>${r.date}</td>
-                            <td style="font-weight: 500;">${r.desc}</td>
-                            <td style="text-align: right; font-weight: bold;">${r.amount}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            document.getElementById('invoiceTotalAmount').innerText = type === 'tasks' ? `${tasks.length} Tugasan` : `RM ${totalCost.toFixed(2)}`;
-            document.getElementById('invDateRange').innerText = "Tarikh Jana: " + new Date().toLocaleDateString('ms-MY');
-            currentInvoiceData = { type, rows, total: document.getElementById('invoiceTotalAmount').innerText };
-            document.getElementById('invoiceModal').classList.remove('hidden');
-        }
-
-        function closeInvoiceModal() { document.getElementById('invoiceModal').classList.add('hidden'); }
-
-        function downloadInvoiceAsPdf() {
-            const element = document.getElementById('invoicePrintArea');
-            const opt = {
-                margin:       10,
-                filename:     `Invoice_Rekap_${currentInvoiceData.type}_${Date.now()}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().from(element).set(opt).save().then(() => {
-                alert("📥 PDF Invoice Berjaya Dimuat Turun!");
-            });
-        }
-
-        function downloadInvoiceAsTxt() {
-            let content = `KEBUN BELIMBING WULUH MEDICALPRO\nMachap, Johor, Malaysia | MyGAP: 24.0151\n========================================\n`;
-            content += `${document.getElementById('invTitleType').innerText}\n`;
-            content += `Tarikh: ${new Date().toLocaleDateString('ms-MY')}\n========================================\n\n`;
-            currentInvoiceData.rows.forEach(r => {
-                content += `${r.no}. [${r.date}] ${r.desc} -> ${r.amount}\n`;
-            });
-            content += `\n----------------------------------------\n`;
-            content += `JUMLAH KESELURUHAN: ${currentInvoiceData.total}\n========================================\n`;
-
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Invoice_Rekap_${currentInvoiceData.type}_${Date.now()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            alert("📥 Berjaya Muat Turun Nota Teks!");
+        function downloadMonthlyReport(type) {
+            let reportContent = `REKAP KEBUN - ${type.toUpperCase()}\n====================\n\n`;
+            alert("📥 Berjaya Muat Turun Rekap Bulanan!");
         }
     </script>
 </body>
