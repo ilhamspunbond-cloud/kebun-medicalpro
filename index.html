@@ -98,7 +98,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI (SAPAAN BARU MASUK & MANDIRI) -->
+        <!-- WIDGET ASISTEN AI -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -143,10 +143,10 @@
             </form>
         </section>
 
-        <!-- KOTAK CUACA REAL-TIME -->
+        <!-- KOTAK CUACA LIVE & PREDIKSI 5 JAM KE DEPAN (PER 1 JAM) -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
             <div class="flex justify-between items-center mb-1">
-                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA REAL-TIME & RAMALAN - MACHAP</span>
+                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA LIVE & PREDIKSI 5 JAM KE DEPAN - MACHAP</span>
                 <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
             </div>
 
@@ -164,8 +164,8 @@
             </div>
 
             <div>
-                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Ramalan Jam Terkini Ke Depan (Real-Time):</div>
-                <div id="hourlyForecastContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Prediksi Cuaca Live (Per 1 Jam untuk 5 Jam ke Depan):</div>
+                <div id="hourlyForecastContainer" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
             </div>
         </div>
 
@@ -662,22 +662,20 @@
         let expenses = [];
         let incomeList = [];
 
-        // --- AI KREATIF & MANDIRI (SAPAAN BARU & REKAP/JOB DESK/BAJA) ---
+        // --- AI KREATIF & MANDIRI (POTONG RUMPUT) ---
         function generateFriendlyAiResponse(queryType = 'welcome') {
             const fullName = getFullTitleName();
 
-            // Cek stok baja menipis
             let lowStockItems = inventory.filter(i => i.stock < 5).map(i => i.name);
             let bajaWarning = lowStockItems.length > 0 ? `⚠️ Perhatian: Stok baja berikut hampir habis: ${lowStockItems.join(', ')}!` : `✅ Stok bio baja dalam keadaan selamat dan mencukupi.`;
 
-            // Cek siklus 2 minggu baja
             let lastBajaTask = tasks.find(t => t.title.toLowerCase().includes('baja') || t.category.toLowerCase().includes('baja'));
             let daysSinceBaja = 999;
             if (lastBajaTask && lastBajaTask.date) {
                 let diffTime = Math.abs(new Date() - new Date(lastBajaTask.date));
                 daysSinceBaja = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             }
-            let jobDeskRec = daysSinceBaja >= 14 ? "Estet sudah masuk tempoh 2 minggu. Rekomendasi job pekerja hari ini: **Tabur bio baja rutin**." : "Tempoh baja belum sampai 2 minggu. Rekomendasi job pekerja: **Matun rumput atau pangkas ranting**.";
+            let jobDeskRec = daysSinceBaja >= 14 ? "Estet sudah masuk tempoh 2 minggu. Rekomendasi job pekerja hari ini: **Tabur bio baja rutin**." : "Tempoh baja belum sampai 2 minggu. Rekomendasi job pekerja: **Potong rumput atau pangkas ranting**.";
 
             let totalEx = expenses.reduce((s, e) => s + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
             let totalInc = incomeList.reduce((s, i) => s + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
@@ -691,7 +689,6 @@
                 let workerNames = workers.length > 0 ? workers.map(w => typeof w === 'object' ? w.name : w).join(', ') : 'Belum ada pekerja diinput';
                 responseText = `📋 **Rekomendasi Job Desk Pekerja**:\n• Pekerja Bertugas: ${workerNames}\n• ${jobDeskRec}\n• Cuaca Estet: ${currentWeatherData.rainSoon ? 'Ada potensi hujan, utamakan kerja stor.' : 'Cerah dan stabil.'}`;
             } else {
-                // Sambutan baru masuk halaman
                 responseText = `Silakan ${fullName}, ada yang bisa saya bantu? Mau tanya soal apa? Rekap pekerjaan, data pekerja, rekap bulanan (pengeluaran/pemasukan), stok baja, atau rekomendasi job desk pekerja?`;
             }
 
@@ -762,7 +759,7 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        // --- RAMALAN CUACA REAL-TIME ---
+        // --- PREDIKSI CUACA LIVE & 5 JAM KE DEPAN (PER 1 JAM) ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
@@ -782,7 +779,7 @@
                         if (idx === -1) idx = 0;
 
                         let rainSoon = false;
-                        for(let i = idx; i < idx + 4; i++) {
+                        for(let i = idx; i < idx + 5; i++) {
                             if (hourlyPrecip[i] && hourlyPrecip[i] > 0.1) { rainSoon = true; break; }
                         }
                         currentWeatherData.rainSoon = rainSoon;
@@ -791,19 +788,21 @@
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = rainSoon ? "Potensi Hujan Jam Ini" : "Cerah Estet Machap";
                         if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = rainSoon ? "🌧️" : "☀️";
 
+                        // Tepat 5 jam ke depan, per 1 jam
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
-                            for (let i = 0; i < 4; i++) {
+                            for (let i = 0; i < 5; i++) {
                                 let tIdx = idx + i;
                                 if (tIdx < hourlyTime.length) {
                                     let timeOnly = hourlyTime[tIdx].substring(11, 16);
                                     let pVal = hourlyPrecip[tIdx] || 0;
                                     let tVal = hourlyTemp[tIdx];
                                     let icon = pVal > 0.1 ? "🌧️" : "☀️";
+                                    let labelTime = i === 0 ? "Sekarang ("+timeOnly+")" : timeOnly;
                                     hContainer.innerHTML += `
                                         <div class="bg-white/10 rounded-xl p-2 text-center border border-white/20">
-                                            <div class="text-[10px] text-sky-200 font-mono font-bold">${timeOnly}</div>
+                                            <div class="text-[10px] text-sky-200 font-mono font-bold">${labelTime}</div>
                                             <div class="text-xl my-1">${icon}</div>
                                             <div class="text-xs font-bold">${tVal}°C</div>
                                             <div class="text-[9px] text-white/80">${pVal > 0 ? pVal+'mm' : 'Kering'}</div>
