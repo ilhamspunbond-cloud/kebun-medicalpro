@@ -327,59 +327,64 @@
                 <div class="flex justify-between items-center border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
-                        <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
+                        <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau klik supply langsung pada baris data</p>
                     </div>
                 </div>
 
                 <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
-                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru</div>
+                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Input Hasil Tuai Baru (Masuk Stok)</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
+                            <label class="text-xs text-slate-600 block mb-1">Tanggal Tuai</label>
                             <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border bg-white">
                         </div>
                         <div>
                             <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
-                            <select id="inputItem" class="w-full text-xs p-2 rounded-xl border bg-white">
-                                <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
-                                <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
-                                <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
-                                <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh</option>
-                                <option value="Bunga Kantan">Bunga Kantan</option>
-                                <option value="Bunga Tajus">Bunga Tajus</option>
+                            <select id="inputItem" onchange="onSupplyItemChange()" class="w-full text-xs p-2 rounded-xl border bg-white">
+                                <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar (kg)</option>
+                                <option value="Buah Belimbing kismis">Buah Belimbing kismis (kg)</option>
+                                <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh (kg)</option>
+                                <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh (kg)</option>
+                                <option value="Daun Tajus">Daun Tajus (kg)</option>
+                                <option value="Limau">Limau (kg)</option>
+                                <option value="Bunga Kantan">Bunga Kantan (Tangkai)</option>
                             </select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
-                            <select id="inputAction" class="w-full text-xs p-2 rounded-xl border bg-white">
-                                <option value="tuai">Hasil Tuai (Masuk Stok)</option>
-                                <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
-                            </select>
+                            <label class="text-xs text-slate-600 block mb-1">Jumlah & Satuan (Otomatis)</label>
+                            <div class="flex gap-1">
+                                <input type="number" id="inputQty" placeholder="Jumlah" required class="w-2/3 text-xs p-2 rounded-xl border bg-white">
+                                <input type="text" id="inputUnitDisplay" readonly value="kg" class="w-1/3 text-xs p-2 rounded-xl border bg-slate-100 font-bold text-emerald-700 text-center">
+                            </div>
                         </div>
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Jumlah</label>
-                            <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border bg-white">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-600 block mb-1">Keterangan</label>
-                            <input type="text" id="inputDesc" placeholder="Keterangan" class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-600 block mb-1">Keterangan / Blok Kebun</label>
+                            <input type="text" id="inputDesc" placeholder="Contoh: Blok A" class="w-full text-xs p-2 rounded-xl border bg-white">
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Data</button>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan ke Stok Gudang</button>
                 </form>
 
                 <div>
-                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok:</div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="stockSummaryContainer"></div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Ringkasan Sisa Stok Gudang:</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="stockSummaryContainer"></div>
                 </div>
 
                 <div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat & Aksi Suplai (Klik "Supply" untuk Kirim Cepat):</div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr class="bg-slate-100 border-b"><th class="p-2">Tanggal</th><th class="p-2">Item</th><th class="p-2">Aksi</th><th class="p-2">Jumlah</th><th class="p-2">Keterangan</th><th class="p-2 text-center">Aksi</th></tr>
+                                <tr class="bg-slate-100 border-b">
+                                    <th class="p-2">Tanggal</th>
+                                    <th class="p-2">Item</th>
+                                    <th class="p-2">Status / Aksi</th>
+                                    <th class="p-2">Jumlah</th>
+                                    <th class="p-2">Keterangan</th>
+                                    <th class="p-2 text-center">Tindakan Cepat</th>
+                                </tr>
                             </thead>
                             <tbody id="supplyTableBody"></tbody>
                         </table>
@@ -814,13 +819,12 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        // --- GOOGLE WEATHER STYLE REAL-TIME SYNC (FIXED & FULL) ---
+        // --- GOOGLE WEATHER STYLE REAL-TIME SYNC ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
             if (clockEl) clockEl.innerText = now.toTimeString().substring(0, 8);
 
-            // Mengambil data dari Open-Meteo untuk koordinat Simpang Renggam, Johor (1.8227, 103.3106)
             fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max')
                 .then(res => res.json())
                 .then(data => {
@@ -853,7 +857,6 @@
                         let condText = rainSoon ? "Hujan Ringan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
                         let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
 
-                        // Update Tampilan Utama (Typo [ diganti . )
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
                         if (document.getElementById('feelsLikeDisplay')) document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${feelsLike}°`;
@@ -871,7 +874,6 @@
                             if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Cuaca terang, bagus untuk perawatan tanaman belimbing.";
                         }
 
-                        // Render Perkiraan Per Jam Berurutan (Kronologis)
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
@@ -900,7 +902,6 @@
                             }
                         }
 
-                        // Prakiraan 5 Hari Kedepan
                         if (data.daily && data.daily.time) {
                             const dailyContainer = document.getElementById('dailyForecastContainer');
                             if (dailyContainer) {
@@ -925,7 +926,6 @@
                             }
                         }
 
-                        // Rekomendasi AI Berdasarkan Cuaca
                         const recEl = document.getElementById('smartRecommendation');
                         if (recEl) {
                             if (rainSoon) {
@@ -1197,39 +1197,104 @@
             renderWorkersAdmin(); renderWorkersDropdown();
         }
 
+        // Supply & Stock Management (DENGAN FITUR TOMBOL SUPPLY REAL-TIME)
         let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
         document.getElementById('inputDate').valueAsDate = new Date();
+
+        function onSupplyItemChange() {
+            const item = document.getElementById('inputItem').value;
+            const unitDisplay = document.getElementById('inputUnitDisplay');
+            if (item === "Bunga Kantan") {
+                unitDisplay.value = "tangkai";
+            } else {
+                unitDisplay.value = "kg";
+            }
+        }
+
+        // Input awal selalu berstatus "stok" (Hasil Tuai)
         document.getElementById('supplyForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const itemVal = document.getElementById('inputItem').value;
+            const unitVal = (itemVal === "Bunga Kantan") ? "tangkai" : "kg";
+
             supplyData.unshift({
                 id: Date.now(),
                 date: document.getElementById('inputDate').value,
-                item: document.getElementById('inputItem').value,
-                action: document.getElementById('inputAction').value,
+                item: itemVal,
+                action: 'stok', // Status awal di gudang
                 qty: parseFloat(document.getElementById('inputQty').value),
+                unit: unitVal,
                 desc: document.getElementById('inputDesc').value || '-'
             });
             localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
             this.reset(); document.getElementById('inputDate').valueAsDate = new Date();
+            document.getElementById('inputUnitDisplay').value = "kg";
             renderSupplyApp();
         });
+
+        // Fungsi Tombol Cepat: Ubah status dari 'stok' menjadi 'suplai' dengan tanggal real-time
+        function markAsSupplied(id) {
+            let record = supplyData.find(i => i.id === id);
+            if(record) {
+                record.action = 'suplai';
+                // Tanggal real-time saat tombol supply dipencet
+                const now = new Date();
+                const yyyy = now.getFullYear();
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const dd = String(now.getDate()).padStart(2, '0');
+                record.date = `${yyyy}-${mm}-${dd}`;
+                record.desc = (record.desc && record.desc !== '-' ? record.desc + ' ' : '') + '(Telah Disuplain)';
+                
+                localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+                renderSupplyApp();
+                alert("Status berjaya ditukar menjadi: Sudah Disuplain (Tarikh dikemaskini hari ini)!");
+            }
+        }
+
         function renderSupplyApp() {
             const tbody = document.getElementById('supplyTableBody');
             const sc = document.getElementById('stockSummaryContainer');
             if(!tbody || !sc) return;
             tbody.innerHTML = ""; sc.innerHTML = "";
+            
             let stocks = {};
             supplyData.forEach(r => {
-                if(!stocks[r.item]) stocks[r.item] = 0;
-                if(r.action === 'tuai') stocks[r.item] += r.qty; else stocks[r.item] -= r.qty;
+                let key = `${r.item} (${r.unit})`;
+                if(!stocks[key]) stocks[key] = 0;
+                // Hanya hitung yang masih berstatus 'stok' untuk sisa gudang
+                if(r.action === 'stok') {
+                    stocks[key] += r.qty;
+                }
             });
-            ["Buah Belimbing Buluh besar", "Buah Belimbing kismis", "Daun Teh Belimbing Buluh"].forEach(item => {
-                sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${item}</div><div class="text-sm font-bold text-blue-600">${stocks[item]||0} Unit</div></div>`;
-            });
+
+            for(let [key, val] of Object.entries(stocks)) {
+                sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`;
+            }
+
             supplyData.forEach(r => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${r.action}</td><td class="p-2 font-bold">${r.qty}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center"><button type="button" onclick="deleteSupply(${r.id})" class="text-red-500">✕</button></td></tr>`;
+                let statusBadge = r.action === 'stok' ? 
+                    `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">📦 Masih Stok</span>` : 
+                    `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">🚀 Sudah Disuplain</span>`;
+                
+                let actionBtn = r.action === 'stok' ? 
+                    `<button type="button" onclick="markAsSupplied(${r.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-xs font-bold shadow">🚀 Supply</button>` : 
+                    `<span class="text-slate-400 text-[11px] italic">Selesai Dikirim</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2">${r.date}</td>
+                        <td class="p-2 font-medium">${r.item}</td>
+                        <td class="p-2">${statusBadge}</td>
+                        <td class="p-2 font-bold">${r.qty} ${r.unit || 'kg'}</td>
+                        <td class="p-2">${r.desc}</td>
+                        <td class="p-2 text-center flex justify-center gap-2 items-center">
+                            ${actionBtn}
+                            <button type="button" onclick="deleteSupply(${r.id})" class="text-red-500 text-xs px-1.5 py-0.5 rounded bg-red-50">✕</button>
+                        </td>
+                    </tr>`;
             });
         }
+
         function deleteSupply(id) {
             supplyData = supplyData.filter(i => i.id !== id);
             localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
