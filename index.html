@@ -98,7 +98,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI ALL-KNOWING & KREATIF -->
+        <!-- WIDGET ASISTEN AI ALL-KNOWING (SIMPEL & KREATIF) -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -108,9 +108,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Analisis Pintar Aktif</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Simpel & Tepat</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menilai masa lalu, ramalan cuaca & merangka job desk masa depan.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Rekomendasi job desk & jadual baja (Siklus 2 minggu).</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -127,45 +127,44 @@
                 🔴 Sedang mendengar suara anda... Sila cakap sekarang!
             </div>
 
-            <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang menganalisis histori kebun dan merangka job desk untuk pekerja...
+            <div id="aiChatResponseBox" class="bg-black/35 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
+                AI sedang memeriksa jadual baja 2 mingguan & status kebun...
             </div>
 
             <div class="flex flex-wrap gap-2 text-xs">
-                <button type="button" onclick="askAi('strategi')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">🌱 Analisis Histori & Job Desk Masa Depan</button>
-                <button type="button" onclick="askAi('cuaca besok')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">⛅ Ramalan Cuaca & Tindakan Esok</button>
-                <button type="button" onclick="askAi('stok baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Status Baja & Seterusnya</button>
-                <button type="button" onclick="askAi('kewangan')" class="bg-purple-700 hover:bg-purple-600 px-3 py-1.5 rounded-xl border border-purple-500 text-white font-semibold">💰 Ringkasan Rekap Kewangan</button>
+                <button type="button" onclick="askAi('jobdesk')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📌 Rekomendasi Job Desk Simpel</button>
+                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Cek Siklus Baja (2 Minggu)</button>
+                <button type="button" onclick="askAi('cuaca')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">⛅ Cuaca Real-Time</button>
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI apa sahaja (Cth: Apa job desk pekerja besok berdasarkan baja lalu?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa job desk hari ini?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya</button>
             </form>
         </section>
 
-        <!-- KOTAK CUACA & WAKTU -->
+        <!-- KOTAK CUACA REAL-TIME (JAM TERKINI KE DEPAN) -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
             <div class="flex justify-between items-center mb-1">
-                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA HARI INI & RAMALAN - MACHAP</span>
+                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA REAL-TIME & RAMALAN - MACHAP</span>
                 <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
             </div>
 
             <div class="flex items-center gap-4 my-2">
-                <div id="weatherIcon" class="text-5xl">🌧️</div>
+                <div id="weatherIcon" class="text-5xl">⛅</div>
                 <div>
-                    <div class="text-3xl font-bold" id="tempDisplay">26.5°C</div>
-                    <div class="text-sm font-semibold text-sky-200" id="condDisplay">Menganalisis Riwayat Hujan...</div>
+                    <div class="text-3xl font-bold" id="tempDisplay">--°C</div>
+                    <div class="text-sm font-semibold text-sky-200" id="condDisplay">Memuat turun data cuaca semasa...</div>
                 </div>
             </div>
 
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/25">
-                <div class="text-xs font-bold text-yellow-300 uppercase mb-1">🤖 Rekomendasi Pintar AI:</div>
-                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Sedang memproses data...</p>
+                <div class="text-xs font-bold text-yellow-300 uppercase mb-1">🤖 Keputusan AI Berdasarkan Cuaca & Tanah:</div>
+                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Memproses ramalan...</p>
             </div>
 
             <div>
-                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Ramalan Per 1 Jam Seterusnya:</div>
+                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Ramalan Jam Terkini Ke Depan (Real-Time):</div>
                 <div id="hourlyForecastContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
             </div>
         </div>
@@ -428,7 +427,7 @@
 
     </main>
 
-    <!-- MODAL INVOICE PDF & TANDA TANGAN BOSS / PERWAKILAN -->
+    <!-- MODAL INVOICE PDF & TANDA TANGAN -->
     <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
         <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
@@ -611,7 +610,7 @@
 
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
-        let currentWeatherData = { nightRain: true, tomorrowRain: false };
+        let currentWeatherData = { nightRain: false, temp: 27, rainSoon: false };
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -661,61 +660,52 @@
         let expenses = [];
         let incomeList = [];
 
-        // FUNGSI AI KREATIF & ANALITIS MASA LALU & MASA DEPAN
-        function generateCreativeAiResponse(customQuery = '') {
-            const title = getTitlePrefix();
-            const userName = currentUser ? currentUser.name : "Tuan";
-            let wasRainingNight = currentWeatherData.nightRain;
-            let tomorrowRain = currentWeatherData.tomorrowRain;
+        // AI KREATIF SIMPEL & PENGECEK SIKLUS BAJA (2 MINGGU)
+        function generateSimpleAiResponse(queryType = 'jobdesk') {
+            const userName = currentUser ? currentUser.name : "Boss";
+            
+            // Cek kapan terakhir kali task baja dilakukan
+            let lastBajaTask = tasks.find(t => t.title.toLowerCase().includes('baja') || t.category.toLowerCase().includes('baja'));
+            let daysSinceBaja = 999;
+            if (lastBajaTask && lastBajaTask.date) {
+                let diffTime = Math.abs(new Date() - new Date(lastBajaTask.date));
+                daysSinceBaja = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
 
-            // Histori baja dan kerja
-            let fertilizerSummary = inventory.map(i => `${i.name} (Stok: ${i.stock})`).join(", ") || "Belum ada rekod baja.";
-            let taskHistorySummary = tasks.slice(0, 3).map(t => `${t.title} oleh ${t.worker} (${t.date})`).join("; ") || "Belum ada report kerja baru.";
-
-            // Berfikir kreatif memprediksi masa depan & job desk pekerja
-            let workerAssignments = "";
-            if (workers.length > 0) {
-                workerAssignments = workers.map(w => {
-                    let wName = typeof w === 'object' ? w.name : w;
-                    let nextJob = wasRainingNight ? "Fokus penyelenggaraan alatan di bengkel & siram di-skip kerana tanah lembap." : "Jalankan tabur baja rutin di blok utama dan matun rumput pagi.";
-                    return `• Pekerja ${wName}: Job wajib [${w.mandatory || 'Tabur baja'}] | **Syor Job Seterusnya**: ${nextJob}`;
-                }).join("\n");
+            let bajaRecommendation = "";
+            if (daysSinceBaja >= 14) {
+                let targetBaja = inventory.length > 0 ? inventory[0].name : "Bio Baja Organik";
+                bajaRecommendation = `⚠️ **Jadual Baja 2 Mingguan**: Sudah ${daysSinceBaja} hari sejak pemupukan terakhir. **Rekomendasi Utama**: Sila arahkan pekerja tebar [${targetBaja}] hari ini.`;
             } else {
-                workerAssignments = "• Tiada pekerja berdaftar di Master Admin.";
+                bajaRecommendation = `✅ **Jadual Baja**: Baru ${daysSinceBaja} hari lepas dibaja (Siklus 2 minggu belum sampai). **Rekomendasi Alternatif**: Fokus matun rumput, pangkas ranting, atau penyelenggaraan alatan.`;
             }
 
             let responseText = "";
-            const q = customQuery.toLowerCase();
-
-            if (q.includes('cuaca') || q.includes('esok') || q.includes('besok')) {
-                responseText = `Laporan Cuaca untuk ${userName} (${title}): Semalam ${wasRainingNight ? 'ada hujan, tanah lembap' : 'cerah'}. Ramalan esok ${tomorrowRain ? 'dijangka hujan, fokus kerja dalam stor' : 'dijangka cerah, sangat sesuai untuk aktiviti luar kebun'}.`;
-            } else if (q.includes('baja') || q.includes('stok') || q.includes('nutrisi')) {
-                responseText = `Analisis Baja Estet: Stok sedia ada ${fertilizerDetailsText()}. Berdasarkan histori pemupukan lalu, AI mencadangkan giliran baja organik seterusnya diberikan dalam masa 3 hari lagi.`;
-            } else if (q.includes('kewangan') || q.includes('rekap') || q.includes('pendapatan')) {
-                let totalEx = expenses.reduce((s, e) => s + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                let totalInc = incomeList.reduce((s, i) => s + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                responseText = `Ringkasan Kewangan ${userName}: Total Perbelanjaan tercatat RM ${totalEx.toFixed(2)}, Total Pendapatan Jualan RM ${totalInc.toFixed(2)}. Semua resit dan bukti jualan tersimpan selamat dalam sistem.`;
+            if (queryType === 'baja') {
+                responseText = bajaRecommendation;
+            } else if (queryType === 'cuaca') {
+                responseText = currentWeatherData.rainSoon 
+                    ? "⛅ Cuaca Real-Time: Dijangka ada hujan dalam beberapa jam ke depan. Tangguhkan tabur baja, fokus kerja dalam stor."
+                    : "☀️ Cuaca Real-Time: Keadaan cerah dan stabil. Sesuai untuk semua kerja ladang.";
             } else {
-                responseText = `Analisis Estet & Job Desk untuk ${userName} (${title}):\n1. **Histori Lepas**: ${taskHistorySummary}\n2. **Stok Baja**: ${fertilizerSummary}\n3. **Rancangan Job Desk Pekerja Seterusnya**:\n${workerAssignments}\n\n*AI menyarankan agar pengurusan memantau kelembapan tanah sebelum aktiviti pembajaan dijalankan.*`;
+                // Job desk simpel & to the point
+                let workerListText = workers.length > 0 ? workers.map(w => (typeof w === 'object' ? w.name : w)).join(", ") : "Pekerja belum diinput";
+                responseText = `📌 **Rekomendasi Job Desk Simpel (${userName})**:\n1. ${bajaRecommendation}\n2. **Pekerja bertugas**: ${workerListText}.\n3. **Cuaca**: ${currentWeatherData.rainSoon ? 'Awas potensi hujan.' : 'Cerah & normal.'}`;
             }
 
             return responseText;
         }
 
-        function fertilizerDetailsText() {
-            return inventory.map(i => `${i.name} (${i.stock} unit)`).join(", ") || "Tiada data";
-        }
-
         function initAiGreeting() {
             const userName = currentUser ? currentUser.name : "Boss";
-            const greeting = `Selamat sejahtera ${userName}! Asisten AI Medicalpro sedia membantu anda menganalisis histori kebun, merangka job desk pekerja, dan menyemak rekap kewangan.`;
+            const greeting = `Halo ${userName}! Asisten AI siap sedia. ${generateSimpleAiResponse('jobdesk').replace(/[*#]/g, '')}`;
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = greeting;
             speakText(greeting);
         }
 
         function askAi(topic) {
-            let res = generateCreativeAiResponse(topic);
+            let res = generateSimpleAiResponse(topic);
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = res;
             speakText(res);
@@ -725,7 +715,7 @@
             e.preventDefault();
             const val = document.getElementById('aiManualInput').value;
             if (val) {
-                let res = generateCreativeAiResponse(val);
+                let res = generateSimpleAiResponse('jobdesk');
                 const chatBox = document.getElementById('aiChatResponseBox');
                 if (chatBox) chatBox.innerText = res;
                 speakText(res);
@@ -742,10 +732,8 @@
             statusNotice.classList.remove('hidden');
 
             recognition.onresult = function(event) {
-                const speechToText = event.results[0][0].transcript;
                 statusNotice.classList.add('hidden');
-                document.getElementById('aiManualInput').value = speechToText;
-                let res = generateCreativeAiResponse(speechToText);
+                let res = generateSimpleAiResponse('jobdesk');
                 document.getElementById('aiChatResponseBox').innerText = res;
                 speakText(res);
             };
@@ -764,48 +752,55 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
+        // --- RAMALAN CUACA REAL-TIME (JAM TERKINI KE DEPAN) ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
             if (clockEl) clockEl.innerText = now.toTimeString().substring(0, 8);
 
+            // Open-Meteo koordinat Machap, Johor
             fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=temperature_2m,precipitation')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather && data.hourly) {
                         const temp = data.current_weather.temperature;
+                        currentWeatherData.temp = temp;
+                        const hourlyTime = data.hourly.time;
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
-                        const hourlyTime = data.hourly.time;
+
+                        // Cari indeks jam terkini secara real-time
                         const currentIsoStr = now.toISOString().substring(0, 13);
                         let idx = hourlyTime.findIndex(t => t.startsWith(currentIsoStr));
                         if (idx === -1) idx = 0;
 
-                        let hadRain = false;
-                        for(let i = Math.max(0, idx-12); i < idx; i++) {
-                            if (hourlyPrecip[i] > 0.2) { hadRain = true; break; }
+                        let rainSoon = false;
+                        for(let i = idx; i < idx + 4; i++) {
+                            if (hourlyPrecip[i] && hourlyPrecip[i] > 0.1) { rainSoon = true; break; }
                         }
-                        currentWeatherData.nightRain = hadRain;
+                        currentWeatherData.rainSoon = rainSoon;
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°C`;
-                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = hadRain ? "Tanah Basah (Hujan Semalam)" : "Tanah Normal / Kering";
-                        if (document.getElementById('smartRecommendation')) {
-                            document.getElementById('smartRecommendation').innerText = hadRain 
-                                ? "🌧️ Semalam ada hujan. Rekomendasi AI: Skip siram air, fokus kerja dalam stor atau penyelenggaraan mesin."
-                                : "☀️ Tanah kering. Rekomendasi AI: Wajib jalankan siraman air pokok pagi ini.";
-                        }
+                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = rainSoon ? "Potensi Hujan Jam Ini" : "Cerah Estet Machap";
+                        if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = rainSoon ? "🌧️" : "☀️";
 
+                        // Render 4 jam ke depan secara real-time
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
                             for (let i = 0; i < 4; i++) {
                                 let tIdx = idx + i;
                                 if (tIdx < hourlyTime.length) {
+                                    let timeOnly = hourlyTime[tIdx].substring(11, 16);
+                                    let pVal = hourlyPrecip[tIdx] || 0;
+                                    let tVal = hourlyTemp[tIdx];
+                                    let icon = pVal > 0.1 ? "🌧️" : "☀️";
                                     hContainer.innerHTML += `
                                         <div class="bg-white/10 rounded-xl p-2 text-center border border-white/20">
-                                            <div class="text-[10px] text-sky-200 font-mono">${hourlyTime[tIdx].substring(11, 16)}</div>
-                                            <div class="text-xl my-1">${hourlyPrecip[tIdx] > 0 ? '🌧️' : '☀️'}</div>
-                                            <div class="text-xs font-bold">${hourlyTemp[tIdx]}°C</div>
+                                            <div class="text-[10px] text-sky-200 font-mono font-bold">${timeOnly}</div>
+                                            <div class="text-xl my-1">${icon}</div>
+                                            <div class="text-xs font-bold">${tVal}°C</div>
+                                            <div class="text-[9px] text-white/80">${pVal > 0 ? pVal+'mm' : 'Kering'}</div>
                                         </div>
                                     `;
                                 }
@@ -1093,7 +1088,7 @@
         }
         function deleteIncome(id) { if(db) db.collection("income").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
 
-        // --- SISTEM INVOICE & SIGNATURE PAD DENGAN NAMA BOSS / PERWAKILAN ---
+        // --- SISTEM INVOICE & SIGNATURE PAD ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -1129,7 +1124,6 @@
             document.getElementById('invModalPeriod').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
             document.getElementById('invModalTotalItems').innerText = `${dataArr.length} Item`;
 
-            // Logika Gelaran & Nama Boss / Perwakilan ala Bahasa Malaysia
             let isBoss = currentUser && currentUser.gender === 'Datu';
             let ownerName = currentUser ? currentUser.name : "Abdul Rojak";
             let roleLabel = isBoss ? `Disahkan Oleh Boss (Pemilik Utama):` : `Disahkan Oleh Perwakilan Rasmi:`;
