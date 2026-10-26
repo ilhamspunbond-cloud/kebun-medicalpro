@@ -83,7 +83,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI PINTAR -->
+        <!-- WIDGET ASISTEN AI PINTAR & AGRONOMIST ANALYTICS -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -93,9 +93,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Aktif (Suara Wanita)</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Agronomist Cerdas</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Sedia membantu pengurusan ladang anda.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Sedia menganalisis jadual & rekomendasi harian.</p>
                     </div>
                 </div>
                 <button onclick="speakLastAiMessage()" class="bg-indigo-700 hover:bg-indigo-600 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
@@ -103,22 +103,21 @@
                 </button>
             </div>
 
-            <!-- Kotak Perbualan / Jawapan AI -->
+            <!-- Kotak Perbualan / Analisis AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[60px] text-indigo-100">
-                Sila tunggu sebentar, AI sedang memuatkan data...
+                AI sedang menganalisis data kebun dan cuaca semasa...
             </div>
 
-            <!-- Pertanyaan Cepat / Contoh -->
+            <!-- Rekomendasi Pintar / Cepat -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askAi('stok baja')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📦 Berapa sisa stok baja?</button>
-                <button onclick="askAi('pekerja hari ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📋 Pekerja buat apa hari ini?</button>
-                <button onclick="askAi('pengeluaran bulan ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Pengeluaran bulan ini?</button>
-                <button onclick="askAi('pendapatan bulan ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💵 Pendapatan bulan ini?</button>
+                <button onclick="askAi('rekomendasi kerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">🌱 Rekomendasi Tugas Hari Ini</button>
+                <button onclick="askAi('jadual baja')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📅 Cek Jeda Waktu Baja (14 Hari)</button>
+                <button onclick="askAi('stok baja')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📦 Baki Stok Baja</button>
             </div>
 
             <!-- Input Chat Manual ke AI -->
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya apa saja kepada AI (Cth: Apa tugas hari ini?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa tugas penting hari ini?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
             </form>
         </section>
@@ -140,7 +139,7 @@
 
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 border border-white/20">
                 <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
-                    <span>🤖 Pesan Pintar & Amaran Kesihatan Malaysia:</span>
+                    <span>🤖 Analisis Cuaca & Rekomendasi Kerja AI:</span>
                     <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
                 </div>
                 <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Malam ini waktu rehat & tidur. Bersedia untuk mula bekerja semula esok pagi jam 07:00 / 08:00.</p>
@@ -633,9 +632,10 @@
             initAiGreeting();
         }
 
-        // --- SISTEM AI ASISTEN WANITA & SUARA ---
+        // --- SISTEM AI AGRONOMIST & PINTAR REKOMENDASI ---
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
+        let currentWeatherData = { condition: "Cerah", isRain: false };
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -688,6 +688,47 @@
             return currentUser.gender === 'female' ? "Puan" : "Tuan";
         }
 
+        // --- OTAK PINTAR AGRONOMIST: ANALISIS JEDO BAJA & REKOMENDASI TUGAS ---
+        function analyzeSmartAgronomy() {
+            const title = getTitlePrefix();
+            const name = currentUser ? currentUser.name : "";
+            
+            // 1. Cek Kapan Terakhir Pemupukan Bio Baja Dilakukan
+            let lastFertilizerDate = null;
+            if (tasks && tasks.length > 0) {
+                const fertTask = tasks.find(t => t.category.toLowerCase().includes('baja') || t.title.toLowerCase().includes('baja') || t.title.toLowerCase().includes('pemupukan'));
+                if (fertTask && fertTask.date) {
+                    lastFertilizerDate = new Date(fertTask.date);
+                }
+            }
+
+            let fertilizerMessage = "";
+            let daysSinceFert = 999;
+            if (lastFertilizerDate) {
+                const diffTime = Math.abs(new Date() - lastFertilizerDate);
+                daysSinceFert = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
+
+            const cycleDays = 14; // Standar 2 minggu sekali
+            let remainingDays = cycleDays - daysSinceFert;
+
+            if (remainingDays <= 0) {
+                fertilizerMessage = `⚠️ Perhatian! Jeda masa 2 minggu pemupukan bio baja telah tercapai atau lewat. Sila jadualkan pekerja untuk menabur bio baja pada pokok segera.`;
+            } else {
+                fertilizerMessage = `📅 Jeda pemupukan bio baja seterusnya dalam masa ${remainingDays} hari lagi.`;
+            }
+
+            // 2. Analisis Cuaca & Tugas Harian (Siram Pokok vs Hujan)
+            let wateringAdvice = "";
+            if (currentWeatherData.isRain) {
+                wateringAdvice = `🌧️ Keadaan cuaca sedang hujan/mendung. Pekerjaan menyiram pokok di-skip hari ini. Disarankan fokuskan pekerja untuk kerja pembersihan rumput atau penyelenggaraan alatan kebun.`;
+            } else {
+                wateringAdvice = `☀️ Cuaca baik/cerah. Kerja rutin menyiram pokok wajib dijalankan hari ini, ditambah dengan pemantauan blok kebun.`;
+            }
+
+            return { fertilizerMessage, wateringAdvice, remainingDays };
+        }
+
         function initAiGreeting() {
             const now = new Date();
             const hours = now.getHours();
@@ -698,10 +739,14 @@
 
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "";
-            const greeting = `${timeGreeting}, ${title} ${name}. Saya ${aiConfig.name}, sedia membantu memantau pengurusan ladang hari ini. Sila tanya apa sahaja di bawah.`;
+            const agronomy = analyzeSmartAgronomy();
+
+            const greeting = `${timeGreeting}, ${title} ${name}. Saya ${aiConfig.name}. ${agronomy.wateringAdvice} ${agronomy.fertilizerMessage}`;
             
-            document.getElementById('aiChatResponseBox').innerText = greeting;
-            document.getElementById('aiGreetingText').innerText = `Menyapa ${title} ${name}`;
+            const chatBox = document.getElementById('aiChatResponseBox');
+            if (chatBox) chatBox.innerText = greeting;
+            const greetText = document.getElementById('aiGreetingText');
+            if (greetText) greetText.innerText = `Agronomist AI Aktif untuk ${title} ${name}`;
             speakText(greeting);
         }
 
@@ -709,36 +754,23 @@
             let response = "";
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "";
+            const agronomy = analyzeSmartAgronomy();
 
-            if (queryType === 'stok baja') {
+            if (queryType === 'rekomendasi kerja') {
+                response = `Rekomendasi tugas untuk ${title} ${name}: ${agronomy.wateringAdvice} ${agronomy.fertilizerMessage}`;
+            } else if (queryType === 'jadual baja') {
+                response = `Analisis kitaran bio baja: ${agronomy.fertilizerMessage} Kitaran standard adalah setiap 2 minggu (14 hari).`;
+            } else if (queryType === 'stok baja') {
                 if (!inventory || inventory.length === 0) {
-                    response = `Maaf ${title} ${name}, saat ini belum ada data stok bio baja yang terdaftar di sistem.`;
+                    response = `Maaf ${title} ${name}, tiada data stok bio baja yang terdaftar di sistem saat ini.`;
                 } else {
                     let stockSummary = inventory.map(i => `${i.name}: ${i.stock} unit`).join(', ');
-                    response = `Baik ${title} ${name}, berikut baki stok bio baja semasa di gudang: ${stockSummary}.`;
+                    response = `Baki stok bio baja di gudang semasa: ${stockSummary}.`;
                 }
-            } else if (queryType === 'pekerja hari ini') {
-                const todayStr = new Date().toISOString().substring(0, 10);
-                const todayTasks = tasks.filter(t => t.date === todayStr);
-                if (todayTasks.length === 0) {
-                    response = `Untuk hari ini ${title} ${name}, belum ada tugasan pekerja yang direkodkan selesai.`;
-                } else {
-                    let taskList = todayTasks.map(t => `${t.worker} mengerjakan ${t.title}`).join('; ');
-                    response = `Hari ini ${title} ${name}, pekerja telah melaksanakan: ${taskList}.`;
-                }
-            } else if (queryType === 'pengeluaran bulan ini') {
-                const currentMonth = new Date().toISOString().substring(0, 7);
-                const monthExp = expenses.filter(e => e.month === currentMonth);
-                let total = monthExp.reduce((sum, e) => sum + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                response = `Jumlah perbelanjaan atau pengeluaran untuk bulan ini adalah sebanyak RM ${total.toFixed(2)}, ${title} ${name}.`;
-            } else if (queryType === 'pendapatan bulan ini') {
-                const currentMonth = new Date().toISOString().substring(0, 7);
-                const monthInc = incomeList.filter(i => i.month === currentMonth);
-                let total = monthInc.reduce((sum, i) => sum + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                response = `Jumlah pendapatan hasil jualan kebun bulan ini adalah RM ${total.toFixed(2)}, ${title} ${name}.`;
             }
 
-            document.getElementById('aiChatResponseBox').innerText = response;
+            const chatBox = document.getElementById('aiChatResponseBox');
+            if (chatBox) chatBox.innerText = response;
             speakText(response);
         }
 
@@ -747,27 +779,25 @@
             const input = document.getElementById('aiManualInput').value.toLowerCase();
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "";
-            let response = `Maaf ${title} ${name}, saya kurang faham soalan itu. Cuba klik butang pertanyaan cepat di atas ya!`;
+            const agronomy = analyzeSmartAgronomy();
+            let response = `Maaf ${title} ${name}, sila gunakan butang rekomendasi pantas di atas atau tanya mengenai tugas, baja, dan cuaca.`;
 
-            if (input.includes('baja') || input.includes('stok')) {
+            if (input.includes('baja') || input.includes('pupuk')) {
+                askAi('jadual baja');
+                document.getElementById('aiManualInput').value = "";
+                return;
+            } else if (input.includes('kerja') || input.includes('tugas') || input.includes('rekomendasi')) {
+                askAi('rekomendasi kerja');
+                document.getElementById('aiManualInput').value = "";
+                return;
+            } else if (input.includes('stok')) {
                 askAi('stok baja');
-                document.getElementById('aiManualInput').value = "";
-                return;
-            } else if (input.includes('pekerja') || input.includes('kerja')) {
-                askAi('pekerja hari ini');
-                document.getElementById('aiManualInput').value = "";
-                return;
-            } else if (input.includes('pengeluaran') || input.includes('belanja') || input.includes('kos')) {
-                askAi('pengeluaran bulan ini');
-                document.getElementById('aiManualInput').value = "";
-                return;
-            } else if (input.includes('pendapatan') || input.includes('jualan') || input.includes('duit')) {
-                askAi('pendapatan bulan ini');
                 document.getElementById('aiManualInput').value = "";
                 return;
             }
 
-            document.getElementById('aiChatResponseBox').innerText = response;
+            const chatBox = document.getElementById('aiChatResponseBox');
+            if (chatBox) chatBox.innerText = response;
             speakText(response);
             document.getElementById('aiManualInput').value = "";
         }
@@ -820,7 +850,7 @@
         }
         setTimeout(autoCleanOldPhotos, 3000);
 
-        // --- JAM & CUACA REAL-TIME ---
+        // --- JAM & CUACA REAL-TIME DENGAN DETEKSI HUJAN ---
         function updateLiveClockAndSmartWeather() {
             const now = new Date();
             const hours = now.getHours();
@@ -849,7 +879,7 @@
             } else if (hours >= 5 && hours < 10) {
                 icon = "🌅";
                 condText = "Pagi Cerah & Segar";
-                advice = "🌅 Selamat pagi, Bro! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Udara segar, sangat ideal untuk tabur bio baja.";
+                advice = "🌅 Selamat pagi, Bro! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Siram pokok dan tabur bio baja jika cukup tempoh 2 minggu.";
                 forecast3h = "Cerah Pagi";
             } else if (hours >= 10 && hours < 15) {
                 icon = "☀️";
@@ -868,6 +898,31 @@
                 forecast3h = "Sebahagian Berawan";
             }
 
+            // Fetch Cuaca Real-Time Open-Meteo & Deteksi Hujan
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.current_weather) {
+                        const temp = data.current_weather.temperature;
+                        const wind = data.current_weather.windspeed;
+                        const weatherCode = data.current_weather.weathercode;
+                        
+                        // Kode cuaca hujan di open-meteo umumnya > 50
+                        if (weatherCode >= 50) {
+                            currentWeatherData = { condition: "Hujan / Mendung Lebat", isRain: true };
+                            icon = "🌧️";
+                            condText = "Cuaca Hujan";
+                            advice = "🌧️ Amaran Hujan! Kerja siram pokok di-skip. Alihkan pekerja kepada pembersihan gulma atau penyelenggaraan alat.";
+                        } else {
+                            currentWeatherData = { condition: "Cerah / Normal", isRain: false };
+                        }
+
+                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°C`;
+                        if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = `${wind} km/h`;
+                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `72%`;
+                    }
+                }).catch(() => {});
+
             if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = icon;
             if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
             if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerText = advice;
@@ -878,21 +933,6 @@
                 if (showBroadcastBadge) badge.classList.remove('hidden');
                 else badge.classList.add('hidden');
             }
-
-            // Fetch Cuaca Real-Time Open-Meteo
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true')
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.current_weather) {
-                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
-                        if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
-                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `72%`;
-                    }
-                }).catch(() => {
-                    if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = "26.5°C";
-                    if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = "1.2 km/h";
-                    if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = "75%";
-                });
         }
         
         setInterval(updateLiveClockAndSmartWeather, 1000);
@@ -1920,7 +1960,7 @@
                 });
             }
 
-            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const fileName = `Rekap_${type}_${filterVal}.txt`;
             
