@@ -88,7 +88,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI PINTAR & BERPIKIR MANDIRI (WEATHER-ADAPTIVE) -->
+        <!-- WIDGET ASISTEN AI ALL-KNOWING (MEMORI MENYELURUH) -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -98,9 +98,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Tanah Basah Aktif</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Memori Menyeluruh Aktif</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menganalisis riwayat hujan malam tadi secara real-time.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menyimpan kekal semua data riwayat, stok & kewangan.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -118,23 +118,22 @@
                 🔴 Sedang mendengar suara anda... Sila cakap sekarang!
             </div>
 
-            <!-- Kotak Perbualan / Analisis AI -->
+            <!-- Kotak Perbualan / Laporan AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang memeriksa riwayat hujan malam tadi...
+                AI sedang merumuskan seluruh data riwayat kebun...
             </div>
 
             <!-- Butang Rekomendasi Pintar Cepat -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Kerja Harian & Pekerja</button>
-                <button onclick="askAi('penyelenggaraan stor')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧹 Kemas Stor & Mesin</button>
-                <button onclick="askAi('jadual tuai')" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-xl border border-indigo-500 text-white font-semibold">🌾 Jadual Tuai & Panen</button>
-                <button onclick="askAi('stok baja')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">🧪 Stok Baja</button>
-                <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Kewangan & Rekap</button>
+                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Job Desk & Rutin Pekerja</button>
+                <button onclick="askAi('stok baja')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">🧪 Stok & Baja Ready</button>
+                <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Rekap Kewangan & Belanja</button>
+                <button onclick="askAi('sejarah kebun')" class="bg-purple-700 hover:bg-purple-600 px-3 py-1.5 rounded-xl border border-purple-500 text-white font-semibold">📜 Histori & Memori Lengkap</button>
             </div>
 
             <!-- Input Chat Manual ke AI -->
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Semalam hujan deras, apa kerja hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI apa sahaja (Cth: Berapa baki stok baja? Apa kerja Rojak hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
             </form>
         </section>
@@ -156,7 +155,7 @@
 
             <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/25">
                 <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
-                    <span>🤖 Analisis Status Tanah & Rekomendasi Ladang:</span>
+                    <span>🤖 Analisis Cuaca & Status Kerja Terkini:</span>
                     <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
                 </div>
                 <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Sedang memproses data cuaca malam tadi...</p>
@@ -261,7 +260,7 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (Auto-Clean 1 Minggu)</label>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (Disimpan Kekal)</label>
                         <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
                     </div>
                     <button type="submit" id="btnAddTask" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Tambah Tugasan & Rekod Memori Pekerja</button>
@@ -401,7 +400,7 @@
                     <input type="text" id="expAmount" placeholder="Jumlah Kos (Cth: RM 50)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (Auto-Clean 2 Bln)</label>
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (Disimpan Kekal)</label>
                         <input type="file" id="expReceiptInput" accept="image/*" capture="environment" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
                     <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Tambah Rekod Perbelanjaan & Resit HD</button>
@@ -499,9 +498,9 @@
                 <button onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
 
-            <!-- Tetapan AI Asisten Wanita -->
+            <!-- Tetapan AI Asisten All-Knowing -->
             <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-300 space-y-3">
-                <h4 class="font-bold text-sm text-indigo-900">👩‍💻 Pengurusan AI Asisten Wanita</h4>
+                <h4 class="font-bold text-sm text-indigo-900">👩‍💻 Pengurusan AI Asisten Kebun</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                         <label class="block text-xs font-semibold text-indigo-800 mb-1">Nama AI</label>
@@ -551,15 +550,17 @@
                 <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
             </div>
 
-            <!-- PENGURUSAN PEKERJA LAPANGAN -->
-            <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Lapangan (Master Admin)</h4>
-                <p class="text-xs text-slate-500 mb-2">Nama-nama di sini khusus untuk dipilih dalam senarai tugasan harian pekerja.</p>
-                <div class="flex gap-2">
-                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja (Cth: Holil)" class="flex-1 border p-2 rounded-lg text-sm bg-white">
-                    <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
+            <!-- PENGURUSAN PEKERJA & JOB DESK KUSTOM (ADMIN) -->
+            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+                <h4 class="font-bold text-sm text-slate-700">Pengurusan Pekerja & Job Desk Kustom (Master Admin)</h4>
+                <p class="text-xs text-slate-500">Tetapkan nama pekerja, tugas wajib berkala (misal: matun rumput 5 hari / tabur baja per 2 minggu), serta tugas sampingan/tambahan berikutnya.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <input type="text" id="workerNameInput" placeholder="Nama Pekerja (Cth: Rojak / Holil)" class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="workerMandatoryTask" placeholder="Job Desk Wajib (Cth: Tabur baja / Matun 5 hari)" class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="workerExtraTask" placeholder="Job Desk Sampingan / Tambahan" class="border p-2 rounded-lg text-sm bg-white">
                 </div>
-                <div id="workerListTags" class="flex flex-wrap gap-2 mt-3"></div>
+                <button onclick="addWorkerWithCustomTasks()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan / Tambah Pekerja & Job Desk</button>
+                <div id="workerListTags" class="space-y-2 mt-3"></div>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-xl border">
@@ -637,7 +638,7 @@
             console.log("Firebase init error");
         }
 
-        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI (KHUSUS SAPAAN SAHAJA TANPA NAMA) ---
+        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI (KHUSUS SAPAAN) ---
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
         function checkUserProfile() {
@@ -658,7 +659,7 @@
             initAiGreeting();
         }
 
-        // --- SISTEM AI AGRONOMIST & BERPIKIR MANDIRI (WEATHER-ADAPTIVE) ---
+        // --- SISTEM AI ALL-KNOWING & BERPIKIR MENYELURUH ---
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
         let currentWeatherData = { condition: "Cerah", isRain: false, nightRain: true };
@@ -712,60 +713,56 @@
 
         function getTitlePrefix() {
             if (!currentUser || !currentUser.gender) return "Tuan";
-            return currentUser.gender; // Mengambil pilihan: Abang, Akak, Tuan, Puan, Pachi, Machi, Datu
+            return currentUser.gender; 
         }
 
         let workers = [];
 
-        // --- LOGIKA CERDAS BERDASARKAN RIWAYAT HUJAN SEMALAM ---
-        function generateSmartAgronomyRecommendation(topic = 'general') {
+        // --- LOGIKA AI ALL-KNOWING (MENGETAHUI SEGALA MEMORI, STOK, & JOB DESK) ---
+        function generateSmartAgronomyRecommendation(topic = 'general', customQuery = '') {
             const title = getTitlePrefix();
-            
             let wasRainingNight = currentWeatherData.nightRain;
+            
             let weatherNotice = wasRainingNight 
                 ? "Semalam ada rekod hujan deras. Tanah kebun basah dan lembap, jadi tugas siram pokok DI-SKIP."
                 : "Keadaan tanah kering/normal. Pagi ini wajib jalankan rutin siram pokok.";
 
-            let userInstruction = "";
-            if (wasRainingNight) {
-                userInstruction = `Oleh kerana semalam hujan deras, ${title} boleh langsung fokus ke kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
-            } else {
-                userInstruction = `Pagi ini ${title} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua.`;
-            }
-
-            let workerInstructions = [];
+            let workerDetails = "";
             if (workers && workers.length > 0) {
-                workers.forEach(w => {
-                    let wLower = w.toLowerCase();
-                    if (wLower.includes('holil')) {
-                        workerInstructions.push(`${w}: Fokus utama potong rumput dan kemas batas kebun.`);
-                    } else {
-                        workerInstructions.push(`${w}: Bantu kerja sokongan angkut hasil atau susun baja.`);
-                    }
+                let details = [];
+                workers.forEach((wObj) => {
+                    let name = typeof wObj === 'object' ? wObj.name : wObj;
+                    let mandatory = typeof wObj === 'object' && wObj.mandatory ? wObj.mandatory : "Tabur baja per 2 minggu";
+                    let extra = typeof wObj === 'object' && wObj.extra ? wObj.extra : "Bantu kemas batas & tuai buah";
+                    
+                    details.push(`${name} (Job Wajib: ${mandatory} | Selepas itu lanjut Job Sampingan: ${extra})`);
                 });
+                workerDetails = " Rincian job desk pekerja: " + details.join(" | ");
+            } else {
+                workerDetails = " Tiada senarai pekerja diinput dalam Master Admin saat ini.";
             }
 
-            let workerText = workerInstructions.length > 0 ? workerInstructions.join(' ') : "";
+            const totalInv = inventory.reduce((sum, i) => sum + (parseInt(i.stock) || 0), 0);
+            let stockInfo = ` Baki keseluruhan stok bio baja di gudang adalah ${totalInv} unit.`;
+            let totalTasksCount = tasks.length;
+            let totalExpensesCount = expenses.length;
 
-            if (topic === 'pekerja' || topic === 'general') {
-                return `Arahan Harian, ${title}: ${weatherNotice} ${userInstruction} ${workerText} ${title} boleh menguruskan kerja harian kebun, pekerja, stok baja, perbelanjaan, pemasukan, atau menyemak rekap data bulanan melalui menu sistem.`;
-            } else if (topic === 'penyelenggaraan stor') {
-                return `Cadangan Penyelenggaraan: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air, serta cek mesin potong rumput, ${title}!`;
-            } else if (topic === 'jadual tuai') {
-                return `Jadual Tuai & Panen: Kitaran tuai belimbing wuluh dan bunga berjalan lancar, ${title}.`;
-            } else if (topic === 'stok baja') {
-                const totalInv = inventory.reduce((sum, i) => sum + (parseInt(i.stock) || 0), 0);
-                return `Semakan Stok Baja: Jumlah keseluruhan baki stok bio baja di gudang adalah ${totalInv} unit, ${title}. Sila semak tab Bio Baja untuk butiran lanjut.`;
-            } else if (topic === 'kewangan') {
+            if (topic === 'pekerja' || customQuery.toLowerCase().includes('job desk') || customQuery.toLowerCase().includes('kerja')) {
+                return `Laporan untuk ${title}: ${weatherNotice}${workerDetails}`;
+            } else if (topic === 'stok baja' || customQuery.toLowerCase().includes('baja') || customQuery.toLowerCase().includes('stok') || customQuery.toLowerCase().includes('ready')) {
+                return `Laporan Stok ${title}: ${stockInfo} Sila semak tab Bio Baja untuk melihat senarai stok yang ready secara terperinci.`;
+            } else if (topic === 'sejarah' || customQuery.toLowerCase().includes('sejarah') || customQuery.toLowerCase().includes('memori') || customQuery.toLowerCase().includes('histori')) {
+                return `Laporan Memori Menyeluruh ${title}: Sistem menyimpan kekal ${totalTasksCount} rekod tugasan harian dan ${totalExpensesCount} rekod perbelanjaan lengkap dengan foto resit HD dan bukti jualan. Semua data selamat dan kekal!`;
+            } else if (topic === 'kewangan' || customQuery.toLowerCase().includes('kewangan')) {
                 const currentMonth = new Date().toISOString().substring(0, 7);
                 const monthInc = incomeList.filter(i => i.month === currentMonth);
                 let totalInc = monthInc.reduce((sum, i) => sum + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
                 const monthExp = expenses.filter(e => e.month === currentMonth);
                 let totalExp = monthExp.reduce((sum, e) => sum + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
-                return `Ringkasan kewangan bulan ini: Pendapatan RM ${totalInc.toFixed(2)}, Perbelanjaan RM ${totalExp.toFixed(2)}, ${title}. ${title} juga boleh mengunduh rekap data bulanan melalui butang unduh di setiap menu.`;
+                return `Laporan Kewangan ${title} bulan ini: Pendapatan RM ${totalInc.toFixed(2)}, Perbelanjaan RM ${totalExp.toFixed(2)}.`;
             }
 
-            return `Selamat ${title}. ${weatherNotice} ${userInstruction} Ada apa-apa mengenai kerja harian, pekerja, stok baja, pengeluaran, pemasukan atau report data bulanan yang boleh saya bantu?`;
+            return `Laporan untuk ${title}: ${weatherNotice}${workerDetails}${stockInfo} Sistem merekodkan ${totalTasksCount} tugasan dan semua resit tersimpan kekal.`;
         }
 
         function initAiGreeting() {
@@ -778,30 +775,28 @@
 
             const title = getTitlePrefix();
             
-            let openingWelcome = `${timeGreeting} ${title}! Senang berjumpa dengan ${title} hari ini. Saya ${aiConfig.name}, sedia membantu ${title} menguruskan kebun Bio Medicalpro.`;
-            let recommendation = generateSmartAgronomyRecommendation('general');
-
-            const greeting = `${openingWelcome} ${recommendation}`;
+            // Sapaan murni ramah tamah kepada Boss tanpa perintah awal
+            const greeting = `${timeGreeting} ${title}! Senang berjumpa dengan ${title} hari ini. Saya ${aiConfig.name}, sedia melaporkan status kebun Bio Medicalpro untuk ${title}.`;
             
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = greeting;
+            
             const greetText = document.getElementById('aiGreetingText');
-            if (greetText) greetText.innerText = `Pakar Agronomi AI untuk ${title}`;
+            if (greetText) greetText.innerText = `Asisten Pelapor AI untuk ${title}`;
+            
             speakText(greeting);
         }
 
         function askAi(queryType) {
             let response = "";
             if (queryType === 'rekomendasi pekerja') {
-                response = generateSmartAgronomyRecommendation('pekerja');
-            } else if (queryType === 'penyelenggaraan stor') {
-                response = generateSmartAgronomyRecommendation('penyelenggaraan stor');
-            } else if (queryType === 'jadual tuai') {
-                response = generateSmartAgronomyRecommendation('jadual tuai');
+                response = generateSmartAgronomyRecommendation('pekerja', 'pekerja');
             } else if (queryType === 'stok baja') {
-                response = generateSmartAgronomyRecommendation('stok baja');
+                response = generateSmartAgronomyRecommendation('stok baja', 'baja');
+            } else if (queryType === 'sejarah kebun') {
+                response = generateSmartAgronomyRecommendation('sejarah', 'sejarah');
             } else if (queryType === 'status kewangan') {
-                response = generateSmartAgronomyRecommendation('kewangan');
+                response = generateSmartAgronomyRecommendation('kewangan', 'kewangan');
             }
 
             const chatBox = document.getElementById('aiChatResponseBox');
@@ -862,17 +857,17 @@
             const title = getTitlePrefix();
 
             if (input.includes('stor') || input.includes('bilik air') || input.includes('mesin') || input.includes('racun') || input.includes('kemas')) {
-                response = generateSmartAgronomyRecommendation('penyelenggaraan stor');
-            } else if (input.includes('baja') || input.includes('stok')) {
-                response = generateSmartAgronomyRecommendation('stok baja');
-            } else if (input.includes('pekerja') || input.includes('kerja') || input.includes('siram') || input.includes('hujan')) {
-                response = generateSmartAgronomyRecommendation('pekerja');
-            } else if (input.includes('tuai') || input.includes('panen') || input.includes('bunga') || input.includes('buah')) {
-                response = generateSmartAgronomyRecommendation('jadual tuai');
+                response = generateSmartAgronomyRecommendation('penyelenggaraan stor', rawText);
+            } else if (input.includes('baja') || input.includes('stok') || input.includes('ready')) {
+                response = generateSmartAgronomyRecommendation('stok baja', rawText);
+            } else if (input.includes('pekerja') || input.includes('kerja') || input.includes('job desk') || input.includes('rojak') || input.includes('holil')) {
+                response = generateSmartAgronomyRecommendation('pekerja', rawText);
+            } else if (input.includes('sejarah') || input.includes('memori') || input.includes('foto') || input.includes('resi') || input.includes('lalu')) {
+                response = generateSmartAgronomyRecommendation('sejarah', rawText);
             } else if (input.includes('kewangan') || input.includes('duit') || input.includes('rekap') || input.includes('pengeluaran') || input.includes('pemasukan')) {
-                response = generateSmartAgronomyRecommendation('kewangan');
+                response = generateSmartAgronomyRecommendation('kewangan', rawText);
             } else {
-                response = `Baik ${title}, saya faham soalan "${rawText}". ${generateSmartAgronomyRecommendation('general')}`;
+                response = `Baik ${title}, merespon soalan "${rawText}": ${generateSmartAgronomyRecommendation('general', rawText)}`;
             }
 
             const chatBox = document.getElementById('aiChatResponseBox');
@@ -905,35 +900,6 @@
                 activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95";
             }
         }
-
-        // --- FITUR AUTO-CLEAN FOTO ---
-        function autoCleanOldPhotos() {
-            if (!db) return;
-            const now = new Date();
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(now.getDate() - 7);
-            const twoMonthsAgo = new Date();
-            twoMonthsAgo.setMonth(now.getMonth() - 2);
-
-            db.collection("tasks").get().then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.date && data.photo && new Date(data.date) < oneWeekAgo) {
-                        doc.ref.update({ photo: "" });
-                    }
-                });
-            });
-
-            db.collection("expenses").get().then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.date && data.receipt && new Date(data.date) < twoMonthsAgo) {
-                        doc.ref.update({ receipt: "" });
-                    }
-                });
-            });
-        }
-        setTimeout(autoCleanOldPhotos, 3000);
 
         // --- JAM & PENGESANAN RIWAYAT HUJAN + RAMALAN PER 1 JAM (8 JAM KE HADAPAN) ---
         function updateLiveClockAndSmartWeather() {
@@ -1393,7 +1359,10 @@
             const select = document.getElementById('taskWorkerSelect');
             if(!select) return;
             select.innerHTML = `<option value="">Pilih Pekerja (Dari Master Admin)</option>`;
-            workers.forEach(w => { select.innerHTML += `<option value="${w}">${w}</option>`; });
+            workers.forEach(wObj => {
+                let name = typeof wObj === 'object' ? wObj.name : wObj;
+                select.innerHTML += `<option value="${name}">${name}</option>`;
+            });
         }
 
         if (db) {
@@ -1418,20 +1387,40 @@
                 container.innerHTML = `<span class="text-xs text-slate-400 italic">Tiada pekerja diinput. Sila tambah di atas.</span>`;
                 return;
             }
-            workers.forEach((w, index) => {
-                container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">${w} <button onclick="deleteWorker(${index})" class="text-rose-500 font-bold">×</button></span>`;
+            workers.forEach((wObj, index) => {
+                let name = typeof wObj === 'object' ? wObj.name : wObj;
+                let mandatory = typeof wObj === 'object' && wObj.mandatory ? wObj.mandatory : "Tabur baja per 2 minggu";
+                let extra = typeof wObj === 'object' && wObj.extra ? wObj.extra : "Bantu kemas kebun";
+                
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 shadow-sm">
+                        <div>
+                            <div class="font-bold text-emerald-900 text-sm">👤 ${name}</div>
+                            <div class="text-xs text-slate-600">📌 Job Wajib: <b>${mandatory}</b></div>
+                            <div class="text-xs text-indigo-700">🔄 Job Sampingan: <b>${extra}</b></div>
+                        </div>
+                        <button onclick="deleteWorker(${index})" class="text-xs bg-rose-500 text-white px-2.5 py-1 rounded font-bold">Padam</button>
+                    </div>
+                `;
             });
             renderWorkersDropdown();
         }
 
-        function addWorker() {
-            const nameInput = document.getElementById('newWorkerName');
-            if(nameInput && nameInput.value) {
-                workers.push(nameInput.value.trim());
+        function addWorkerWithCustomTasks() {
+            const nameInput = document.getElementById('workerNameInput').value.trim();
+            const mandatoryInput = document.getElementById('workerMandatoryTask').value.trim() || "Tabur baja per 2 minggu";
+            const extraInput = document.getElementById('workerExtraTask').value.trim() || "Bantu kerja sampingan";
+            
+            if (nameInput) {
+                workers.push({ name: nameInput, mandatory: mandatoryInput, extra: extraInput });
                 if (db) db.collection("settings").doc("workers").set({ list: workers });
-                nameInput.value = "";
+                document.getElementById('workerNameInput').value = "";
+                document.getElementById('workerMandatoryTask').value = "";
+                document.getElementById('workerExtraTask').value = "";
                 renderWorkersAdmin();
-                alert("Pekerja baru berjaya ditambah ke senarai tugas!");
+                alert("Pekerja & Job Desk kustom berjaya disimpan!");
+            } else {
+                alert("Sila masukkan nama pekerja!");
             }
         }
 
@@ -1791,7 +1780,7 @@
                     db.collection("tasks").add(newTask).then(() => {
                         taskFormEl.reset();
                         taskPhotoBase64 = "";
-                        alert("Tugasan berjaya ditambah dan direkod!");
+                        alert("Tugasan berjaya ditambah dan direkod kekal!");
                     });
                 }
             });
@@ -1866,7 +1855,7 @@
             }
         }
 
-        // --- EXPENSES (PERBELANJAAN DENGAN LOCALSTORAGE BACKUP & FIRESTORE) ---
+        // --- EXPENSES (PERBELANJAAN DENGAN PENYIMPANAN KEKAL) ---
         let expenses = JSON.parse(localStorage.getItem('medicalpro_expenses')) || [];
         let expReceiptBase64 = "";
         
@@ -1909,7 +1898,7 @@
                 expenseFormEl.reset();
                 expReceiptBase64 = "";
                 renderExpenses();
-                alert("Perbelanjaan & resit Full HD berjaya direkod!");
+                alert("Perbelanjaan & resit HD berjaya direkod kekal!");
             });
         }
 
@@ -2010,7 +1999,7 @@
                 incomeFormEl.reset();
                 incPhotoBase64 = "";
                 renderIncome();
-                alert("Pendapatan berjaya direkod!");
+                alert("Pendapatan berjaya direkod kekal!");
             });
         }
 
