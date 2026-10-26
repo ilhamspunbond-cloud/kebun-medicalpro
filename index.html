@@ -260,8 +260,9 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto Report Kerja (Disimpan Kekal)</label>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto Report Kerja (Auto Kompres)</label>
                         <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
+                        <span id="taskPhotoStatus" class="text-[10px] font-bold text-slate-400">Status: Sedia pilih foto</span>
                     </div>
                     <button type="submit" id="btnAddTask" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Simpan Report Kerja & Analisis AI Seterusnya</button>
                 </form>
@@ -400,8 +401,9 @@
                     <input type="text" id="expAmount" placeholder="Jumlah Kos (Cth: RM 50)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (Disimpan Kekal)</label>
-                        <input type="file" id="expReceiptInput" accept="image/*" capture="environment" class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Resit / Invoice (Auto Kompres)</label>
+                        <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <span id="expPhotoStatus" class="text-[10px] font-bold text-slate-400">Status: Sedia pilih resit</span>
                     </div>
                     <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Tambah Rekod Perbelanjaan & Resit HD</button>
                 </form>
@@ -450,8 +452,9 @@
                     <input type="text" id="incAmount" placeholder="Jumlah Diterima (RM)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="incDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Bukti / Produk Terjual</label>
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Bukti / Produk Terjual (Auto Kompres)</label>
                         <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <span id="incPhotoStatus" class="text-[10px] font-bold text-slate-400">Status: Sedia pilih foto</span>
                     </div>
                     <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-semibold">Simpan Rekod Pendapatan</button>
                 </form>
@@ -714,12 +717,10 @@
             if (lastSpokenText) speakText(lastSpokenText);
         }
 
-        // --- FUNGSI MENGGABUNGKAN SAPAAN & NAMA LENGKAP (Cth: Abang Abdul Rojak) ---
         function getBossFullName() {
             if (!currentUser) return "Tuan";
             const honorific = currentUser.gender || "Tuan";
             const name = currentUser.name || "";
-            // Jika nama sudah mengandungi sapaan, atau jika nama kosong, kembalikan dengan kemas
             if (!name || name.toLowerCase() === honorific.toLowerCase()) {
                 return honorific;
             }
@@ -1064,6 +1065,7 @@
             document.getElementById('sectionTaskTitle').innerText = t.sectionTaskTitle;
         }
 
+        // --- FUNGSI COMPRESS & AUTO UPLOAD GAMBAR YANG RINGAN & PANTAS ---
         function compressImage(file, callback) {
             if (!file) { callback(""); return; }
             const reader = new FileReader();
@@ -1071,7 +1073,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 250; 
+                    const MAX_WIDTH = 400; // Ditingkatkan sedikit untuk kualiti resit/foto yang lebih jelas tapi tetap ringan
                     let width = img.width;
                     let height = img.height;
                     if (width > MAX_WIDTH) {
@@ -1082,7 +1084,8 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/jpeg', 0.25));
+                    // Kompres automatik tanpa lag
+                    callback(canvas.toDataURL('image/jpeg', 0.4));
                 }
                 img.src = event.target.result;
             }
@@ -1772,7 +1775,15 @@
         const imgInputEl = document.getElementById('imageInput');
         if(imgInputEl) {
             imgInputEl.addEventListener('change', function(e) {
-                compressImage(e.target.files[0], function(base64) { taskPhotoBase64 = base64; });
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('taskPhotoStatus').innerText = "Status: Memproses & kompres foto...";
+                    compressImage(file, function(base64) { 
+                        taskPhotoBase64 = base64; 
+                        document.getElementById('taskPhotoStatus').innerText = "Status: Foto siap di-upload otomatis! ✓";
+                        document.getElementById('taskPhotoStatus').className = "text-[10px] font-bold text-emerald-600";
+                    });
+                }
             });
         }
 
@@ -1810,6 +1821,8 @@
                     db.collection("tasks").add(newTask).then(() => {
                         taskFormEl.reset();
                         taskPhotoBase64 = "";
+                        document.getElementById('taskPhotoStatus').innerText = "Status: Sedia pilih foto";
+                        document.getElementById('taskPhotoStatus').className = "text-[10px] font-bold text-slate-400";
                         alert("Report kerja berjaya disimpan! AI akan merekomendasikan tugasan berikutnya.");
                     });
                 }
@@ -1894,11 +1907,12 @@
             expReceiptInputEl.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        expReceiptBase64 = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
+                    document.getElementById('expPhotoStatus').innerText = "Status: Memproses & kompres resit...";
+                    compressImage(file, function(base64) {
+                        expReceiptBase64 = base64;
+                        document.getElementById('expPhotoStatus').innerText = "Status: Resit siap di-upload otomatis! ✓";
+                        document.getElementById('expPhotoStatus').className = "text-[10px] font-bold text-emerald-600";
+                    });
                 }
             });
         }
@@ -1927,6 +1941,8 @@
 
                 expenseFormEl.reset();
                 expReceiptBase64 = "";
+                document.getElementById('expPhotoStatus').innerText = "Status: Sedia pilih resit";
+                document.getElementById('expPhotoStatus').className = "text-[10px] font-bold text-slate-400";
                 renderExpenses();
                 alert("Perbelanjaan & resit HD berjaya direkod kekal!");
             });
@@ -1998,7 +2014,15 @@
         const incPhotoInputEl = document.getElementById('incPhotoInput');
         if(incPhotoInputEl) {
             incPhotoInputEl.addEventListener('change', function(e) {
-                compressImage(e.target.files[0], function(base64) { incPhotoBase64 = base64; });
+                const file = e.target.files[0];
+                if (file) {
+                    document.getElementById('incPhotoStatus').innerText = "Status: Memproses & kompres foto...";
+                    compressImage(file, function(base64) {
+                        incPhotoBase64 = base64;
+                        document.getElementById('incPhotoStatus').innerText = "Status: Foto siap di-upload otomatis! ✓";
+                        document.getElementById('incPhotoStatus').className = "text-[10px] font-bold text-emerald-600";
+                    });
+                }
             });
         }
 
@@ -2028,6 +2052,8 @@
 
                 incomeFormEl.reset();
                 incPhotoBase64 = "";
+                document.getElementById('incPhotoStatus').innerText = "Status: Sedia pilih foto";
+                document.getElementById('incPhotoStatus').className = "text-[10px] font-bold text-slate-400";
                 renderIncome();
                 alert("Pendapatan berjaya direkod kekal!");
             });
