@@ -4,7 +4,7 @@
     <link rel="icon" type="image/png" href="Logopit_1745513395623.png">
     <link rel="apple-touch-icon" href="Logopit_1745513395623.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#1e293b">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,24 +23,24 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans pb-24">
+<body class="bg-slate-950 text-slate-100 font-sans pb-24">
 
     <!-- MODAL PENDAFTARAN NAMA & GELARAN -->
     <div id="userProfileModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 border-2 border-emerald-500">
+        <div class="bg-slate-900 p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 border border-slate-700">
             <div class="text-center">
                 <span class="text-4xl">🌱</span>
-                <h3 class="text-lg font-bold text-emerald-900 mt-2">Selamat Datang ke Medicalpro</h3>
-                <p class="text-xs text-slate-500">Sila masukkan nama & pilihan gelaran anda.</p>
+                <h3 class="text-lg font-bold text-emerald-400 mt-2">Selamat Datang ke Medicalpro</h3>
+                <p class="text-xs text-slate-400">Sila masukkan nama & pilihan gelaran anda.</p>
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh Anda</label>
-                    <input type="text" id="inputUserRealName" placeholder="Cth: Rojak" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Nama Penuh Anda</label>
+                    <input type="text" id="inputUserRealName" placeholder="Cth: Rojak" class="w-full border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-800 text-white focus:outline-emerald-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Gelaran</label>
-                    <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Pilihan Gelaran</label>
+                    <select id="inputUserGender" class="w-full border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-800 text-white focus:outline-emerald-500">
                         <option value="Datu">Datu (Boss / Pemilik Utama)</option>
                         <option value="Abang">Abang</option>
                         <option value="Akak">Akak</option>
@@ -50,7 +50,7 @@
                         <option value="Machi">Machi</option>
                     </select>
                 </div>
-                <button type="button" onclick="saveUserProfile()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
+                <button type="button" onclick="saveUserProfile()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
                     Simpan & Masuk Sistem 🚀
                 </button>
             </div>
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Header & Custom Branding -->
-    <header class="bg-yellow-400 text-blue-900 shadow-md border-b-4 border-yellow-500">
+    <header class="bg-slate-900 text-slate-100 shadow-md border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col items-center text-center gap-3">
             
             <div id="headerLogoContainer" class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-2xl overflow-hidden border-2 border-yellow-500 shadow-sm">
@@ -66,24 +66,24 @@
             </div>
 
             <div>
-                <h1 id="lblGardenName" class="text-xl sm:text-2xl font-black tracking-wide text-blue-900 uppercase">KEBUN BELIMBING WULUH</h1>
-                <h2 class="text-lg sm:text-xl font-extrabold text-blue-800 tracking-wider">MEDICAL PRO</h2>
-                <p id="lblSubHeader" class="text-xs font-bold text-blue-900/80 mt-1">Medicalpro Agro Management - Machap</p>
+                <h1 id="lblGardenName" class="text-xl sm:text-2xl font-black tracking-wide text-white uppercase">KEBUN BELIMBING WULUH</h1>
+                <h2 class="text-lg sm:text-xl font-extrabold text-emerald-400 tracking-wider">MEDICAL PRO</h2>
+                <p id="lblSubHeader" class="text-xs font-bold text-slate-400 mt-1">Medicalpro Agro Management - Machap</p>
                 <div class="mt-2">
-                    <span id="lblPartnership" class="text-[10px] sm:text-xs font-semibold text-blue-900 bg-yellow-300/60 px-3 py-1 rounded-full inline-block border border-yellow-500/40">
+                    <span id="lblPartnership" class="text-[10px] sm:text-xs font-semibold text-slate-300 bg-slate-800 px-3 py-1 rounded-full inline-block border border-slate-700">
                         🤝 Kerjasama: NIBM & Gimba Sdn Bhd | Jabatan Pertanian (No. MyGAP: 24.0151)
                     </span>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 mt-2 pt-2 border-t border-yellow-500/50 w-full justify-center">
-                <button onclick="openAdminLogin()" class="bg-blue-900 hover:bg-blue-800 text-white px-3 py-1 rounded-lg text-xs font-bold shadow">
+            <div class="flex items-center gap-3 mt-2 pt-2 border-t border-slate-800 w-full justify-center">
+                <button onclick="openAdminLogin()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1 rounded-lg text-xs font-bold shadow border border-slate-700">
                     🔐 Panel Admin Utama
                 </button>
                 <div class="flex items-center gap-1">
-                    <button onclick="changeLang('ms')" id="btnLangMs" class="px-2.5 py-0.5 rounded text-xs bg-blue-900 text-white font-bold">MY</button>
-                    <button onclick="changeLang('id')" id="btnLangId" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">ID</button>
-                    <button onclick="changeLang('en')" id="btnLangEn" class="px-2.5 py-0.5 rounded text-xs bg-yellow-600 text-white">EN</button>
+                    <button onclick="changeLang('ms')" id="btnLangMs" class="px-2.5 py-0.5 rounded text-xs bg-emerald-600 text-white font-bold">MY</button>
+                    <button onclick="changeLang('id')" id="btnLangId" class="px-2.5 py-0.5 rounded text-xs bg-slate-800 text-slate-300">ID</button>
+                    <button onclick="changeLang('en')" id="btnLangEn" class="px-2.5 py-0.5 rounded text-xs bg-slate-800 text-slate-300">EN</button>
                 </div>
             </div>
 
@@ -99,8 +99,8 @@
         </div>
 
         <!-- WIDGET ASISTEN AI -->
-        <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
-            <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
+        <section class="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 border border-indigo-500/40 rounded-3xl p-5 text-white shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-indigo-900 pb-3">
                 <div class="flex items-center gap-3">
                     <div id="aiAvatarContainer" class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-indigo-400 shadow">
                         👩‍💻
@@ -117,7 +117,7 @@
                     <button onclick="startVoiceChat()" id="btnVoiceChat" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow animate-pulse">
                         🎙️ Cakap AI
                     </button>
-                    <button onclick="speakLastAiMessage()" class="bg-indigo-700 hover:bg-indigo-600 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
+                    <button onclick="speakLastAiMessage()" class="bg-indigo-800 hover:bg-indigo-700 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
                         🔊 Ulang
                     </button>
                 </div>
@@ -127,131 +127,161 @@
                 🔴 Sedang mendengar suara anda... Sila cakap sekarang!
             </div>
 
-            <div id="aiChatResponseBox" class="bg-black/35 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
+            <div id="aiChatResponseBox" class="bg-black/35 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/20 min-h-[70px] text-indigo-100">
                 Memuat turun sambutan...
             </div>
 
             <div class="flex flex-wrap gap-2 text-xs">
-                <button type="button" onclick="askAi('rekap')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📊 Rekap Bulanan & Pekerja</button>
-                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Stok Baja & Status Habis</button>
-                <button type="button" onclick="askAi('jobdesk')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">📋 Rekomendasi Job Desk Pekerja</button>
+                <button type="button" onclick="askAi('rekap')" class="bg-emerald-800 hover:bg-emerald-700 px-3 py-1.5 rounded-xl border border-emerald-600 text-white font-semibold">📊 Rekap Bulanan & Pekerja</button>
+                <button type="button" onclick="askAi('baja')" class="bg-amber-800 hover:bg-amber-700 px-3 py-1.5 rounded-xl border border-amber-600 text-white font-semibold">🧪 Stok Baja & Status Habis</button>
+                <button type="button" onclick="askAi('jobdesk')" class="bg-sky-800 hover:bg-sky-700 px-3 py-1.5 rounded-xl border border-sky-600 text-white font-semibold">📋 Rekomendasi Job Desk Pekerja</button>
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa rekap bulan ini atau status baja?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa rekap bulan ini atau status baja?)..." class="flex-1 bg-slate-900 border border-slate-700 text-white placeholder-slate-400 p-2.5 rounded-xl text-sm focus:outline-none">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya</button>
             </form>
         </section>
 
-        <!-- KOTAK CUACA LIVE & PREDIKSI 5 JAM KE DEPAN REAL-TIME (IKON SIANG/MALAM) -->
-        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
-            <div class="flex justify-between items-center mb-1">
-                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA LIVE & PREDIKSI 5 JAM KE DEPAN - MACHAP</span>
-                <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
+        <!-- KOTAK CUACA STYLE GOOGLE WEATHER -->
+        <section class="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 text-white shadow-xl space-y-5">
+            
+            <!-- Lokasi & Waktu Atas -->
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="text-xs sm:text-sm font-bold text-slate-200 tracking-wide">Simpang Renggam, Johor</span>
+                </div>
+                <span id="liveClock" class="text-xs font-mono bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg font-bold border border-slate-700">--:--:--</span>
             </div>
 
-            <div class="flex items-center gap-4 my-2">
-                <div id="weatherIcon" class="text-5xl">⛅</div>
+            <!-- Bagian Suhu Utama & Kondisi (Style Google Weather) -->
+            <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-3xl font-bold" id="tempDisplay">--°C</div>
-                    <div class="text-sm font-semibold text-sky-200" id="condDisplay">Memuat turun data cuaca semasa...</div>
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Saat ini</div>
+                    <div class="flex items-baseline gap-3">
+                        <span id="tempDisplay" class="text-5xl sm:text-6xl font-light tracking-tighter">--°</span>
+                        <div id="weatherMainIconContainer" class="text-4xl">⛅</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div id="condDisplay" class="text-lg sm:text-xl font-medium text-slate-200">Memuat turun...</div>
+                    <div id="feelsLikeDisplay" class="text-xs sm:text-sm text-slate-400 mt-0.5">Terasa seperti --°</div>
                 </div>
             </div>
 
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/25">
-                <div class="text-xs font-bold text-yellow-300 uppercase mb-1">🤖 Keputusan AI Berdasarkan Cuaca & Tanah:</div>
-                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Memproses ramalan...</p>
+            <!-- Prediksi Per Jam (Baris 5 Jam ke Depan Style Google) -->
+            <div class="pt-2">
+                <div id="hourlyForecastContainer" class="grid grid-cols-5 gap-2 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80 text-center">
+                    <!-- Javascript will populate hourly cards here -->
+                </div>
             </div>
 
-            <div>
-                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Prediksi Cuaca Live (Per 1 Jam untuk 5 Jam ke Depan):</div>
-                <div id="hourlyForecastContainer" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+            <!-- Ilustrasi Estetik Bawah Kotak Cuaca -->
+            <div class="relative h-16 rounded-xl bg-gradient-to-t from-slate-950 to-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden px-4">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <span id="weatherIllustrationText" class="text-xs font-medium text-slate-400 z-10 text-center">🌙 Malam tenang di estet Machap - Sesuai untuk istirahat.</span>
             </div>
-        </div>
+
+            <!-- Prakiraan Harian (Sen, Sel, Rab, Kam, Jum) Style Google -->
+            <div>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Prakiraan 5 Hari Kedepan</div>
+                <div id="dailyForecastContainer" class="grid grid-cols-5 gap-1.5 sm:gap-2">
+                    <!-- Javascript will populate daily cards here -->
+                </div>
+            </div>
+
+            <!-- Rekomendasi AI Berdasarkan Cuaca -->
+            <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
+                <div class="text-xs font-bold text-yellow-400 uppercase mb-1">🤖 Keputusan AI Berdasarkan Cuaca & Tanah:</div>
+                <p id="smartRecommendation" class="text-xs sm:text-sm leading-relaxed text-slate-300">Memproses ramalan...</p>
+            </div>
+
+        </section>
 
         <!-- Boss Portal & Walkie-Talkie -->
-        <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4 mb-6">
-            <h3 id="lblBossPortalTitle" class="font-bold text-amber-900 flex items-center gap-2 text-lg">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
+        <section class="bg-amber-950/30 border border-amber-600/30 p-5 rounded-3xl shadow-sm space-y-4 mb-6">
+            <h3 id="lblBossPortalTitle" class="font-bold text-amber-400 flex items-center gap-2 text-base">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
             
-            <div class="flex gap-2 border-b border-amber-300 pb-2">
+            <div class="flex gap-2 border-b border-amber-900/50 pb-2">
                 <button type="button" onclick="switchBossMode('text')" id="btnModeText" class="px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-bold">Mesej Teks</button>
-                <button type="button" onclick="switchBossMode('voice')" id="btnModeVoice" class="px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-xs font-bold">🎙️ Rakaman Suara</button>
+                <button type="button" onclick="switchBossMode('voice')" id="btnModeVoice" class="px-3 py-1 bg-slate-800 text-amber-400 rounded-lg text-xs font-bold border border-amber-600/30">🎙️ Rakaman Suara</button>
             </div>
 
             <form id="bossOrderForm" class="flex gap-2">
-                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru..." required class="flex-1 border border-amber-300 p-2.5 rounded-xl text-sm bg-white">
-                <button type="submit" id="btnSendOrder" class="bg-amber-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Hantar</button>
+                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru..." required class="flex-1 border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-900 text-white">
+                <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Hantar</button>
             </form>
 
-            <div id="bossVoiceContainer" class="hidden flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl border border-amber-300">
+            <div id="bossVoiceContainer" class="hidden flex flex-col sm:flex-row items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-700">
                 <button type="button" id="btnRecordAudio" onclick="toggleRecording()" class="bg-rose-600 text-white px-4 py-2 rounded-xl text-xs font-bold">🔴 Mula Rakam</button>
-                <span id="recordingStatus" class="text-xs font-semibold text-slate-500">Tekan butang untuk rakam walkie-talkie.</span>
+                <span id="recordingStatus" class="text-xs font-semibold text-slate-400">Tekan butang untuk rakam walkie-talkie.</span>
                 <button type="button" id="btnSendVoice" onclick="sendVoiceNote()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hidden">Kirim</button>
             </div>
 
             <div class="space-y-2 pt-2">
-                <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-800 uppercase tracking-wider">Riwayat Arahan:</h4>
+                <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-500 uppercase tracking-wider">Riwayat Arahan:</h4>
                 <div id="bossHistoryContainer" class="space-y-2"></div>
             </div>
         </section>
 
         <!-- Navigation Tabs -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs">📋 <span id="navTasks">Tugas Harian</span></button>
-            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">📦 <span id="navSupply">Stok & Suplai</span></button>
-            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🧪 <span id="navStock">Bio Baja</span></button>
-            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🚜 <span id="navAssets">Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">💰 <span id="navExpenses">Perbelanjaan</span></button>
-            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-950/90 backdrop-blur pb-2">
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border border-emerald-500 text-center font-bold text-xs">📋 <span id="navTasks">Tugas Harian</span></button>
+            <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs">📦 <span id="navSupply">Stok & Suplai</span></button>
+            <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs">🧪 <span id="navStock">Bio Baja</span></button>
+            <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs">🚜 <span id="navAssets">Aset Kebun</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs">💰 <span id="navExpenses">Perbelanjaan</span></button>
+            <button onclick="switchTab('income')" id="tabBtn-income" class="bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs col-span-2 sm:col-span-1">💵 <span id="navIncome">Pendapatan</span></button>
         </div>
 
         <!-- CONTAINER HALAMAN / TAB -->
         <div id="tabContentContainer">
 
             <!-- Task Management Page -->
-            <section id="page-tasks" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-4">
+            <section id="page-tasks" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h3 id="sectionTaskTitle" class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
+                    <h3 id="sectionTaskTitle" class="text-lg font-bold text-emerald-400">📌 Tugas Harian & Jadual Rutin</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                        <select id="filterTaskMonth" onchange="renderTasks()" class="border border-slate-700 p-2 rounded-lg text-xs bg-slate-800 text-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('tasks')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('tasks')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
                     </div>
                 </div>
 
                 <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan" required class="border p-2 rounded-lg text-sm">
-                    <input type="text" id="taskCategory" placeholder="Kategori" required class="border p-2 rounded-lg text-sm">
-                    <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="taskTitle" placeholder="Nama Pekerjaan" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <input type="text" id="taskCategory" placeholder="Kategori" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <select id="taskWorkerSelect" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
                         <option value="">Pilih Pekerja</option>
                     </select>
-                    <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm">
+                    <input type="date" id="taskDate" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
                     
-                    <div class="sm:col-span-2 grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border">
+                    <div class="sm:col-span-2 grid grid-cols-2 gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Guna Stok Bio Baja?</label>
-                            <select id="taskStockItem" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1">Guna Stok Bio Baja?</label>
+                            <select id="taskStockItem" class="w-full border border-slate-700 p-1.5 rounded-lg text-xs bg-slate-800 text-white">
                                 <option value="">-- Tanpa Stok --</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Jumlah Dipakai</label>
-                            <input type="number" id="taskQty" placeholder="0" min="1" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1">Jumlah Dipakai</label>
+                            <input type="number" id="taskQty" placeholder="0" min="1" class="w-full border border-slate-700 p-1.5 rounded-lg text-xs bg-slate-800 text-white">
                         </div>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (HD Maks 1MB)</label>
-                        <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Lampiran Foto (HD Maks 1MB)</label>
+                        <input type="file" id="imageInput" accept="image/*" class="w-full border border-slate-700 p-1.5 rounded-lg text-sm bg-slate-800 text-slate-300">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Simpan Report Kerja</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg font-semibold text-sm">Simpan Report Kerja</button>
                 </form>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
+                    <table class="w-full text-left text-sm border-collapse text-slate-200">
                         <thead>
-                            <tr class="bg-slate-100 border-b">
+                            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400">
                                 <th class="p-3">Foto HD</th>
                                 <th class="p-3">Tugasan</th>
                                 <th class="p-3">Kategori</th>
@@ -262,30 +292,30 @@
                                 <th class="p-3">Tindakan</th>
                             </tr>
                         </thead>
-                        <tbody id="taskTableBody"></tbody>
+                        <tbody id="taskTableBody" class="divide-y divide-slate-800"></tbody>
                     </table>
                 </div>
             </section>
 
             <!-- Supply & Stock Management Page -->
-            <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <div class="flex justify-between items-center border-b pb-3">
+            <section id="page-supply" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm hidden space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
-                        <p class="text-xs text-slate-500">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
+                        <h3 class="text-lg font-bold text-white">📦 Manajemen Stok & Suplai Kebun</h3>
+                        <p class="text-xs text-slate-400">Catat hasil tuai, stok gudang, dan pengiriman suplai harian</p>
                     </div>
                 </div>
 
-                <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
-                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Tambah Catatan Baru</div>
+                <form id="supplyForm" class="bg-slate-950 p-4 rounded-2xl space-y-3 border border-slate-800">
+                    <div class="text-xs font-bold text-slate-300 uppercase">➕ Tambah Catatan Baru</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Tanggal</label>
-                            <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-400 block mb-1">Tanggal</label>
+                            <input type="date" id="inputDate" required class="w-full text-xs p-2 rounded-xl border border-slate-700 bg-slate-800 text-white">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
-                            <select id="inputItem" class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-400 block mb-1">Jenis Hasil Kebun</label>
+                            <select id="inputItem" class="w-full text-xs p-2 rounded-xl border border-slate-700 bg-slate-800 text-white">
                                 <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar</option>
                                 <option value="Buah Belimbing kismis">Buah Belimbing kismis</option>
                                 <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh</option>
@@ -297,128 +327,128 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Aktivitas</label>
-                            <select id="inputAction" class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-400 block mb-1">Aktivitas</label>
+                            <select id="inputAction" class="w-full text-xs p-2 rounded-xl border border-slate-700 bg-slate-800 text-white">
                                 <option value="tuai">Hasil Tuai (Masuk Stok)</option>
                                 <option value="suplai">Suplai / Kirim (Kurangi Stok)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Jumlah</label>
-                            <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-400 block mb-1">Jumlah</label>
+                            <input type="number" id="inputQty" placeholder="Contoh: 50" required class="w-full text-xs p-2 rounded-xl border border-slate-700 bg-slate-800 text-white">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-600 block mb-1">Keterangan</label>
-                            <input type="text" id="inputDesc" placeholder="Keterangan" class="w-full text-xs p-2 rounded-xl border bg-white">
+                            <label class="text-xs text-slate-400 block mb-1">Keterangan</label>
+                            <input type="text" id="inputDesc" placeholder="Keterangan" class="w-full text-xs p-2 rounded-xl border border-slate-700 bg-slate-800 text-white">
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Data</button>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Data</button>
                 </form>
 
                 <div>
-                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📊 Sisa Stok:</div>
+                    <div class="text-xs font-bold text-slate-300 uppercase mb-2">📊 Sisa Stok:</div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="stockSummaryContainer"></div>
                 </div>
 
                 <div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                        <table class="w-full text-left text-xs border-collapse text-slate-200">
                             <thead>
-                                <tr class="bg-slate-100 border-b"><th class="p-2">Tanggal</th><th class="p-2">Item</th><th class="p-2">Aksi</th><th class="p-2">Jumlah</th><th class="p-2">Keterangan</th><th class="p-2 text-center">Aksi</th></tr>
+                                <tr class="bg-slate-950 border-b border-slate-800 text-slate-400"><th class="p-2">Tanggal</th><th class="p-2">Item</th><th class="p-2">Aksi</th><th class="p-2">Jumlah</th><th class="p-2">Keterangan</th><th class="p-2 text-center">Aksi</th></tr>
                             </thead>
-                            <tbody id="supplyTableBody"></tbody>
+                            <tbody id="supplyTableBody" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
             <!-- Inventory / Stok Section Page -->
-            <section id="page-inventory" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <h3 class="text-lg font-bold mb-4 text-emerald-800">🧪 Stok Bio Baja & Nutrisi Organik</h3>
+            <section id="page-inventory" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm hidden space-y-4">
+                <h3 class="text-lg font-bold mb-4 text-emerald-400">🧪 Stok Bio Baja & Nutrisi Organik</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="inventoryContainer"></div>
             </section>
 
             <!-- Assets Section Page -->
-            <section id="page-assets" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+            <section id="page-assets" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm hidden space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-emerald-800">🚜 Aset & Peralatan Kebun</h3>
+                    <h3 class="text-lg font-bold text-emerald-400">🚜 Aset & Peralatan Kebun</h3>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="assetsContainer"></div>
             </section>
 
             <!-- Expenses Section Page -->
-            <section id="page-expenses" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+            <section id="page-expenses" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm hidden space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h3 class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
+                    <h3 class="text-lg font-bold text-emerald-400">💰 Perbelanjaan Kebun (Bulanan)</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                        <select id="filterExpenseMonth" onchange="renderExpenses()" class="border border-slate-700 p-2 rounded-lg text-xs bg-slate-800 text-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
                     </div>
                 </div>
 
-                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
-                    <input type="text" id="expTitle" placeholder="Keterangan Belanja" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
+                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <input type="text" id="expTitle" placeholder="Keterangan Belanja" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
+                    <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
+                    <input type="date" id="expDate" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Resit HD</label>
-                        <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <label class="block text-[10px] font-semibold text-slate-400 mb-1">Resit HD</label>
+                        <input type="file" id="expReceiptInput" accept="image/*" class="w-full border border-slate-700 p-1 rounded-lg text-xs bg-slate-800 text-slate-300">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
                 </form>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
+                    <table class="w-full text-left text-sm border-collapse text-slate-200">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Resit HD</th><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400"><th class="p-3">Resit HD</th><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
                         </thead>
-                        <tbody id="expenseTableBody"></tbody>
+                        <tbody id="expenseTableBody" class="divide-y divide-slate-800"></tbody>
                     </table>
                 </div>
             </section>
 
             <!-- Income Section Page -->
-            <section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+            <section id="page-income" class="tab-page bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-sm hidden space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h3 class="text-lg font-bold text-emerald-800">💵 Pendapatan Hasil Kebun</h3>
+                    <h3 class="text-lg font-bold text-emerald-400">💵 Pendapatan Hasil Kebun</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <select id="filterIncomeMonth" onchange="renderIncome()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                        <select id="filterIncomeMonth" onchange="renderIncome()" class="border border-slate-700 p-2 rounded-lg text-xs bg-slate-800 text-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('income')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('income')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
                     </div>
                 </div>
 
-                <div id="staffLoginPanel" class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div id="staffLoginPanel" class="bg-emerald-950/40 border border-emerald-600/40 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div>
-                        <h4 class="font-bold text-sm text-emerald-900">🔐 Akses Input Pendapatan (Staff)</h4>
-                        <p class="text-xs text-emerald-700" id="staffStatusText">Status: Belum Log Masuk</p>
+                        <h4 class="font-bold text-sm text-emerald-300">🔐 Akses Input Pendapatan (Staff)</h4>
+                        <p class="text-xs text-emerald-400/80" id="staffStatusText">Status: Belum Log Masuk</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
-                        <input type="password" id="staffPassInput" placeholder="Kata Sandi Staff" class="border p-2 rounded-lg text-xs bg-white w-full sm:w-40">
-                        <button type="button" onclick="verifyStaffLogin()" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Masuk</button>
+                        <input type="password" id="staffPassInput" placeholder="Kata Sandi Staff" class="border border-slate-700 p-2 rounded-lg text-xs bg-slate-800 text-white w-full sm:w-40">
+                        <button type="button" onclick="verifyStaffLogin()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">Masuk</button>
                     </div>
                 </div>
 
-                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border opacity-50 pointer-events-none">
-                    <input type="text" id="incTitle" placeholder="Produk / Hasil" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="incAmount" placeholder="Jumlah (RM)" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="date" id="incDate" required class="border p-2 rounded-lg text-sm bg-white">
+                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800 opacity-50 pointer-events-none">
+                    <input type="text" id="incTitle" placeholder="Produk / Hasil" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
+                    <input type="text" id="incAmount" placeholder="Jumlah (RM)" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
+                    <input type="date" id="incDate" required class="border border-slate-700 p-2 rounded-lg text-sm bg-slate-800 text-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Bukti Foto HD</label>
-                        <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <label class="block text-[10px] font-semibold text-slate-400 mb-1">Bukti Foto HD</label>
+                        <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border border-slate-700 p-1 rounded-lg text-xs bg-slate-800 text-slate-300">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Pendapatan</button>
+                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-500 text-white py-2 rounded-lg text-xs font-semibold">Simpan Pendapatan</button>
                 </form>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
+                    <table class="w-full text-left text-sm border-collapse text-slate-200">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Bukti Foto HD</th><th class="p-3">Keterangan</th><th class="p-3">Staff</th><th class="p-3">Jumlah</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400"><th class="p-3">Bukti Foto HD</th><th class="p-3">Keterangan</th><th class="p-3">Staff</th><th class="p-3">Jumlah</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
                         </thead>
-                        <tbody id="incomeTableBody"></tbody>
+                        <tbody id="incomeTableBody" class="divide-y divide-slate-800"></tbody>
                     </table>
                 </div>
             </section>
@@ -428,8 +458,8 @@
     </main>
 
     <!-- MODAL INVOICE PDF & TANDA TANGAN -->
-    <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
-        <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
+    <div id="invoiceModal" class="fixed inset-0 bg-slate-950/80 hidden overflow-y-auto p-4 z-50">
+        <div class="bg-white text-slate-900 max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
             <div id="printableInvoiceArea" class="space-y-6 bg-white p-6 rounded-2xl border border-slate-200">
                 <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-4">
@@ -506,64 +536,64 @@
 
             <div class="flex justify-end gap-3 pt-2 border-t no-print">
                 <button type="button" onclick="closeInvoiceModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-semibold">Tutup ✕</button>
-                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak</button>
+                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak</button>
             </div>
 
         </div>
     </div>
 
     <!-- ADMIN MODAL -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-2xl max-w-sm w-full shadow-xl">
-            <h3 class="text-lg font-bold text-emerald-800 mb-2">🔐 Log Masuk Admin</h3>
-            <input type="password" id="adminPasswordInput" placeholder="Kata Sandi" class="w-full border p-2.5 rounded-xl text-sm mb-4">
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-sm w-full shadow-xl">
+            <h3 class="text-lg font-bold text-emerald-400 mb-2">🔐 Log Masuk Admin</h3>
+            <input type="password" id="adminPasswordInput" placeholder="Kata Sandi" class="w-full border border-slate-700 bg-slate-800 text-white p-2.5 rounded-xl text-sm mb-4">
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-200 rounded-xl text-xs font-semibold">Batal</button>
+                <button type="button" onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Batal</button>
                 <button type="button" onclick="verifyAdmin()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">Masuk</button>
             </div>
         </div>
     </div>
 
     <!-- PANEL ADMIN DASHBOARD -->
-    <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
-        <div class="bg-white max-w-4xl mx-auto rounded-2xl p-6 shadow-2xl my-8 space-y-6">
-            <div class="flex justify-between items-center border-b pb-4">
-                <h2 class="text-xl font-bold text-emerald-800">⚙️ Panel Tetapan Admin</h2>
-                <button type="button" onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
+    <div id="adminDashboardModal" class="fixed inset-0 bg-slate-950/80 hidden overflow-y-auto p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 max-w-4xl mx-auto rounded-3xl p-6 shadow-2xl my-8 space-y-6 text-white">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold text-emerald-400">⚙️ Panel Tetapan Admin</h2>
+                <button type="button" onclick="closeAdminDashboard()" class="text-rose-400 font-bold px-3 py-1 bg-rose-950/50 rounded-lg text-sm border border-rose-900">Tutup ✕</button>
             </div>
 
-            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-300 space-y-3">
-                <h4 class="font-bold text-sm text-indigo-900">👩‍💻 Pengurusan AI Asisten Kebun</h4>
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h4 class="font-bold text-sm text-indigo-400">👩‍💻 Pengurusan AI Asisten Kebun</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="text" id="settingAiName" class="w-full border p-2 rounded-lg text-sm bg-white" placeholder="Nama AI">
-                    <input type="file" id="settingAiAvatarInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                    <input type="text" id="settingAiName" class="w-full border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm" placeholder="Nama AI">
+                    <input type="file" id="settingAiAvatarInput" accept="image/*" class="w-full border border-slate-700 bg-slate-800 text-slate-300 p-1 rounded-lg text-xs">
                 </div>
                 <button type="button" onclick="saveAiSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Tetapan AI</button>
             </div>
 
-            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
-                <h4 class="font-bold text-sm text-slate-700">Pengurusan Pekerja & Job Desk Kustom</h4>
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h4 class="font-bold text-sm text-slate-300">Pengurusan Pekerja & Job Desk Kustom</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <input type="text" id="workerNameInput" placeholder="Nama Pekerja" class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="workerMandatoryTask" placeholder="Job Wajib" class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="workerExtraTask" placeholder="Job Sampingan" class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="workerNameInput" placeholder="Nama Pekerja" class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <input type="text" id="workerMandatoryTask" placeholder="Job Wajib" class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <input type="text" id="workerExtraTask" placeholder="Job Sampingan" class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
                 </div>
                 <button type="button" onclick="addWorkerWithCustomTasks()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
                 <div id="workerListTags" class="space-y-2 mt-3"></div>
             </div>
 
-            <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-sm text-slate-700 mb-2">Tambah Master Stok Bio Baja</h4>
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                <h4 class="font-bold text-sm text-slate-300 mb-2">Tambah Master Stok Bio Baja</h4>
                 <form id="inventoryForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                    <input type="text" id="invName" placeholder="Nama Bio Baja" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="number" id="invStock" placeholder="Stok Awal" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="invAdvice" placeholder="Kegunaan / Manfaat Baja" required class="border p-2 rounded-lg text-sm bg-white sm:col-span-2">
-                    <input type="file" id="invImageInput" accept="image/*" class="w-full border p-1 rounded-lg text-sm bg-white sm:col-span-2">
+                    <input type="text" id="invName" placeholder="Nama Bio Baja" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <input type="number" id="invStock" placeholder="Stok Awal" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm">
+                    <input type="text" id="invAdvice" placeholder="Kegunaan / Manfaat Baja" required class="border border-slate-700 bg-slate-800 text-white p-2 rounded-lg text-sm sm:col-span-2">
+                    <input type="file" id="invImageInput" accept="image/*" class="w-full border border-slate-700 bg-slate-800 text-slate-300 p-1 rounded-lg text-sm sm:col-span-2">
                     <button type="submit" class="sm:col-span-2 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Stok Baja</button>
                 </form>
-                <div class="overflow-x-auto max-h-48 overflow-y-auto border rounded-lg bg-white">
+                <div class="overflow-x-auto max-h-48 overflow-y-auto border border-slate-800 rounded-lg bg-slate-900">
                     <table class="w-full text-left text-xs border-collapse">
-                        <thead><tr class="bg-slate-100 border-b"><th class="p-2">Nama</th><th class="p-2">Stok</th><th class="p-2">Aksi</th></tr></thead>
+                        <thead><tr class="bg-slate-950 border-b border-slate-800 text-slate-400"><th class="p-2">Nama</th><th class="p-2">Stok</th><th class="p-2">Aksi</th></tr></thead>
                         <tbody id="adminInventoryTableBody"></tbody>
                     </table>
                 </div>
@@ -753,23 +783,25 @@
             const target = document.getElementById('page-' + tabId);
             if (target) target.classList.remove('hidden');
             document.querySelectorAll('[id^="tabBtn-"]').forEach(b => {
-                b.className = "bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs";
+                b.className = "bg-slate-900 text-slate-300 p-2.5 rounded-xl shadow-sm border border-slate-800 text-center font-semibold text-xs";
             });
             const activeBtn = document.getElementById('tabBtn-' + tabId);
-            if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
+            if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border border-emerald-500 text-center font-bold text-xs";
         }
 
-        // --- PREDIKSI CUACA LIVE & 5 JAM KE DEPAN (IKON OTOMATIS SIANG / MALAM) ---
+        // --- GOOGLE WEATHER STYLE LIVE PREDICTION & DAILY FORECAST ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
             if (clockEl) clockEl.innerText = now.toTimeString().substring(0, 8);
 
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=temperature_2m,precipitation')
+            // Fetch koordinat Simpang Renggam / Machap, Johor (Lat: 1.8227, Lon: 103.3106)
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather && data.hourly) {
-                        const temp = data.current_weather.temperature;
+                        const temp = Math.round(data.current_weather.temperature);
+                        const feelsLike = Math.round(temp + 3); // estimasi terasa seperti
                         const hourlyTime = data.hourly.time;
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
@@ -793,39 +825,76 @@
                         }
                         currentWeatherData.rainSoon = rainSoon;
 
-                        // Tentukan ikon utama (Matahari jika siang 06:00-18:00, Bulan jika malam)
                         let currentHourNum = now.getHours();
                         let isNight = currentHourNum < 6 || currentHourNum >= 18;
-                        let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "☀️");
+                        let condText = rainSoon ? "Berawan / Hujan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
+                        let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
 
-                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°C`;
-                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = rainSoon ? "Potensi Hujan Jam Ini" : (isNight ? "Malam Tenang Estet Machap" : "Cerah Estet Machap");
-                        if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = mainIcon;
+                        // Update Google Weather main panel
+                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay.innerText = `${temp}°`; // fixed in next line
+                        document.getElementById('tempDisplay').innerText = `${temp}°`;
+                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
+                        if (document.getElementById('feelsLikeDisplay')) document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${feelsLike}°`;
+                        if (document.getElementById('weatherMainIconContainer')) document.getElementById('weatherMainIconContainer').innerText = mainIcon;
 
-                        // Tepat 5 jam ke depan, otomatis ikon berubah sesuai jam (Malam = Bulan, Siang = Matahari)
+                        // 5 Jam ke depan (Style Google Weather Hourly)
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
                             for (let i = 0; i < 5; i++) {
                                 let tIdx = idx + i;
                                 if (tIdx < hourlyTime.length) {
-                                    let timeStr = hourlyTime[tIdx]; // format YYYY-MM-DDTHH:00
-                                    let timeOnly = timeStr.substring(11, 16);
-                                    let itemHourNum = parseInt(timeStr.substring(11, 13), 10);
+                                    let timeStr = hourlyTime[tIdx];
+                                    let timeHourInt = parseInt(timeStr.substring(11, 13), 10);
                                     
-                                    let pVal = hourlyPrecip[tIdx] || 0;
-                                    let tVal = hourlyTemp[tIdx];
+                                    // Format jam ke format AM/PM ala Google Weather
+                                    let displayHour = "";
+                                    if (i === 0) {
+                                        displayHour = "Sekarang";
+                                    } else {
+                                        let h12 = timeHourInt % 12;
+                                        if (h12 === 0) h12 = 12;
+                                        let ampm = timeHourInt >= 12 ? "PM" : "AM";
+                                        displayHour = `${h12} ${ampm}`;
+                                    }
 
-                                    let itemIsNight = itemHourNum < 6 || itemHourNum >= 18;
-                                    let icon = pVal > 0.1 ? "🌧️" : (itemIsNight ? "🌙" : "☀️");
-                                    let labelTime = i === 0 ? "Sekarang ("+timeOnly+")" : timeOnly;
+                                    let pVal = hourlyPrecip[tIdx] || 0;
+                                    let tVal = Math.round(hourlyTemp[tIdx]);
+                                    let itemIsNight = timeHourInt < 6 || timeHourInt >= 18;
+                                    let icon = pVal > 0.2 ? "🌧️" : (itemIsNight ? "🌙" : "⛅");
+                                    let rainPercent = pVal > 0.1 ? Math.round(pVal * 30) + "%" : "";
 
                                     hContainer.innerHTML += `
-                                        <div class="bg-white/10 rounded-xl p-2 text-center border border-white/20">
-                                            <div class="text-[10px] text-sky-200 font-mono font-bold">${labelTime}</div>
-                                            <div class="text-xl my-1">${icon}</div>
-                                            <div class="text-xs font-bold">${tVal}°C</div>
-                                            <div class="text-[9px] text-white/80">${pVal > 0 ? pVal+'mm' : 'Kering'}</div>
+                                        <div class="flex flex-col items-center justify-between py-1">
+                                            <span class="text-[11px] font-medium text-slate-300">${tVal}°</span>
+                                            <span class="text-[10px] text-cyan-400 font-bold my-1">${rainPercent}</span>
+                                            <span class="text-lg my-1">${icon}</span>
+                                            <span class="text-[10px] text-slate-400 font-mono mt-1">${displayHour}</span>
+                                        </div>
+                                    `;
+                                }
+                            }
+                        }
+
+                        // Prakiraan 5 Hari Kedepan (Daily Forecast Style Google)
+                        if (data.daily && data.daily.time) {
+                            const dailyContainer = document.getElementById('dailyForecastContainer');
+                            if (dailyContainer) {
+                                dailyContainer.innerHTML = "";
+                                const daysName = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+                                for (let d = 0; d < 5; d++) {
+                                    let dDate = new Date(data.daily.time[d]);
+                                    let dayStr = d === 0 ? "Hari Ini" : daysName[dDate.getDay()];
+                                    let maxT = Math.round(data.daily.temperature_2m_max[d]);
+                                    let minT = Math.round(data.daily.temperature_2m_min[d]);
+                                    let probRain = data.daily.precipitation_probability_max[d] || 10;
+                                    let dIcon = probRain > 40 ? "🌧️" : "⛅";
+
+                                    dailyContainer.innerHTML += `
+                                        <div class="bg-slate-950/60 p-2 rounded-2xl border border-slate-800 flex flex-col items-center justify-between text-center">
+                                            <span class="text-xs font-bold text-slate-300">${dayStr}</span>
+                                            <span class="text-xl my-1">${dIcon}</span>
+                                            <div class="text-[11px] font-semibold text-slate-200">${maxT}°<span class="text-slate-500 font-normal">/${minT}°</span></div>
                                         </div>
                                     `;
                                 }
@@ -913,7 +982,7 @@
             c.innerHTML = "";
             workers.forEach((w, i) => {
                 let n = typeof w === 'object' ? w.name : w;
-                c.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded text-xs font-semibold flex justify-between items-center">👤 ${n} <button type="button" onclick="deleteWorker(${i})" class="text-rose-500 font-bold">×</button></span>`;
+                c.innerHTML += `<span class="bg-emerald-950 text-emerald-300 border border-emerald-800 px-3 py-1 rounded text-xs font-semibold flex justify-between items-center">👤 ${n} <button type="button" onclick="deleteWorker(${i})" class="text-rose-400 font-bold">×</button></span>`;
             });
         }
         function addWorkerWithCustomTasks() {
@@ -959,10 +1028,10 @@
                 if(r.action === 'tuai') stocks[r.item] += r.qty; else stocks[r.item] -= r.qty;
             });
             ["Buah Belimbing Buluh besar", "Buah Belimbing kismis", "Daun Teh Belimbing Buluh"].forEach(item => {
-                sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${item}</div><div class="text-sm font-bold text-blue-600">${stocks[item]||0} Unit</div></div>`;
+                sc.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2 rounded text-center"><div class="text-[10px] text-slate-400">${item}</div><div class="text-sm font-bold text-cyan-400">${stocks[item]||0} Unit</div></div>`;
             });
             supplyData.forEach(r => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${r.action}</td><td class="p-2 font-bold">${r.qty}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center"><button type="button" onclick="deleteSupply(${r.id})" class="text-red-500">✕</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${r.action}</td><td class="p-2 font-bold">${r.qty}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center"><button type="button" onclick="deleteSupply(${r.id})" class="text-rose-400">✕</button></td></tr>`;
             });
         }
         function deleteSupply(id) {
@@ -980,7 +1049,7 @@
             c.innerHTML = ""; sel.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
             inventory.forEach(item => {
                 sel.innerHTML += `<option value="${item.name}">${item.name} (Sisa: ${item.stock})</option>`;
-                c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-800">${item.name}</h4><p class="text-xs">Sisa: <b>${item.stock}</b></p><p class="text-xs text-slate-500 mt-1">🌿 ${item.advice}</p></div>`;
+                c.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-400">${item.name}</h4><p class="text-xs text-slate-300">Sisa: <b>${item.stock}</b></p><p class="text-xs text-slate-400 mt-1">🌿 ${item.advice}</p></div>`;
             });
         }
         function renderAdminInventoryTable() {
@@ -988,7 +1057,7 @@
             if(!tbody) return;
             tbody.innerHTML = "";
             inventory.forEach((item, i) => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${item.name}</td><td class="p-2 font-bold">${item.stock}</td><td class="p-2"><button type="button" onclick="deleteInv(${i})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-2">${item.name}</td><td class="p-2 font-bold">${item.stock}</td><td class="p-2"><button type="button" onclick="deleteInv(${i})" class="text-rose-400">Hapus</button></td></tr>`;
             });
         }
         document.getElementById('inventoryForm').addEventListener('submit', function(e) {
@@ -1038,7 +1107,7 @@
             const fm = document.getElementById('filterTaskMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             tasks.filter(t => fm === 'all' || t.month === fm).forEach(t => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${t.photo}','Tugas.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3 font-bold">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td><td class="p-3"><button type="button" onclick="deleteTask(${t.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${t.photo}','Tugas.jpg')" class="text-[10px] text-cyan-400 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3 font-bold">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td><td class="p-3"><button type="button" onclick="deleteTask(${t.id})" class="text-rose-400">Hapus</button></td></tr>`;
             });
         }
         function deleteTask(id) { if(db) db.collection("tasks").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
@@ -1066,7 +1135,7 @@
             const fm = document.getElementById('filterExpenseMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             expenses.filter(e => fm === 'all' || e.month === fm).forEach(ex => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${ex.receipt}','Resit.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td><td class="p-3"><button type="button" onclick="deleteExpense(${ex.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${ex.receipt}','Resit.jpg')" class="text-[10px] text-cyan-400 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-400">${ex.amount}</td><td class="p-3">${ex.date}</td><td class="p-3"><button type="button" onclick="deleteExpense(${ex.id})" class="text-rose-400">Hapus</button></td></tr>`;
             });
         }
         function deleteExpense(id) { if(db) db.collection("expenses").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
@@ -1108,7 +1177,7 @@
             const fm = document.getElementById('filterIncomeMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             incomeList.filter(i => fm === 'all' || i.month === fm).forEach(inc => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${inc.photo?`<img src="${inc.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${inc.photo}','Bukti.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${inc.title}</td><td class="p-3 text-xs font-bold">${inc.staff}</td><td class="p-3 font-bold text-emerald-600">${inc.amount}</td><td class="p-3">${inc.date}</td><td class="p-3"><button type="button" onclick="deleteIncome(${inc.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3">${inc.photo?`<img src="${inc.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${inc.photo}','Bukti.jpg')" class="text-[10px] text-cyan-400 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${inc.title}</td><td class="p-3 text-xs font-bold">${inc.staff}</td><td class="p-3 font-bold text-emerald-400">${inc.amount}</td><td class="p-3">${inc.date}</td><td class="p-3"><button type="button" onclick="deleteIncome(${inc.id})" class="text-rose-400">Hapus</button></td></tr>`;
             });
         }
         function deleteIncome(id) { if(db) db.collection("income").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
