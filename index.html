@@ -82,13 +82,13 @@
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Audio Unlock Banner untuk Walkie-Talkie & AI Voice -->
+        <!-- Audio Unlock Banner -->
         <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
             <span>🚨 Mod Audio AI & Voice Chat: Sila klik butang di sebelah untuk mengaktifkan suara sistem.</span>
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI ALL-KNOWING -->
+        <!-- WIDGET ASISTEN AI -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -839,6 +839,7 @@
             document.getElementById('lblPartnership').innerText = gardenData.partnership || "";
             document.getElementById('settingSubHeader').value = gardenData.subheader || "";
             document.getElementById('settingPartnership').value = gardenData.partnership || "";
+            if (gardenData.logo) document.getElementById('headerLogoContainer').innerHTML = `<img src="${gardenData.logo}" class="w-full h-full object-cover">`;
         }
         applyGardenSettings();
 
@@ -846,8 +847,10 @@
             gardenData.subheader = document.getElementById('settingSubHeader').value;
             gardenData.partnership = document.getElementById('settingPartnership').value;
             compressImage(document.getElementById('settingLogoInput').files[0], function(base64) {
-                if (base64) gardenData.logo = base64;
-                applyGardenSettings();
+                if (base64) {
+                    gardenData.logo = base64;
+                    applyGardenSettings();
+                }
                 alert("Identitas disimpan!");
             });
         }
@@ -1126,7 +1129,7 @@
         }
         renderIncome();
 
-        // --- FUNGSI CETAK INVOICE / PDF REKAP BULANAN BERKOTAK-KOTAK PUTIH-HITAM ---
+        // --- FUNGSI CETAK INVOICE / PDF DENGAN LOGO, KOTAK-KOTAK & TOTAL CERDAS ---
         function downloadMonthlyPdfReport(type) {
             let filterVal = 'all';
             if (type === 'tasks') filterVal = document.getElementById('filterTaskMonth').value;
@@ -1145,11 +1148,19 @@
                 titleText = "REKAP LAPORAN TUGAS HARIAN KEBUN";
             } else if (type === 'expenses') {
                 dataList = expenses.filter(ex => ex.month === filterVal);
-                titleText = "REKAP INVOICE PERBELANJAAN KEBUN";
+                titleText = "INVOICE PERBELANJAAN KEBUN";
             } else if (type === 'income') {
                 dataList = incomeList.filter(inc => inc.month === filterVal);
-                titleText = "REKAP INVOICE PENDAPATAN KEBUN";
+                titleText = "INVOICE PENDAPATAN KEBUN";
             }
+
+            let grandTotal = 0;
+            dataList.forEach(item => {
+                if (item.amount) {
+                    let num = parseFloat(item.amount.replace(/[^0-9.]/g, '')) || 0;
+                    grandTotal += num;
+                }
+            });
 
             let printWindow = window.open('', '_blank');
             let htmlContent = `
@@ -1158,17 +1169,23 @@
                 <head>
                     <title>${titleText} - ${filterVal}</title>
                     <style>
-                        body { font-family: Arial, sans-serif; background: #ffffff; color: #000000; padding: 20px; margin: 0; }
-                        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-                        .header h1 { margin: 0; font-size: 20px; text-transform: uppercase; }
-                        .header h2 { margin: 5px 0; font-size: 14px; color: #333; }
-                        .meta { margin-bottom: 15px; font-size: 12px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #ffffff; }
+                        body { font-family: Arial, sans-serif; background: #ffffff; color: #000000; padding: 25px; margin: 0; }
+                        .invoice-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px double #000; padding-bottom: 15px; margin-bottom: 20px; }
+                        .logo-area { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #fef08a; }
+                        .logo-area img { width: 100%; height: 100%; object-fit: cover; }
+                        .company-info { text-align: right; }
+                        .company-info h1 { margin: 0; font-size: 18px; text-transform: uppercase; font-weight: 900; }
+                        .company-info p { margin: 2px 0; font-size: 11px; color: #333; }
+                        .title-section { text-align: center; margin-bottom: 20px; }
+                        .title-section h2 { margin: 0; font-size: 16px; text-transform: uppercase; font-weight: bold; background: #f3f4f6; padding: 6px; border: 1px solid #000; }
+                        .meta-grid { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 15px; font-weight: bold; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 5px; background: #ffffff; }
                         th, td { border: 1px solid #000000; padding: 8px 10px; font-size: 12px; text-align: left; }
-                        th { background-color: #f2f2f2; color: #000000; font-weight: bold; text-align: center; }
+                        th { background-color: #e5e7eb; color: #000000; font-weight: bold; text-align: center; text-transform: uppercase; }
                         td { color: #000000; }
-                        .footer { margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px; }
-                        .sign-box { text-align: center; width: 200px; margin-top: 40px; }
+                        .total-row { font-weight: bold; background-color: #f9fafb; text-align: right; }
+                        .footer { margin-top: 40px; display: flex; justify-content: space-between; font-size: 12px; }
+                        .sign-box { text-align: center; width: 220px; margin-top: 20px; }
                         @media print {
                             body { -webkit-print-color-adjust: exact; }
                             button { display: none; }
@@ -1176,49 +1193,70 @@
                     </style>
                 </head>
                 <body>
-                    <div class="header">
-                        <h1>KEBUN BELIMBING WULUH - MEDICALPRO</h1>
-                        <h2>${titleText}</h2>
-                        <p style="margin: 2px 0; font-size: 11px;">Machap, Johor | No. MyGAP: 24.0151</p>
+                    <div class="invoice-header">
+                        <div class="logo-area">
+                            ${gardenData.logo ? `<img src="${gardenData.logo}">` : '🌱'}
+                        </div>
+                        <div class="company-info">
+                            <h1>KEBUN BELIMBING WULUH - MEDICALPRO</h1>
+                            <p>${gardenData.subheader}</p>
+                            <p>${gardenData.partnership}</p>
+                        </div>
                     </div>
 
-                    <div class="meta">
-                        <strong>Bulan Rekap:</strong> ${filterVal}<br>
-                        <strong>Tarikh Cetak:</strong> ${new Date().toLocaleDateString('ms-MY')}
+                    <div class="title-section">
+                        <h2>${titleText}</h2>
+                    </div>
+
+                    <div class="meta-grid">
+                        <div>Bulan Rekap: ${filterVal}</div>
+                        <div>Tarikh Cetak: ${new Date().toLocaleDateString('ms-MY')}</div>
                     </div>
 
                     <table>
                         <thead>
                             <tr>
                                 <th style="width: 40px;">No.</th>
-                                <th>Tarikh</th>
-                                <th>Keterangan / Item</th>
-                                <th>Kategori / Pekerja / Staff</th>
-                                <th>Jumlah / Status</th>
+                                <th style="width: 90px;">Tarikh</th>
+                                <th>Nama Barang / Item / Keterangan</th>
+                                <th>Kategori / Staf / Pekerja</th>
+                                <th style="width: 120px; text-align: right;">Kos / Jumlah</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
             if (dataList.length === 0) {
-                htmlContent += `<tr><td colspan="5" style="text-align: center; padding: 15px;">Tiada rekod data dijumpai untuk bulan ${filterVal}.</td></tr>`;
+                htmlContent += `<tr><td colspan="5" style="text-align: center; padding: 20px;">Tiada rekod data dijumpai untuk bulan ${filterVal}.</td></tr>`;
             } else {
                 dataList.forEach((item, index) => {
-                    let col2 = item.title || item.item || '-';
-                    let col3 = item.worker || item.staff || item.desc || '-';
-                    let col4 = item.amount || item.qty || item.status || '-';
-                    if(type === 'tasks') col4 = `${item.status} (${item.stockUsed})`;
+                    let itemName = item.title || item.item || '-';
+                    let categoryStaff = item.worker || item.staff || item.category || item.desc || '-';
+                    let itemCost = item.amount || (item.qty ? `${item.qty} Unit` : '-') ;
+                    if(type === 'tasks') {
+                        itemCost = item.status;
+                        categoryStaff = `${item.worker} (${item.category})`;
+                    }
 
                     htmlContent += `
                         <tr>
                             <td style="text-align: center;">${index + 1}</td>
                             <td>${item.date}</td>
-                            <td><b>${col2}</b></td>
-                            <td>${col3}</td>
-                            <td>${col4}</td>
+                            <td><b>${itemName}</b></td>
+                            <td>${categoryStaff}</td>
+                            <td style="text-align: right; font-weight: bold;">${itemCost}</td>
                         </tr>
                     `;
                 });
+
+                if (type === 'expenses' || type === 'income') {
+                    htmlContent += `
+                        <tr class="total-row">
+                            <td colspan="4" style="text-align: right; padding-right: 15px;">TOTAL KESELURUHAN (GRAND TOTAL):</td>
+                            <td style="text-align: right; color: #166534; font-size: 13px;">RM ${grandTotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                }
             }
 
             htmlContent += `
@@ -1227,7 +1265,7 @@
 
                     <div class="footer">
                         <div>
-                            <p><b>Nota Rasmi:</b> Dokumen rekapitulasi rasmi digital Medicalpro Agro Management.</p>
+                            <p><b>Nota Rasmi:</b> Dokumen rekapitulasi rasmi berkotak cetakan sistem Medicalpro.</p>
                         </div>
                         <div class="sign-box">
                             <p>Disahkan Oleh,</p>
@@ -1237,8 +1275,8 @@
                         </div>
                     </div>
 
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button onclick="window.print()" style="background: #2563eb; color: #fff; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 5px; cursor: pointer;">🖨️ Cetak / Simpan sebagai PDF</button>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="window.print()" style="background: #2563eb; color: #fff; border: none; padding: 12px 25px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">🖨️ Cetak / Simpan sebagai PDF</button>
                     </div>
                 </body>
                 </html>
