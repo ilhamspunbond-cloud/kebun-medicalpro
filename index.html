@@ -77,7 +77,7 @@
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Audio Unlock Banner untuk Walkie-Talkie Auto-Play & Ringtone Custom -->
+        <!-- Audio Unlock Banner untuk Walkie-Talkie & AI Voice -->
         <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
             <span>🚨 Mod Audio AI & Walkie-Talkie: Sila klik butang di sebelah untuk mengaktifkan suara sistem.</span>
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
@@ -95,7 +95,7 @@
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
                             <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Aktif (Suara Wanita)</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Sedia membantu pengurusan ladang anda, Tuan/Puan.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Sedia membantu pengurusan ladang anda.</p>
                     </div>
                 </div>
                 <button onclick="speakLastAiMessage()" class="bg-indigo-700 hover:bg-indigo-600 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
@@ -105,7 +105,7 @@
 
             <!-- Kotak Perbualan / Jawapan AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[60px] text-indigo-100">
-                Taip soalan atau klik butang panduan di bawah untuk mula bertanya kepada AI.
+                Sila tunggu sebentar, AI sedang memuatkan data...
             </div>
 
             <!-- Pertanyaan Cepat / Contoh -->
@@ -123,7 +123,7 @@
             </form>
         </section>
 
-        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (JEREBU, HARI KEBANGSAAN, REHAT) -->
+        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (REAL-TIME) -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6">
             <div class="flex justify-between items-center mb-3">
                 <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & INFO PINTAR MALAYSIA - MACHAP</span>
@@ -592,6 +592,25 @@
 
     <!-- Script JavaScript -->
     <script>
+        // --- INISIALISASI FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
+            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
+            projectId: "kebun-belimbing-buluh-medical",
+            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
+            messagingSenderId: "101006363434",
+            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
+            measurementId: "G-5CX6N1K1GD"
+        };
+        
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch(e) {
+            console.log("Firebase init error");
+        }
+
         // --- SISTEM PROFIL PENGGUNA PERTAMA KALI ---
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
@@ -620,7 +639,8 @@
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
-            document.getElementById('settingAiName').value = aiConfig.name || "Asisten Kebun AI";
+            const settingInput = document.getElementById('settingAiName');
+            if (settingInput) settingInput.value = aiConfig.name || "Asisten Kebun AI";
             if (aiConfig.avatar) {
                 document.getElementById('aiAvatarContainer').innerHTML = `<img src="${aiConfig.avatar}" class="w-full h-full object-cover">`;
             }
@@ -650,7 +670,6 @@
                 utterance.lang = 'ms-MY';
                 utterance.rate = 1.0;
                 
-                // Cari suara wanita (female voice) dalam bahasa Melayu/Indonesia
                 const voices = window.speechSynthesis.getVoices();
                 const femaleVoice = voices.find(v => (v.lang.includes('ms') || v.lang.includes('id')) && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('amelia') || v.name.toLowerCase().includes('siti')));
                 if (femaleVoice) {
@@ -678,10 +697,11 @@
             else if (hours >= 15 && hours < 19) timeGreeting = "Selamat petang";
 
             const title = getTitlePrefix();
-            const greeting = `${timeGreeting}, ${title} ${currentUser.name}. Saya ${aiConfig.name}, sedia membantu memantau pengurusan ladang hari ini. Sila tanya apa sahaja di bawah.`;
+            const name = currentUser ? currentUser.name : "";
+            const greeting = `${timeGreeting}, ${title} ${name}. Saya ${aiConfig.name}, sedia membantu memantau pengurusan ladang hari ini. Sila tanya apa sahaja di bawah.`;
             
             document.getElementById('aiChatResponseBox').innerText = greeting;
-            document.getElementById('aiGreetingText').innerText = `Menyapa ${title} ${currentUser.name}`;
+            document.getElementById('aiGreetingText').innerText = `Menyapa ${title} ${name}`;
             speakText(greeting);
         }
 
@@ -691,7 +711,7 @@
             const name = currentUser ? currentUser.name : "";
 
             if (queryType === 'stok baja') {
-                if (inventory.length === 0) {
+                if (!inventory || inventory.length === 0) {
                     response = `Maaf ${title} ${name}, saat ini belum ada data stok bio baja yang terdaftar di sistem.`;
                 } else {
                     let stockSummary = inventory.map(i => `${i.name}: ${i.stock} unit`).join(', ');
@@ -731,15 +751,19 @@
 
             if (input.includes('baja') || input.includes('stok')) {
                 askAi('stok baja');
+                document.getElementById('aiManualInput').value = "";
                 return;
             } else if (input.includes('pekerja') || input.includes('kerja')) {
                 askAi('pekerja hari ini');
+                document.getElementById('aiManualInput').value = "";
                 return;
             } else if (input.includes('pengeluaran') || input.includes('belanja') || input.includes('kos')) {
                 askAi('pengeluaran bulan ini');
+                document.getElementById('aiManualInput').value = "";
                 return;
             } else if (input.includes('pendapatan') || input.includes('jualan') || input.includes('duit')) {
                 askAi('pendapatan bulan ini');
+                document.getElementById('aiManualInput').value = "";
                 return;
             }
 
@@ -748,17 +772,13 @@
             document.getElementById('aiManualInput').value = "";
         }
 
-        // Jalankan semakan profil pengguna saat halaman dimuat
-        window.addEventListener('DOMContentLoaded', () => {
-            checkUserProfile();
-        });
-
         // --- SISTEM TAB / HALAMAN TERPISAH ---
         function switchTab(tabId) {
             const pages = document.querySelectorAll('.tab-page');
             pages.forEach(p => p.classList.add('hidden'));
 
-            document.getElementById('page-' + tabId).classList.remove('hidden');
+            const targetPage = document.getElementById('page-' + tabId);
+            if (targetPage) targetPage.classList.remove('hidden');
 
             const buttons = document.querySelectorAll('[id^="tabBtn-"]');
             buttons.forEach(b => {
@@ -769,24 +789,6 @@
             if (activeBtn) {
                 activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95";
             }
-        }
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
-            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
-            projectId: "kebun-belimbing-buluh-medical",
-            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
-            messagingSenderId: "101006363434",
-            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
-            measurementId: "G-5CX6N1K1GD"
-        };
-        
-        let db = null;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-        } catch(e) {
-            console.log("Firebase init error");
         }
 
         // --- FITUR AUTO-CLEAN FOTO ---
@@ -818,7 +820,7 @@
         }
         setTimeout(autoCleanOldPhotos, 3000);
 
-        // --- JAM, LOGO CUACA DINAMIS & PESAN PINTAR MALAYSIA ---
+        // --- JAM & CUACA REAL-TIME ---
         function updateLiveClockAndSmartWeather() {
             const now = new Date();
             const hours = now.getHours();
@@ -827,10 +829,13 @@
             const month = now.getMonth() + 1;
             const day = now.getDate();
             
-            document.getElementById('liveClock').innerText = 
-                String(hours).padStart(2, '0') + ':' + 
-                String(minutes).padStart(2, '0') + ':' + 
-                String(seconds).padStart(2, '0');
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) {
+                clockEl.innerText = 
+                    String(hours).padStart(2, '0') + ':' + 
+                    String(minutes).padStart(2, '0') + ':' + 
+                    String(seconds).padStart(2, '0');
+            }
 
             let icon = "🌙";
             let condText = "Malam Istirahat";
@@ -863,35 +868,34 @@
                 forecast3h = "Sebahagian Berawan";
             }
 
-            document.getElementById('weatherIcon').innerText = icon;
-            document.getElementById('condDisplay').innerText = condText;
-            document.getElementById('smartRecommendation').innerText = advice;
-            document.getElementById('forecast3h').innerText = forecast3h;
+            if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = icon;
+            if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
+            if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerText = advice;
+            if (document.getElementById('forecast3h')) document.getElementById('forecast3h').innerText = forecast3h;
 
             const badge = document.getElementById('broadcastBadge');
-            if (showBroadcastBadge) {
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
+            if (badge) {
+                if (showBroadcastBadge) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
             }
 
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true`)
+            // Fetch Cuaca Real-Time Open-Meteo
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather) {
-                        document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
-                        document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
-                        document.getElementById('humidityDisplay').innerText = `72%`;
+                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${data.current_weather.temperature}°C`;
+                        if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = `${data.current_weather.windspeed} km/h`;
+                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `72%`;
                     }
                 }).catch(() => {
-                    document.getElementById('tempDisplay').innerText = "26.5°C";
-                    document.getElementById('windDisplay').innerText = "1.2 km/h";
-                    document.getElementById('humidityDisplay').innerText = "75%";
+                    if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = "26.5°C";
+                    if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = "1.2 km/h";
+                    if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = "75%";
                 });
         }
         
         setInterval(updateLiveClockAndSmartWeather, 1000);
-        updateLiveClockAndSmartWeather();
 
         const dictionary = {
             ms: { tasks: "Tugas Harian", supply: "Stok & Suplai", stock: "Bio Baja", assets: "Aset Kebun", expenses: "Perbelanjaan", income: "Pendapatan", bossPortalTitle: "⚠️ Portal Arahan & Walkie-Talkie Boss", sendOrder: "Hantar", historyTitle: "Riwayat Arahan:", sectionTaskTitle: "📌 Tugas Harian & Jadual Rutin" },
@@ -952,7 +956,8 @@
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
             } catch(e) {}
-            document.getElementById('audioUnlockBanner').style.display = 'none';
+            const banner = document.getElementById('audioUnlockBanner');
+            if (banner) banner.style.display = 'none';
             alert("Mod Audio Sistem & Walkie-Talkie Berjaya Diaktifkan!");
         }
 
@@ -960,7 +965,8 @@
             db.collection("settings").doc("ringtone").get().then((doc) => {
                 if (doc.exists && doc.data().audio) {
                     customRingtoneBase64 = doc.data().audio;
-                    document.getElementById('ringtoneStatusText').innerText = "Status: Ringtone custom aktif tersimpan.";
+                    const rStatus = document.getElementById('ringtoneStatusText');
+                    if (rStatus) rStatus.innerText = "Status: Ringtone custom aktif tersimpan.";
                 }
             }).catch(() => {});
         }
@@ -1055,6 +1061,7 @@
 
         function renderStaffAdmin() {
             const container = document.getElementById('staffListContainer');
+            if(!container) return;
             container.innerHTML = "";
             staffAccounts.forEach((s, index) => {
                 container.innerHTML += `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">👤 ${s.name} (Pass: ${s.pass}) <button onclick="deleteStaff(${index})" class="text-rose-500 font-bold">×</button></span>`;
@@ -1171,6 +1178,7 @@
         let firstLoadBoss = true;
         function renderBossHistory() {
             const container = document.getElementById('bossHistoryContainer');
+            if(!container) return;
             container.innerHTML = "";
             if(bossOrders.length === 0) { container.innerHTML = `<p class="text-xs text-slate-400 italic">Tiada arahan.</p>`; return; }
             
@@ -1206,14 +1214,17 @@
             }, () => {});
         }
 
-        document.getElementById('bossOrderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const msgInput = document.getElementById('bossInputMessage');
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' }) + ' - ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            if (db) db.collection("boss_orders").add({ id: Date.now(), message: msgInput.value, audio: "", date: dateStr, status: "Belum Dikerjakan" });
-            msgInput.value = "";
-        });
+        const bossForm = document.getElementById('bossOrderForm');
+        if (bossForm) {
+            bossForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const msgInput = document.getElementById('bossInputMessage');
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('ms-MY', { day: '2-digit', month: 'short', year: 'numeric' }) + ' - ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                if (db) db.collection("boss_orders").add({ id: Date.now(), message: msgInput.value, audio: "", date: dateStr, status: "Belum Dikerjakan" });
+                msgInput.value = "";
+            });
+        }
 
         function toggleOrderStatus(id) {
             if (db) {
@@ -1234,6 +1245,7 @@
         let workers = ["Ahmad", "Budi", "Siti"];
         function renderWorkersDropdown() {
             const select = document.getElementById('taskWorkerSelect');
+            if(!select) return;
             select.innerHTML = `<option value="">Pilih Pekerja</option>`;
             workers.forEach(w => { select.innerHTML += `<option value="${w}">${w}</option>`; });
         }
@@ -1246,6 +1258,7 @@
 
         function renderWorkersAdmin() {
             const container = document.getElementById('workerListTags');
+            if(!container) return;
             container.innerHTML = "";
             workers.forEach((w, index) => {
                 container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">${w} <button onclick="deleteWorker(${index})" class="text-rose-500 font-bold">×</button></span>`;
@@ -1254,7 +1267,7 @@
         }
         function addWorker() {
             const nameInput = document.getElementById('newWorkerName');
-            if(nameInput.value) {
+            if(nameInput && nameInput.value) {
                 workers.push(nameInput.value);
                 if (db) db.collection("settings").doc("workers").set({ list: workers });
                 nameInput.value = "";
@@ -1269,24 +1282,28 @@
 
         // --- STOK & SUPLAI KEBUN ---
         let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
-        document.getElementById('inputDate').valueAsDate = new Date();
+        const inputDateEl = document.getElementById('inputDate');
+        if(inputDateEl) inputDateEl.valueAsDate = new Date();
 
-        document.getElementById('supplyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newItem = {
-                id: Date.now(),
-                date: document.getElementById('inputDate').value,
-                item: document.getElementById('inputItem').value,
-                action: document.getElementById('inputAction').value,
-                qty: parseFloat(document.getElementById('inputQty').value),
-                desc: document.getElementById('inputDesc').value || '-'
-            };
-            supplyData.unshift(newItem);
-            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
-            this.reset();
-            document.getElementById('inputDate').valueAsDate = new Date();
-            renderSupplyApp();
-        });
+        const supplyFormEl = document.getElementById('supplyForm');
+        if(supplyFormEl) {
+            supplyFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newItem = {
+                    id: Date.now(),
+                    date: document.getElementById('inputDate').value,
+                    item: document.getElementById('inputItem').value,
+                    action: document.getElementById('inputAction').value,
+                    qty: parseFloat(document.getElementById('inputQty').value),
+                    desc: document.getElementById('inputDesc').value || '-'
+                };
+                supplyData.unshift(newItem);
+                localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
+                this.reset();
+                if(document.getElementById('inputDate')) document.getElementById('inputDate').valueAsDate = new Date();
+                renderSupplyApp();
+            });
+        }
 
         function deleteRecord(id) {
             supplyData = supplyData.filter(item => item.id !== id);
@@ -1297,6 +1314,7 @@
         function renderSupplyApp(filterType = 'all') {
             const tbody = document.getElementById('supplyTableBody');
             const stockContainer = document.getElementById('stockSummaryContainer');
+            if(!tbody || !stockContainer) return;
             tbody.innerHTML = '';
 
             let stocks = {};
@@ -1371,6 +1389,7 @@
         function renderInventory() {
             const container = document.getElementById('inventoryContainer');
             const taskStockSelect = document.getElementById('taskStockItem');
+            if(!container || !taskStockSelect) return;
             container.innerHTML = "";
             taskStockSelect.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
 
@@ -1405,6 +1424,7 @@
 
         function renderAdminInventoryTable() {
             const tbody = document.getElementById('adminInventoryTableBody');
+            if(!tbody) return;
             tbody.innerHTML = "";
             if (inventory.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="p-2 text-center text-slate-400">Tiada stok.</td></tr>`; return; }
             inventory.forEach((item, index) => {
@@ -1421,27 +1441,30 @@
             });
         }
 
-        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const editIndex = document.getElementById('invEditIndex').value;
-            const name = document.getElementById('invName').value;
-            const stockVal = parseInt(document.getElementById('invStock').value) || 0;
-            const advice = document.getElementById('invAdvice').value;
-            compressImage(document.getElementById('invImageInput').files[0], function(base64Img) {
-                if (editIndex === "") {
-                    if (db) db.collection("inventory").add({ id: Date.now(), name, stock: stockVal, advice, photo: base64Img });
-                    alert("Stok berjaya ditambah!");
-                } else {
-                    const item = inventory[parseInt(editIndex)];
-                    const updateData = { name, stock: stockVal, advice };
-                    if (base64Img) updateData.photo = base64Img;
-                    if (db) db.collection("inventory").doc(item.firestoreId).update(updateData);
-                    alert("Stok dikemaskini!");
-                    resetInventoryForm();
-                }
-                document.getElementById('inventoryForm').reset();
+        const invFormEl = document.getElementById('inventoryForm');
+        if(invFormEl) {
+            invFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const editIndex = document.getElementById('invEditIndex').value;
+                const name = document.getElementById('invName').value;
+                const stockVal = parseInt(document.getElementById('invStock').value) || 0;
+                const advice = document.getElementById('invAdvice').value;
+                compressImage(document.getElementById('invImageInput').files[0], function(base64Img) {
+                    if (editIndex === "") {
+                        if (db) db.collection("inventory").add({ id: Date.now(), name, stock: stockVal, advice, photo: base64Img });
+                        alert("Stok berjaya ditambah!");
+                    } else {
+                        const item = inventory[parseInt(editIndex)];
+                        const updateData = { name, stock: stockVal, advice };
+                        if (base64Img) updateData.photo = base64Img;
+                        if (db) db.collection("inventory").doc(item.firestoreId).update(updateData);
+                        alert("Stok dikemaskini!");
+                        resetInventoryForm();
+                    }
+                    invFormEl.reset();
+                });
             });
-        });
+        }
 
         function editInventory(index) {
             const item = inventory[index];
@@ -1451,7 +1474,8 @@
             document.getElementById('invAdvice').value = item.advice;
         }
         function resetInventoryForm() {
-            document.getElementById('inventoryForm').reset();
+            const f = document.getElementById('inventoryForm');
+            if(f) f.reset();
             document.getElementById('invEditIndex').value = "";
         }
         function deleteInventory(index) {
@@ -1465,6 +1489,7 @@
         let assets = [];
         function renderAssets() {
             const container = document.getElementById('assetsContainer');
+            if(!container) return;
             container.innerHTML = "";
             if (assets.length === 0) { container.innerHTML = `<p class="text-xs text-slate-400 italic">Tiada data aset.</p>`; return; }
             assets.forEach(a => {
@@ -1491,6 +1516,7 @@
 
         function renderAdminAssetTable() {
             const tbody = document.getElementById('adminAssetTableBody');
+            if(!tbody) return;
             tbody.innerHTML = "";
             if (assets.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="p-2 text-center text-slate-400">Tiada aset.</td></tr>`; return; }
             assets.forEach((a, index) => {
@@ -1507,26 +1533,29 @@
             });
         }
 
-        document.getElementById('assetForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const editId = document.getElementById('assetEditId').value;
-            const name = document.getElementById('assetName').value;
-            const condition = document.getElementById('assetCondition').value;
-            compressImage(document.getElementById('assetImageInput').files[0], function(base64Img) {
-                if (editId === "") {
-                    if (db) db.collection("assets").add({ id: Date.now(), name, condition, photo: base64Img });
-                    alert("Aset berjaya ditambah!");
-                } else {
-                    const idNum = parseInt(editId);
-                    const updateData = { name, condition };
-                    if (base64Img) updateData.photo = base64Img;
-                    if (db) db.collection("assets").where("id", "==", idNum).get().then(snapshot => snapshot.forEach(doc => doc.ref.update(updateData)));
-                    alert("Aset dikemaskini!");
-                    resetAssetForm();
-                }
-                document.getElementById('assetForm').reset();
+        const assetFormEl = document.getElementById('assetForm');
+        if(assetFormEl) {
+            assetFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const editId = document.getElementById('assetEditId').value;
+                const name = document.getElementById('assetName').value;
+                const condition = document.getElementById('assetCondition').value;
+                compressImage(document.getElementById('assetImageInput').files[0], function(base64Img) {
+                    if (editId === "") {
+                        if (db) db.collection("assets").add({ id: Date.now(), name, condition, photo: base64Img });
+                        alert("Aset berjaya ditambah!");
+                    } else {
+                        const idNum = parseInt(editId);
+                        const updateData = { name, condition };
+                        if (base64Img) updateData.photo = base64Img;
+                        if (db) db.collection("assets").where("id", "==", idNum).get().then(snapshot => snapshot.forEach(doc => doc.ref.update(updateData)));
+                        alert("Aset dikemaskini!");
+                        resetAssetForm();
+                    }
+                    assetFormEl.reset();
+                });
             });
-        });
+        }
 
         function editAsset(index) {
             const a = assets[index];
@@ -1535,7 +1564,8 @@
             document.getElementById('assetCondition').value = a.condition;
         }
         function resetAssetForm() {
-            document.getElementById('assetForm').reset();
+            const f = document.getElementById('assetForm');
+            if(f) f.reset();
             document.getElementById('assetEditId').value = "";
         }
         function deleteAsset(index) {
@@ -1559,46 +1589,52 @@
         // --- TUGAS HARIAN ---
         let tasks = [];
         let taskPhotoBase64 = "";
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-            compressImage(e.target.files[0], function(base64) { taskPhotoBase64 = base64; });
-        });
+        const imgInputEl = document.getElementById('imageInput');
+        if(imgInputEl) {
+            imgInputEl.addEventListener('change', function(e) {
+                compressImage(e.target.files[0], function(base64) { taskPhotoBase64 = base64; });
+            });
+        }
 
-        document.getElementById('taskForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const dateVal = document.getElementById('taskDate').value;
-            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
-            const stockItemName = document.getElementById('taskStockItem').value;
-            const stockQtyUsed = parseInt(document.getElementById('taskStockQty').value) || 0;
-            const stockUsedText = stockItemName ? `${stockItemName} (Dipakai: ${stockQtyUsed})` : "Tiada";
+        const taskFormEl = document.getElementById('taskForm');
+        if(taskFormEl) {
+            taskFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const dateVal = document.getElementById('taskDate').value;
+                const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+                const stockItemName = document.getElementById('taskStockItem').value;
+                const stockQtyUsed = parseInt(document.getElementById('taskStockQty').value) || 0;
+                const stockUsedText = stockItemName ? `${stockItemName} (Dipakai: ${stockQtyUsed})` : "Tiada";
 
-            const newTask = {
-                id: Date.now(),
-                title: document.getElementById('taskTitle').value,
-                category: document.getElementById('taskCategory').value,
-                worker: document.getElementById('taskWorkerSelect').value,
-                date: dateVal,
-                month: monthKey,
-                stockUsed: stockUsedText,
-                photo: taskPhotoBase64 || "",
-                status: "Selesai ✓"
-            };
+                const newTask = {
+                    id: Date.now(),
+                    title: document.getElementById('taskTitle').value,
+                    category: document.getElementById('taskCategory').value,
+                    worker: document.getElementById('taskWorkerSelect').value,
+                    date: dateVal,
+                    month: monthKey,
+                    stockUsed: stockUsedText,
+                    photo: taskPhotoBase64 || "",
+                    status: "Selesai ✓"
+                };
 
-            if (db) {
-                if (stockItemName && stockQtyUsed > 0) {
-                    const matchedInv = inventory.find(inv => inv.name === stockItemName);
-                    if (matchedInv) {
-                        let currentStockNum = parseInt(matchedInv.stock) || 0;
-                        let updatedStockNum = Math.max(0, currentStockNum - stockQtyUsed);
-                        db.collection("inventory").doc(matchedInv.firestoreId).update({ stock: updatedStockNum });
+                if (db) {
+                    if (stockItemName && stockQtyUsed > 0) {
+                        const matchedInv = inventory.find(inv => inv.name === stockItemName);
+                        if (matchedInv) {
+                            let currentStockNum = parseInt(matchedInv.stock) || 0;
+                            let updatedStockNum = Math.max(0, currentStockNum - stockQtyUsed);
+                            db.collection("inventory").doc(matchedInv.firestoreId).update({ stock: updatedStockNum });
+                        }
                     }
+                    db.collection("tasks").add(newTask).then(() => {
+                        taskFormEl.reset();
+                        taskPhotoBase64 = "";
+                        alert("Tugasan berjaya ditambah!");
+                    });
                 }
-                db.collection("tasks").add(newTask).then(() => {
-                    document.getElementById('taskForm').reset();
-                    taskPhotoBase64 = "";
-                    alert("Tugasan berjaya ditambah!");
-                });
-            }
-        });
+            });
+        }
 
         if (db) {
             db.collection("tasks").orderBy("id", "desc").onSnapshot((snapshot) => {
@@ -1616,6 +1652,7 @@
 
         function updateMonthDropdown(elementId, monthsSet) {
             const select = document.getElementById(elementId);
+            if(!select) return;
             const currentVal = select.value;
             select.innerHTML = `<option value="all">Semua Bulan (Global)</option>`;
             Array.from(monthsSet).sort().reverse().forEach(m => {
@@ -1626,7 +1663,9 @@
 
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
-            const filterMonth = document.getElementById('filterTaskMonth').value;
+            const filterMonthEl = document.getElementById('filterTaskMonth');
+            if(!tbody || !filterMonthEl) return;
+            const filterMonth = filterMonthEl.value;
             tbody.innerHTML = "";
             const filtered = tasks.filter(t => filterMonth === 'all' || t.month === filterMonth);
             if(filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada tugasan.</td></tr>`; return; }
@@ -1670,37 +1709,43 @@
         let expenses = [];
         let expReceiptBase64 = "";
         
-        document.getElementById('expReceiptInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    expReceiptBase64 = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        const expReceiptInputEl = document.getElementById('expReceiptInput');
+        if(expReceiptInputEl) {
+            expReceiptInputEl.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        expReceiptBase64 = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
 
-        document.getElementById('expenseForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const dateVal = document.getElementById('expDate').value;
-            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
-            const newExp = {
-                id: Date.now(),
-                title: document.getElementById('expTitle').value,
-                amount: document.getElementById('expAmount').value,
-                date: dateVal,
-                month: monthKey,
-                receipt: expReceiptBase64 || ""
-            };
-            if (db) {
-                db.collection("expenses").add(newExp).then(() => {
-                    document.getElementById('expenseForm').reset();
-                    expReceiptBase64 = "";
-                    alert("Perbelanjaan & resit Full HD berjaya direkod!");
-                });
-            }
-        });
+        const expenseFormEl = document.getElementById('expenseForm');
+        if(expenseFormEl) {
+            expenseFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const dateVal = document.getElementById('expDate').value;
+                const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+                const newExp = {
+                    id: Date.now(),
+                    title: document.getElementById('expTitle').value,
+                    amount: document.getElementById('expAmount').value,
+                    date: dateVal,
+                    month: monthKey,
+                    receipt: expReceiptBase64 || ""
+                };
+                if (db) {
+                    db.collection("expenses").add(newExp).then(() => {
+                        expenseFormEl.reset();
+                        expReceiptBase64 = "";
+                        alert("Perbelanjaan & resit Full HD berjaya direkod!");
+                    });
+                }
+            });
+        }
 
         if (db) {
             db.collection("expenses").orderBy("id", "desc").onSnapshot((snapshot) => {
@@ -1718,7 +1763,9 @@
 
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
-            const filterMonth = document.getElementById('filterExpenseMonth').value;
+            const filterMonthEl = document.getElementById('filterExpenseMonth');
+            if(!tbody || !filterMonthEl) return;
+            const filterMonth = filterMonthEl.value;
             tbody.innerHTML = "";
             const filtered = expenses.filter(ex => filterMonth === 'all' || ex.month === filterMonth);
             if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
@@ -1750,32 +1797,38 @@
         // --- PENDAPATAN ---
         let incomeList = [];
         let incPhotoBase64 = "";
-        document.getElementById('incPhotoInput').addEventListener('change', function(e) {
-            compressImage(e.target.files[0], function(base64) { incPhotoBase64 = base64; });
-        });
+        const incPhotoInputEl = document.getElementById('incPhotoInput');
+        if(incPhotoInputEl) {
+            incPhotoInputEl.addEventListener('change', function(e) {
+                compressImage(e.target.files[0], function(base64) { incPhotoBase64 = base64; });
+            });
+        }
 
-        document.getElementById('incomeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            if (!activeStaffName) { alert("Sila log masuk sebagai staff terlebih dahulu!"); return; }
-            const dateVal = document.getElementById('incDate').value;
-            const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
-            const newInc = {
-                id: Date.now(),
-                title: document.getElementById('incTitle').value,
-                amount: document.getElementById('incAmount').value,
-                date: dateVal,
-                month: monthKey,
-                staff: activeStaffName,
-                photo: incPhotoBase64 || ""
-            };
-            if (db) {
-                db.collection("income").add(newInc).then(() => {
-                    document.getElementById('incomeForm').reset();
-                    incPhotoBase64 = "";
-                    alert("Pendapatan berjaya direkod!");
-                });
-            }
-        });
+        const incomeFormEl = document.getElementById('incomeForm');
+        if(incomeFormEl) {
+            incomeFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!activeStaffName) { alert("Sila log masuk sebagai staff terlebih dahulu!"); return; }
+                const dateVal = document.getElementById('incDate').value;
+                const monthKey = dateVal ? dateVal.substring(0, 7) : new Date().toISOString().substring(0, 7);
+                const newInc = {
+                    id: Date.now(),
+                    title: document.getElementById('incTitle').value,
+                    amount: document.getElementById('incAmount').value,
+                    date: dateVal,
+                    month: monthKey,
+                    staff: activeStaffName,
+                    photo: incPhotoBase64 || ""
+                };
+                if (db) {
+                    db.collection("income").add(newInc).then(() => {
+                        incomeFormEl.reset();
+                        incPhotoBase64 = "";
+                        alert("Pendapatan berjaya direkod!");
+                    });
+                }
+            });
+        }
 
         if (db) {
             db.collection("income").orderBy("id", "desc").onSnapshot((snapshot) => {
@@ -1793,7 +1846,9 @@
 
         function renderIncome() {
             const tbody = document.getElementById('incomeTableBody');
-            const filterMonth = document.getElementById('filterIncomeMonth').value;
+            const filterMonthEl = document.getElementById('filterIncomeMonth');
+            if(!tbody || !filterMonthEl) return;
+            const filterMonth = filterMonthEl.value;
             tbody.innerHTML = "";
             const filtered = incomeList.filter(inc => filterMonth === 'all' || inc.month === filterMonth);
             if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-slate-400">Tiada rekod.</td></tr>`; return; }
@@ -1823,7 +1878,7 @@
             }
         }
 
-        // --- FUNGSI DOWNLOAD GAMBAR & REKAP DENGAN NOTIFIKASI POP-UP ---
+        // --- FUNGSI DOWNLOAD GAMBAR & REKAP ---
         function downloadImageFile(imageUrl, fileName) {
             if (!imageUrl) {
                 alert("⚠️ Tiada fail gambar untuk dimuat turun!");
@@ -1878,6 +1933,12 @@
 
             alert(`📥 Berjaya Muat Turun!\nFail "${fileName}" telah disimpan ke folder Download HP anda.`);
         }
+
+        // --- INISIALISASI SAAT HALAMAN SELESAI DIMUAT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            checkUserProfile();
+            updateLiveClockAndSmartWeather();
+        });
     </script>
 </body>
 </html>
