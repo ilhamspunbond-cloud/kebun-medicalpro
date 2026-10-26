@@ -25,29 +25,29 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans pb-24">
 
-    <!-- MODAL PENDAFTARAN NAMA & SAPAAN BOS (PEMILIK APLIKASI) -->
+    <!-- MODAL PENDAFTARAN NAMA & GELARAN -->
     <div id="userProfileModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
         <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 border-2 border-emerald-500">
             <div class="text-center">
                 <span class="text-4xl">🌱</span>
                 <h3 class="text-lg font-bold text-emerald-900 mt-2">Selamat Datang ke Medicalpro</h3>
-                <p class="text-xs text-slate-500">Sila masukkan nama & sapaan anda (Boss/Perwakilan) untuk memulakan sistem.</p>
+                <p class="text-xs text-slate-500">Sila masukkan nama & pilihan gelaran anda.</p>
             </div>
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh Anda</label>
-                    <input type="text" id="inputUserRealName" placeholder="Cth: Abdul Rojak" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
+                    <input type="text" id="inputUserRealName" placeholder="Cth: Rojak" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Sapaan / Gelaran Anda</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Gelaran</label>
                     <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                         <option value="Datu">Datu (Boss / Pemilik Utama)</option>
-                        <option value="Abang">Abang (Perwakilan)</option>
-                        <option value="Akak">Akak (Perwakilan)</option>
-                        <option value="Tuan">Tuan (Perwakilan)</option>
-                        <option value="Puan">Puan (Perwakilan)</option>
-                        <option value="Pachi">Pachi (Perwakilan)</option>
-                        <option value="Machi">Machi (Perwakilan)</option>
+                        <option value="Abang">Abang</option>
+                        <option value="Akak">Akak</option>
+                        <option value="Tuan">Tuan</option>
+                        <option value="Puan">Puan</option>
+                        <option value="Pachi">Pachi</option>
+                        <option value="Machi">Machi</option>
                     </select>
                 </div>
                 <button type="button" onclick="saveUserProfile()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
@@ -98,7 +98,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI ALL-KNOWING (SIMPEL & KREATIF) -->
+        <!-- WIDGET ASISTEN AI (SAPAAN BARU MASUK & MANDIRI) -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -108,9 +108,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Simpel & Tepat</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Siap Membantu</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Rekomendasi job desk & jadual baja (Siklus 2 minggu).</p>
+                        <p id="aiGreetingSubtitle" class="text-xs text-indigo-200">Asisten peribadi kebun Medicalpro</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -128,22 +128,22 @@
             </div>
 
             <div id="aiChatResponseBox" class="bg-black/35 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang memeriksa jadual baja 2 mingguan & status kebun...
+                Memuat turun sambutan...
             </div>
 
             <div class="flex flex-wrap gap-2 text-xs">
-                <button type="button" onclick="askAi('jobdesk')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📌 Rekomendasi Job Desk Simpel</button>
-                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Cek Siklus Baja (2 Minggu)</button>
-                <button type="button" onclick="askAi('cuaca')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">⛅ Cuaca Real-Time</button>
+                <button type="button" onclick="askAi('rekap')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📊 Rekap Bulanan & Pekerja</button>
+                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Stok Baja & Status Habis</button>
+                <button type="button" onclick="askAi('jobdesk')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">📋 Rekomendasi Job Desk Pekerja</button>
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa job desk hari ini?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa rekap bulan ini atau status baja?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya</button>
             </form>
         </section>
 
-        <!-- KOTAK CUACA REAL-TIME (JAM TERKINI KE DEPAN) -->
+        <!-- KOTAK CUACA REAL-TIME -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
             <div class="flex justify-between items-center mb-1">
                 <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA REAL-TIME & RAMALAN - MACHAP</span>
@@ -602,7 +602,7 @@
         function saveUserProfile() {
             const name = document.getElementById('inputUserRealName').value.trim();
             const gender = document.getElementById('inputUserGender').value;
-            currentUser = { name: name || (gender === 'Datu' ? 'Boss Datu' : gender), gender };
+            currentUser = { name: name || (gender === 'Datu' ? 'Datu' : gender), gender };
             localStorage.setItem('medicalpro_user_profile', JSON.stringify(currentUser));
             document.getElementById('userProfileModal').classList.add('hidden');
             initAiGreeting();
@@ -610,7 +610,7 @@
 
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
-        let currentWeatherData = { nightRain: false, temp: 27, rainSoon: false };
+        let currentWeatherData = { rainSoon: false };
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -649,9 +649,11 @@
         }
         function speakLastAiMessage() { if (lastSpokenText) speakText(lastSpokenText); }
 
-        function getTitlePrefix() {
-            if (!currentUser || !currentUser.gender) return "Tuan";
-            return currentUser.gender; 
+        function getFullTitleName() {
+            if (!currentUser) return "Abang Rojak";
+            let title = currentUser.gender || "Abang";
+            let name = currentUser.name || "Rojak";
+            return `${title} ${name}`;
         }
 
         let workers = [];
@@ -660,52 +662,51 @@
         let expenses = [];
         let incomeList = [];
 
-        // AI KREATIF SIMPEL & PENGECEK SIKLUS BAJA (2 MINGGU)
-        function generateSimpleAiResponse(queryType = 'jobdesk') {
-            const userName = currentUser ? currentUser.name : "Boss";
-            
-            // Cek kapan terakhir kali task baja dilakukan
+        // --- AI KREATIF & MANDIRI (SAPAAN BARU & REKAP/JOB DESK/BAJA) ---
+        function generateFriendlyAiResponse(queryType = 'welcome') {
+            const fullName = getFullTitleName();
+
+            // Cek stok baja menipis
+            let lowStockItems = inventory.filter(i => i.stock < 5).map(i => i.name);
+            let bajaWarning = lowStockItems.length > 0 ? `⚠️ Perhatian: Stok baja berikut hampir habis: ${lowStockItems.join(', ')}!` : `✅ Stok bio baja dalam keadaan selamat dan mencukupi.`;
+
+            // Cek siklus 2 minggu baja
             let lastBajaTask = tasks.find(t => t.title.toLowerCase().includes('baja') || t.category.toLowerCase().includes('baja'));
             let daysSinceBaja = 999;
             if (lastBajaTask && lastBajaTask.date) {
                 let diffTime = Math.abs(new Date() - new Date(lastBajaTask.date));
                 daysSinceBaja = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             }
+            let jobDeskRec = daysSinceBaja >= 14 ? "Estet sudah masuk tempoh 2 minggu. Rekomendasi job pekerja hari ini: **Tabur bio baja rutin**." : "Tempoh baja belum sampai 2 minggu. Rekomendasi job pekerja: **Matun rumput atau pangkas ranting**.";
 
-            let bajaRecommendation = "";
-            if (daysSinceBaja >= 14) {
-                let targetBaja = inventory.length > 0 ? inventory[0].name : "Bio Baja Organik";
-                bajaRecommendation = `⚠️ **Jadual Baja 2 Mingguan**: Sudah ${daysSinceBaja} hari sejak pemupukan terakhir. **Rekomendasi Utama**: Sila arahkan pekerja tebar [${targetBaja}] hari ini.`;
-            } else {
-                bajaRecommendation = `✅ **Jadual Baja**: Baru ${daysSinceBaja} hari lepas dibaja (Siklus 2 minggu belum sampai). **Rekomendasi Alternatif**: Fokus matun rumput, pangkas ranting, atau penyelenggaraan alatan.`;
-            }
+            let totalEx = expenses.reduce((s, e) => s + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
+            let totalInc = incomeList.reduce((s, i) => s + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
 
             let responseText = "";
-            if (queryType === 'baja') {
-                responseText = bajaRecommendation;
-            } else if (queryType === 'cuaca') {
-                responseText = currentWeatherData.rainSoon 
-                    ? "⛅ Cuaca Real-Time: Dijangka ada hujan dalam beberapa jam ke depan. Tangguhkan tabur baja, fokus kerja dalam stor."
-                    : "☀️ Cuaca Real-Time: Keadaan cerah dan stabil. Sesuai untuk semua kerja ladang.";
+            if (queryType === 'rekap') {
+                responseText = `📊 **Rekap Data Bulanan & Pekerja**:\n• Total Pekerja Berdaftar: ${workers.length} orang\n• Total Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Total Pendapatan Jualan: RM ${totalInc.toFixed(2)}\n• Jumlah Tugas Tercatat: ${tasks.length} rekod.`;
+            } else if (queryType === 'baja') {
+                responseText = `🧪 **Status Stok Baja**:\n${bajaWarning}\n(Sila semak menu Bio Baja untuk butiran lanjut).`;
+            } else if (queryType === 'jobdesk') {
+                let workerNames = workers.length > 0 ? workers.map(w => typeof w === 'object' ? w.name : w).join(', ') : 'Belum ada pekerja diinput';
+                responseText = `📋 **Rekomendasi Job Desk Pekerja**:\n• Pekerja Bertugas: ${workerNames}\n• ${jobDeskRec}\n• Cuaca Estet: ${currentWeatherData.rainSoon ? 'Ada potensi hujan, utamakan kerja stor.' : 'Cerah dan stabil.'}`;
             } else {
-                // Job desk simpel & to the point
-                let workerListText = workers.length > 0 ? workers.map(w => (typeof w === 'object' ? w.name : w)).join(", ") : "Pekerja belum diinput";
-                responseText = `📌 **Rekomendasi Job Desk Simpel (${userName})**:\n1. ${bajaRecommendation}\n2. **Pekerja bertugas**: ${workerListText}.\n3. **Cuaca**: ${currentWeatherData.rainSoon ? 'Awas potensi hujan.' : 'Cerah & normal.'}`;
+                // Sambutan baru masuk halaman
+                responseText = `Silakan ${fullName}, ada yang bisa saya bantu? Mau tanya soal apa? Rekap pekerjaan, data pekerja, rekap bulanan (pengeluaran/pemasukan), stok baja, atau rekomendasi job desk pekerja?`;
             }
 
             return responseText;
         }
 
         function initAiGreeting() {
-            const userName = currentUser ? currentUser.name : "Boss";
-            const greeting = `Halo ${userName}! Asisten AI siap sedia. ${generateSimpleAiResponse('jobdesk').replace(/[*#]/g, '')}`;
+            let res = generateFriendlyAiResponse('welcome');
             const chatBox = document.getElementById('aiChatResponseBox');
-            if (chatBox) chatBox.innerText = greeting;
-            speakText(greeting);
+            if (chatBox) chatBox.innerText = res;
+            speakText(res);
         }
 
         function askAi(topic) {
-            let res = generateSimpleAiResponse(topic);
+            let res = generateFriendlyAiResponse(topic);
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = res;
             speakText(res);
@@ -713,9 +714,13 @@
 
         function handleAiManualQuery(e) {
             e.preventDefault();
-            const val = document.getElementById('aiManualInput').value;
+            const val = document.getElementById('aiManualInput').value.toLowerCase();
             if (val) {
-                let res = generateSimpleAiResponse('jobdesk');
+                let queryType = 'rekap';
+                if (val.includes('baja') || val.includes('stok')) queryType = 'baja';
+                else if (val.includes('job') || val.includes('pekerja') || val.includes('tugas')) queryType = 'jobdesk';
+                
+                let res = generateFriendlyAiResponse(queryType);
                 const chatBox = document.getElementById('aiChatResponseBox');
                 if (chatBox) chatBox.innerText = res;
                 speakText(res);
@@ -733,7 +738,12 @@
 
             recognition.onresult = function(event) {
                 statusNotice.classList.add('hidden');
-                let res = generateSimpleAiResponse('jobdesk');
+                let speech = event.results[0][0].transcript.toLowerCase();
+                let qType = 'rekap';
+                if (speech.includes('baja') || speech.includes('stok')) qType = 'baja';
+                else if (speech.includes('job') || speech.includes('tugas')) qType = 'jobdesk';
+
+                let res = generateFriendlyAiResponse(qType);
                 document.getElementById('aiChatResponseBox').innerText = res;
                 speakText(res);
             };
@@ -752,24 +762,21 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        // --- RAMALAN CUACA REAL-TIME (JAM TERKINI KE DEPAN) ---
+        // --- RAMALAN CUACA REAL-TIME ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
             if (clockEl) clockEl.innerText = now.toTimeString().substring(0, 8);
 
-            // Open-Meteo koordinat Machap, Johor
             fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=temperature_2m,precipitation')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather && data.hourly) {
                         const temp = data.current_weather.temperature;
-                        currentWeatherData.temp = temp;
                         const hourlyTime = data.hourly.time;
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
 
-                        // Cari indeks jam terkini secara real-time
                         const currentIsoStr = now.toISOString().substring(0, 13);
                         let idx = hourlyTime.findIndex(t => t.startsWith(currentIsoStr));
                         if (idx === -1) idx = 0;
@@ -784,7 +791,6 @@
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = rainSoon ? "Potensi Hujan Jam Ini" : "Cerah Estet Machap";
                         if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = rainSoon ? "🌧️" : "☀️";
 
-                        // Render 4 jam ke depan secara real-time
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
@@ -1088,7 +1094,7 @@
         }
         function deleteIncome(id) { if(db) db.collection("income").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
 
-        // --- SISTEM INVOICE & SIGNATURE PAD ---
+        // --- SISTEM INVOICE & SIGNATURE ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -1125,7 +1131,7 @@
             document.getElementById('invModalTotalItems').innerText = `${dataArr.length} Item`;
 
             let isBoss = currentUser && currentUser.gender === 'Datu';
-            let ownerName = currentUser ? currentUser.name : "Abdul Rojak";
+            let ownerName = currentUser ? currentUser.name : "Rojak";
             let roleLabel = isBoss ? `Disahkan Oleh Boss (Pemilik Utama):` : `Disahkan Oleh Perwakilan Rasmi:`;
             
             document.getElementById('invModalOwner').innerText = `${ownerName} ${isBoss ? '(Boss / Datu)' : '(' + (currentUser ? currentUser.gender : 'Perwakilan') + ')'}`;
