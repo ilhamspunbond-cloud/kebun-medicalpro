@@ -93,9 +93,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Cuaca Otomatis</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Tanah Basah Aktif</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menganalisis riwayat hujan & tanah kebun.</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menganalisis riwayat hujan malam tadi secara real-time.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -115,7 +115,7 @@
 
             <!-- Kotak Perbualan / Analisis AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang memeriksa data cuaca dan kelembapan tanah...
+                AI sedang memeriksa riwayat hujan malam tadi...
             </div>
 
             <!-- Butang Rekomendasi Pintar Cepat -->
@@ -128,46 +128,54 @@
 
             <!-- Input Chat Manual ke AI -->
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Semalam hujan, apa tugas hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Semalam hujan deras, apa kerja hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
             </form>
         </section>
 
-        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (REAL-TIME) -->
-        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6">
-            <div class="flex justify-between items-center mb-3">
-                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & INFO PINTAR MALAYSIA - MACHAP</span>
+        <!-- KOTAK CUACA, WAKTU & RAMALAN PER 1 JAM (8 JAM KE HADAPAN) -->
+        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6 space-y-4">
+            <div class="flex justify-between items-center mb-1">
+                <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & RAMALAN PER 1 JAM - MACHAP</span>
                 <span id="liveClock" class="text-xs font-mono bg-black/30 px-2.5 py-1 rounded-lg font-bold">--:--:--</span>
             </div>
 
-            <div class="flex items-center gap-4 my-4">
-                <div id="weatherIcon" class="text-5xl">🌙</div>
+            <div class="flex items-center gap-4 my-2">
+                <div id="weatherIcon" class="text-5xl">🌧️</div>
                 <div>
                     <div class="text-3xl font-bold" id="tempDisplay">26.5°C</div>
-                    <div class="text-lg font-medium text-blue-100" id="condDisplay">Malam Istirahat</div>
+                    <div class="text-sm font-semibold text-sky-200" id="condDisplay">Menganalisis Riwayat Hujan Malam Tadi...</div>
                 </div>
             </div>
 
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 border border-white/20">
+            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/25">
                 <div class="text-xs font-bold text-yellow-300 uppercase mb-1 flex items-center justify-between">
-                    <span>🤖 Analisis Pintar & Rekomendasi Ladang:</span>
+                    <span>🤖 Analisis Status Tanah & Rekomendasi Ladang:</span>
                     <span id="broadcastBadge" class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Info Penting</span>
                 </div>
-                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Malam ini waktu rehat & tidur. Bersedia untuk mula bekerja semula esok pagi jam 07:00 / 08:00.</p>
+                <p id="smartRecommendation" class="text-sm leading-relaxed text-white">Sedang memproses data cuaca malam tadi...</p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+            <!-- RAMALAN CUACA PER 1 JAM (8 JAM KE HADAPAN) -->
+            <div>
+                <div class="text-xs font-bold text-sky-200 uppercase mb-2">⏱️ Ramalan Cuaca Per 1 Jam (8 Jam Seterusnya):</div>
+                <div id="hourlyForecastContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <!-- Diisi secara dinamik oleh JavaScript -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
                 <div class="bg-black/20 rounded-xl p-3 text-center">
                     <div class="text-xs text-blue-200">Kecepatan Angin</div>
                     <div id="windDisplay" class="text-sm font-bold">1.2 km/h</div>
                 </div>
                 <div class="bg-black/20 rounded-xl p-3 text-center">
                     <div class="text-xs text-blue-200">Kelembapan Udara</div>
-                    <div id="humidityDisplay" class="text-sm font-bold">78%</div>
+                    <div id="humidityDisplay" class="text-sm font-bold">85%</div>
                 </div>
                 <div class="bg-black/20 rounded-xl p-3 text-center col-span-2 sm:col-span-1">
-                    <div class="text-xs text-yellow-300">Riwayat Cuaca Semalam</div>
-                    <div id="rainHistoryDisplay" class="text-xs font-bold mt-1 text-emerald-300">Tanah Normal</div>
+                    <div class="text-xs text-yellow-300">Status Tanah Pagi Ini</div>
+                    <div id="rainHistoryDisplay" class="text-xs font-bold mt-1 text-sky-300">Basah & Lembap</div>
                 </div>
             </div>
         </div>
@@ -648,7 +656,7 @@
         // --- SISTEM AI AGRONOMIST & BERPIKIR MANDIRI (WEATHER-ADAPTIVE) ---
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
-        let currentWeatherData = { condition: "Cerah", isRain: false, nightRain: false };
+        let currentWeatherData = { condition: "Cerah", isRain: false, nightRain: true }; // default true untuk mendeteksi semalam hujan
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -668,7 +676,6 @@
         function saveAiSettings() {
             aiConfig.name = document.getElementById('settingAiName').value;
             compressImage(document.getElementById('settingAiAvatarInput').files[0], function(base64Img) {
-                if (base64Img) aiConfig.avatar = base64Tab; // fallback
                 if (base64Img) aiConfig.avatar = base64Img;
                 if (db) db.collection("settings").doc("ai_config").set(aiConfig).catch(() => {});
                 applyAiSettings();
@@ -712,14 +719,14 @@
             
             let wasRainingNight = currentWeatherData.nightRain;
             let weatherNotice = wasRainingNight 
-                ? "Semalam ada rekod hujan / tanah kebun lembap. Jadi pagi ini TIDAK PERLU siram pokok."
-                : "Keadaan tanah kering / normal. Pagi ini wajib jalankan rutin siram pokok seperti biasa.";
+                ? "Semalam ada rekod hujan deras. Tanah kebun basah dan lembap, jadi tugas siram pokok DI-SKIP."
+                : "Keadaan tanah kering/normal. Pagi ini wajib jalankan rutin siram pokok.";
 
             let userInstruction = "";
             if (wasRainingNight) {
-                userInstruction = `Oleh kerana semalam hujan, ${name} boleh terus fokus ke kerja-kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
+                userInstruction = `Oleh kerana semalam hujan deras, ${name} boleh langsung fokus ke kerja alternatif bernilai tinggi hari ini: pruning dahan, tuai bunga, kerut daun, atau kemas stor kebun.`;
             } else {
-                userInstruction = `Pagi ini ${name} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua (pruning, tuai bunga, atau kemas stor).`;
+                userInstruction = `Pagi ini ${name} wajib mulakan dengan siram pokok terlebih dahulu, kemudian sambung ke kerja kedua.`;
             }
 
             let workerInstructions = [];
@@ -910,7 +917,7 @@
         }
         setTimeout(autoCleanOldPhotos, 3000);
 
-        // --- JAM & PENGESANAN RIWAYAT CUACA / HUJAN REAL-TIME ---
+        // --- JAM & PENGESANAN RIWAYAT HUJAN + RAMALAN PER 1 JAM (8 JAM KE HADAPAN) ---
         function updateLiveClockAndSmartWeather() {
             const now = new Date();
             const hours = now.getHours();
@@ -927,62 +934,101 @@
                     String(seconds).padStart(2, '0');
             }
 
-            let icon = "🌙";
-            let condText = "Malam Istirahat";
-            let advice = "🌙 Waktu malam: Sila istirahat & tidur yang cukup.";
-            let forecast3h = "Malam Tenang";
-            let showBroadcastBadge = false;
-
-            // Memanggil API Cuaca Machap untuk cek kondisi semasa & riwayat hujan
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=precipitation')
+            // Memanggil API Open-Meteo untuk data cuaca real-time & hourly (per 1 jam)
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=2.3833&longitude=102.2167&current_weather=true&hourly=temperature_2m,precipitation,weathercode')
                 .then(res => res.json())
                 .then(data => {
-                    if (data && data.current_weather) {
+                    if (data && data.current_weather && data.hourly) {
                         const temp = data.current_weather.temperature;
                         const wind = data.current_weather.windspeed;
-                        const weatherCode = data.current_weather.weathercode;
-                        
-                        // Cek adakah ada rekod hujan pada jam-jam sebelumnya (riwayat malam tadi)
+                        const hourlyTime = data.hourly.time;
+                        const hourlyPrecip = data.hourly.precipitation;
+                        const hourlyTemp = data.hourly.temperature_2m;
+                        const hourlyCode = data.hourly.weathercode;
+
+                        // Cari indeks waktu semasa dalam array hourly
+                        const currentIsoStr = now.toISOString().substring(0, 13); // format YYYY-MM-DDTHH
+                        let currentIndex = hourlyTime.findIndex(t => t.startsWith(currentIsoStr));
+                        if (currentIndex === -1) currentIndex = 0;
+
+                        // 1. Cek Riwayat Hujan Semalam / Dini Hari (12 jam ke belakang)
                         let hadRainNight = false;
-                        if (data.hourly && data.hourly.precipitation) {
-                            const precipList = data.hourly.precipitation;
-                            // Cek 6 jam ke belakang
-                            for(let i = Math.max(0, precipList.length - 12); i < precipList.length; i++) {
-                                if (precipList[i] > 0.1) { hadRainNight = true; break; }
+                        for (let i = Math.max(0, currentIndex - 12); i < currentIndex; i++) {
+                            if (hourlyPrecip[i] && hourlyPrecip[i] > 0.2) {
+                                hadRainNight = true;
+                                break;
                             }
                         }
 
-                        if (weatherCode >= 50 || hadRainNight) {
-                            currentWeatherData = { condition: "Hujan / Tanah Lembap", isRain: true, nightRain: hadRainNight };
+                        currentWeatherData.nightRain = hadRainNight;
+
+                        // Update Teks Status Tanah & Saranan
+                        let advice = "";
+                        let condText = "";
+                        let icon = "☀️";
+                        const rainDisplay = document.getElementById('rainHistoryDisplay');
+
+                        if (hadRainNight) {
                             icon = "🌧️";
-                            condText = hadRainNight ? "Semalam Hujan / Tanah Lembap" : "Cuaca Hujan";
-                            advice = "🌧️ Semalam ada rekod hujan. Tanah kebun lembap, pagi ini TIDAK PERLU siram pokok. Fokus pada pruning, tuai bunga, atau kemas stor.";
-                            const rainDisplay = document.getElementById('rainHistoryDisplay');
+                            condText = "Tanah Basah (Semalam Hujan Deras)";
+                            advice = "🌧️ Semalam ada rekod hujan deras. Tanah kebun basah dan lembap, jadi tugas siram pokok DI-SKIP. Fokus pada pruning, tuai bunga, atau kemas stor.";
                             if(rainDisplay) {
-                                rainDisplay.innerText = "Semalam Hujan 🌧️";
+                                rainDisplay.innerText = "Semalam Hujan 🌧️ (Skip Siram)";
                                 rainDisplay.className = "text-xs font-bold mt-1 text-sky-300";
                             }
                         } else {
-                            currentWeatherData = { condition: "Cerah / Normal", isRain: false, nightRain: false };
-                            const rainDisplay = document.getElementById('rainHistoryDisplay');
+                            icon = "☀️";
+                            condText = "Tanah Normal / Kering";
+                            advice = "☀️ Tanah kering/normal. Pagi ini wajib jalankan rutin siram pokok terlebih dahulu.";
                             if(rainDisplay) {
-                                rainDisplay.innerText = "Tanah Kering / Normal";
+                                rainDisplay.innerText = "Tanah Normal (Wajib Siram)";
                                 rainDisplay.className = "text-xs font-bold mt-1 text-emerald-300";
                             }
                         }
 
+                        if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = icon;
+                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
+                        if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerText = advice;
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°C`;
                         if (document.getElementById('windDisplay')) document.getElementById('windDisplay').innerText = `${wind} km/h`;
-                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `78%`;
+                        if (document.getElementById('humidityDisplay')) document.getElementById('humidityDisplay').innerText = `82%`;
+
+                        // 2. Render Ramalan Cuaca Per 1 Jam (8 Jam ke Depan)
+                        const hourlyContainer = document.getElementById('hourlyForecastContainer');
+                        if (hourlyContainer) {
+                            hourlyContainer.innerHTML = "";
+                            for (let i = 0; i < 8; i++) {
+                                let targetIdx = currentIndex + i;
+                                if (targetIdx < hourlyTime.length) {
+                                    let tFull = hourlyTime[targetIdx];
+                                    let timeOnly = tFull.substring(11, 16); // format HH:MM
+                                    let tVal = hourlyTemp[targetIdx];
+                                    let pVal = hourlyPrecip[targetIdx];
+                                    let code = hourlyCode[targetIdx];
+
+                                    let hIcon = "☀️";
+                                    let hDesc = "Cerah";
+                                    if (pVal > 0.1 || code >= 50) {
+                                        hIcon = "🌧️";
+                                        hDesc = "Hujan";
+                                    } else if (code >= 1 && code <= 3) {
+                                        hIcon = "⛅";
+                                        hDesc = "Mendung";
+                                    }
+
+                                    hourlyContainer.innerHTML += `
+                                        <div class="bg-white/10 backdrop-blur-md rounded-xl p-2.5 text-center border border-white/20">
+                                            <div class="text-[10px] text-sky-200 font-mono font-bold">${timeOnly}</div>
+                                            <div class="text-2xl my-1">${hIcon}</div>
+                                            <div class="text-xs font-bold">${tVal}°C</div>
+                                            <div class="text-[9px] text-white/80">${hDesc} (${pVal}mm)</div>
+                                        </div>
+                                    `;
+                                }
+                            }
+                        }
                     }
                 }).catch(() => {});
-
-            if (document.getElementById('weatherIcon')) document.getElementById('weatherIcon').innerText = icon;
-            if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
-            if (document.getElementById('smartRecommendation') && !currentWeatherData.nightRain) {
-                document.getElementById('smartRecommendation').innerText = advice;
-            }
-            if (document.getElementById('forecast3h')) document.getElementById('forecast3h').innerText = forecast3h;
         }
         
         setInterval(updateLiveClockAndSmartWeather, 1000);
