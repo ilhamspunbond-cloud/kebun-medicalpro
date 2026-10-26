@@ -13,32 +13,32 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans pb-16">
+<body class="bg-slate-50 text-slate-800 font-sans pb-24">
 
-    <!-- MODAL SAMBUTAN & NAMA PERTAMA KALI (SEKALI SAJA) -->
-    <div id="welcomeUserModal" class="fixed inset-0 bg-slate-950/80 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-4 border-yellow-400 space-y-4 text-center">
-            <div class="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center text-3xl mx-auto shadow">👩‍🌾</div>
-            <h3 class="text-lg font-black text-blue-900 uppercase">Kenalan dengan Iklimah (AI Medicalpro)</h3>
-            <p class="text-xs text-slate-600">Sila masukkan nama dan jantina anda untuk tetapan sapaan suara peribadi (hanya sekali sahaja).</p>
-            
-            <div class="space-y-3 text-left">
+    <!-- MODAL PENDAFTARAN NAMA & GENDER PERTAMA KALI -->
+    <div id="userProfileModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 border-2 border-emerald-500">
+            <div class="text-center">
+                <span class="text-4xl">🌱</span>
+                <h3 class="text-lg font-bold text-emerald-900 mt-2">Selamat Datang ke Medicalpro</h3>
+                <p class="text-xs text-slate-500">Sila masukkan nama & identiti anda untuk memulakan sistem.</p>
+            </div>
+            <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Anda:</label>
-                    <input type="text" id="inputUserName" placeholder="Cth: Iqbal" class="w-full border p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penuh Anda</label>
+                    <input type="text" id="inputUserRealName" placeholder="Cth: Iqbal / Siti" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Jantina:</label>
-                    <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        <option value="Tuan">Laki-laki (Tuan)</option>
-                        <option value="Puan">Perempuan (Puan)</option>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Kelamin</label>
+                    <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
+                        <option value="male">Laki-laki (Sapaan: Tuan)</option>
+                        <option value="female">Perempuan (Sapaan: Puan)</option>
                     </select>
                 </div>
+                <button type="button" onclick="saveUserProfile()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm shadow-md transition">
+                    Simpan & Masuk Sistem 🚀
+                </button>
             </div>
-
-            <button onclick="saveUserProfile()" class="w-full bg-blue-900 hover:bg-blue-800 text-white py-3 rounded-xl font-bold text-sm shadow-lg transition active:scale-95">
-                Simpan & Mula Berbual dengan Iklimah 🚀
-            </button>
         </div>
     </div>
 
@@ -77,30 +77,53 @@
 
     <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Sapaan Personal Dinamis AI Iklimah -->
-        <div id="dynamicGreetingBanner" class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 rounded-2xl shadow-md flex items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div id="aiAvatarContainer" class="w-12 h-12 rounded-full bg-emerald-800 flex items-center justify-center text-2xl overflow-hidden border-2 border-emerald-400 shadow">
-                    👩‍🌾
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h4 id="greetingTitleText" class="font-bold text-sm sm:text-base">Selamat Pagi, Tuan!</h4>
-                        <span class="bg-yellow-400 text-slate-950 text-[10px] font-bold px-1.5 py-0.5 rounded">Iklimah AI</span>
-                    </div>
-                    <p class="text-xs text-emerald-100">AI Iklimah bersedia membantu mengurus kebun hari ini secara suara & teks.</p>
-                </div>
-            </div>
-            <button onclick="resetUserProfileModal()" class="text-[10px] bg-black/20 hover:bg-black/30 px-2.5 py-1.5 rounded-lg text-white font-semibold whitespace-nowrap">Tukar Profil</button>
-        </div>
-
-        <!-- Audio Unlock Banner untuk Walkie-Talkie & Suara AI Iklimah -->
+        <!-- Audio Unlock Banner untuk Walkie-Talkie Auto-Play & Ringtone Custom -->
         <div id="audioUnlockBanner" class="bg-emerald-600 text-white p-3.5 rounded-xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-semibold">
-            <span>🔊 Aktifkan Sistem Suara AI Iklimah & Walkie-Talkie Boss: Sila klik butang di sebelah.</span>
-            <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Suara</button>
+            <span>🚨 Mod Audio AI & Walkie-Talkie: Sila klik butang di sebelah untuk mengaktifkan suara sistem.</span>
+            <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA -->
+        <!-- WIDGET ASISTEN AI PINTAR -->
+        <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
+                <div class="flex items-center gap-3">
+                    <div id="aiAvatarContainer" class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-indigo-400 shadow">
+                        👩‍💻
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Aktif (Suara Wanita)</span>
+                        </div>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Sedia membantu pengurusan ladang anda, Tuan/Puan.</p>
+                    </div>
+                </div>
+                <button onclick="speakLastAiMessage()" class="bg-indigo-700 hover:bg-indigo-600 text-white p-2 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
+                    🔊 Ulang Suara
+                </button>
+            </div>
+
+            <!-- Kotak Perbualan / Jawapan AI -->
+            <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[60px] text-indigo-100">
+                Taip soalan atau klik butang panduan di bawah untuk mula bertanya kepada AI.
+            </div>
+
+            <!-- Pertanyaan Cepat / Contoh -->
+            <div class="flex flex-wrap gap-2 text-xs">
+                <button onclick="askAi('stok baja')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📦 Berapa sisa stok baja?</button>
+                <button onclick="askAi('pekerja hari ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">📋 Pekerja buat apa hari ini?</button>
+                <button onclick="askAi('pengeluaran bulan ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Pengeluaran bulan ini?</button>
+                <button onclick="askAi('pendapatan bulan ini')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💵 Pendapatan bulan ini?</button>
+            </div>
+
+            <!-- Input Chat Manual ke AI -->
+            <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
+                <input type="text" id="aiManualInput" placeholder="Tanya apa saja kepada AI (Cth: Apa tugas hari ini?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
+            </form>
+        </section>
+
+        <!-- KOTAK CUACA, WAKTU & PESAN PINTAR MALAYSIA (JEREBU, HARI KEBANGSAAN, REHAT) -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl mb-6">
             <div class="flex justify-between items-center mb-3">
                 <span class="bg-blue-500/50 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">CUACA & INFO PINTAR MALAYSIA - MACHAP</span>
@@ -139,40 +162,6 @@
             </div>
         </div>
 
-        <!-- 🌟 ASISTEN AI PINTAR IKLIMAH (SUARA WANITA & TEKS) -->
-        <section class="bg-gradient-to-br from-indigo-900 to-slate-900 border-2 border-indigo-500 p-5 rounded-2xl shadow-xl text-white space-y-4">
-            <div class="flex items-center justify-between border-b border-indigo-700 pb-3">
-                <div class="flex items-center gap-3">
-                    <div id="aiSectionAvatar" class="w-10 h-10 rounded-full bg-indigo-700 flex items-center justify-center text-xl overflow-hidden border border-indigo-400">
-                        👩‍🌾
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-base text-yellow-300">Asisten AI Iklimah (Suara & Teks)</h3>
-                        <p class="text-[11px] text-indigo-200">Tanya apa saja, Iklimah akan menjawab melalui suara wanita & teks!</p>
-                    </div>
-                </div>
-                <span class="bg-indigo-600/60 text-indigo-200 text-[10px] px-2.5 py-1 rounded-full border border-indigo-400">Live Voice AI</span>
-            </div>
-
-            <!-- Quick Prompt Suggestions -->
-            <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askSmartAI('Berapa sisa stok bio baja saat ini?')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 transition">🌿 Sisa Stok Bio Baja?</button>
-                <button onclick="askSmartAI('Bagaimana kondisi cuaca dan rekomendasi hari ini?')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 transition">🌤️ Info Cuaca & Saran?</button>
-                <button onclick="askSmartAI('Apa saja tugas harian dan arahan boss terbaru?')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 transition">📋 Jadwal & Arahan Boss?</button>
-            </div>
-
-            <!-- Chat Output Box -->
-            <div id="aiChatResponseBox" class="bg-slate-950/60 p-4 rounded-xl border border-indigo-500/40 text-sm text-indigo-100 min-h-[80px] max-h-48 overflow-y-auto leading-relaxed">
-                Halo! Saya Iklimah, asisten AI kebun anda. Ketik pertanyaan atau klik tombol di atas, saya akan jawab dengan suara wanita!
-            </div>
-
-            <!-- Input Chat -->
-            <div class="flex gap-2">
-                <input type="text" id="aiUserQuestion" placeholder="Tanya Iklimah (Cth: Apa rekap panen hari ini?)..." class="flex-1 border border-indigo-600 bg-slate-900 text-white placeholder-slate-400 p-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                <button onclick="submitUserAIChat()" class="bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm shadow transition active:scale-95">Tanya Iklimah</button>
-            </div>
-        </section>
-
         <!-- Boss Portal & Walkie-Talkie Voice Note -->
         <section class="bg-amber-50 border-2 border-amber-400 p-5 rounded-2xl shadow-sm space-y-4 mb-6">
             <h3 id="lblBossPortalTitle" class="font-bold text-amber-900 flex items-center gap-2 text-lg">⚠️ Portal Arahan & Walkie-Talkie Boss</h3>
@@ -201,7 +190,7 @@
             </div>
         </section>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigation Tabs (Sistem Halaman Terpisah) -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
             <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs transition active:scale-95">📋 <span id="navTasks">Tugas Harian</span></button>
             <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs transition active:scale-95">📦 <span id="navSupply">Stok & Suplai</span></button>
@@ -486,13 +475,20 @@
                 <button onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
 
-            <!-- Upload Foto Profil AI Iklimah Custom -->
+            <!-- Tetapan AI Asisten Wanita -->
             <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-300 space-y-3">
-                <h4 class="font-bold text-sm text-indigo-900">🤖 Upload Foto / Avatar AI Iklimah Custom</h4>
-                <p class="text-xs text-indigo-700">Muat naik gambar foto profil AI Iklimah yang akan muncul di sapaan dan panel chat.</p>
-                <input type="file" id="customAIAvatarInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
-                <button onclick="saveCustomAIAvatar()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Foto AI Iklimah</button>
-                <p id="aiAvatarStatusText" class="text-xs font-bold text-emerald-700"></p>
+                <h4 class="font-bold text-sm text-indigo-900">👩‍💻 Pengurusan AI Asisten Wanita</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-indigo-800 mb-1">Nama AI</label>
+                        <input type="text" id="settingAiName" class="w-full border p-2 rounded-lg text-sm bg-white" placeholder="Cth: Asisten Kebun AI">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-indigo-800 mb-1">Upload Foto Profil AI</label>
+                        <input type="file" id="settingAiAvatarInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                    </div>
+                </div>
+                <button onclick="saveAiSettings()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Tetapan AI</button>
             </div>
 
             <!-- Upload Custom Ringtone Walkie-Talkie -->
@@ -596,173 +592,166 @@
 
     <!-- Script JavaScript -->
     <script>
-        // --- SISTEM GREETING & SUARA WANITA AI IKLIMAH ---
-        let customAIAvatarBase64 = "";
+        // --- SISTEM PROFIL PENGGUNA PERTAMA KALI ---
+        let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
-        function checkUserGreeting() {
-            const savedUser = localStorage.getItem('medicalpro_user_profile');
-            if (!savedUser) {
-                document.getElementById('welcomeUserModal').classList.remove('hidden');
+        function checkUserProfile() {
+            if (!currentUser || !currentUser.name) {
+                document.getElementById('userProfileModal').classList.remove('hidden');
             } else {
-                const profile = JSON.parse(savedUser);
-                updateGreetingBanner(profile);
+                initAiGreeting();
             }
         }
 
         function saveUserProfile() {
-            const name = document.getElementById('inputUserName').value.trim();
+            const name = document.getElementById('inputUserRealName').value.trim();
             const gender = document.getElementById('inputUserGender').value;
-            if (!name) {
-                alert("Sila masukkan nama anda terlebih dahulu!");
-                return;
+            if (!name) { alert("Sila masukkan nama anda!"); return; }
+            
+            currentUser = { name, gender };
+            localStorage.setItem('medicalpro_user_profile', JSON.stringify(currentUser));
+            document.getElementById('userProfileModal').classList.add('hidden');
+            initAiGreeting();
+        }
+
+        // --- SISTEM AI ASISTEN WANITA & SUARA ---
+        let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
+        let lastSpokenText = "";
+
+        function applyAiSettings() {
+            document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
+            document.getElementById('settingAiName').value = aiConfig.name || "Asisten Kebun AI";
+            if (aiConfig.avatar) {
+                document.getElementById('aiAvatarContainer').innerHTML = `<img src="${aiConfig.avatar}" class="w-full h-full object-cover">`;
             }
-            const profile = { name, gender };
-            localStorage.setItem('medicalpro_user_profile', JSON.stringify(profile));
-            document.getElementById('welcomeUserModal').classList.add('hidden');
-            updateGreetingBanner(profile);
-
-            // AI Iklimah Langsung Ngomong dengan suara wanita
-            const greetingMsg = getGreetingText(profile);
-            speakAI(greetingMsg);
         }
 
-        function resetUserProfileModal() {
-            localStorage.removeItem('medicalpro_user_profile');
-            document.getElementById('inputUserName').value = "";
-            document.getElementById('welcomeUserModal').classList.remove('hidden');
+        if (db) {
+            db.collection("settings").doc("ai_config").get().then((doc) => {
+                if (doc.exists) { aiConfig = doc.data(); applyAiSettings(); }
+            }).catch(() => {});
+        } else { applyAiSettings(); }
+
+        function saveAiSettings() {
+            aiConfig.name = document.getElementById('settingAiName').value;
+            compressImage(document.getElementById('settingAiAvatarInput').files[0], function(base64Img) {
+                if (base64Img) aiConfig.avatar = base64Img;
+                if (db) db.collection("settings").doc("ai_config").set(aiConfig).catch(() => {});
+                applyAiSettings();
+                alert("Tetapan AI berjaya dikemaskini!");
+            });
         }
 
-        function getGreetingText(profile) {
-            const now = new Date();
-            const hours = now.getHours();
-            let timeGreeting = "Selamat Pagi";
-            if (hours >= 12 && hours < 15) timeGreeting = "Selamat Tengah Hari";
-            else if (hours >= 15 && hours < 19) timeGreeting = "Selamat Petang";
-            else if (hours >= 19 || hours < 5) timeGreeting = "Selamat Malam";
-
-            return `${timeGreeting}, ${profile.gender} ${profile.name}. Saya Iklimah, asisten AI anda. Siap membantu mengurus kebun hari ini.`;
-        }
-
-        function updateGreetingBanner(profile) {
-            const text = getGreetingText(profile);
-            document.getElementById('greetingTitleText').innerText = text.split('.')[0] + "!";
-        }
-
-        // Fungsi Text-to-Speech Suara Perempuan (Iklimah)
-        function speakAI(text) {
+        function speakText(text) {
+            lastSpokenText = text;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ms-MY';
                 utterance.rate = 1.0;
-                utterance.pitch = 1.3; // Pitch dinaikkan agar pas bersuara wanita
-
-                // Deteksi otomatis suara perempuan di perangkat
-                const voices = window.speechSynthesis.getVoices();
-                const femaleVoice = voices.find(v => (v.lang.includes('ms') || v.lang.includes('id') || v.lang.includes('en')) && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('amelia') || v.name.toLowerCase().includes('siti') || v.name.toLowerCase().includes('google')));
                 
+                // Cari suara wanita (female voice) dalam bahasa Melayu/Indonesia
+                const voices = window.speechSynthesis.getVoices();
+                const femaleVoice = voices.find(v => (v.lang.includes('ms') || v.lang.includes('id')) && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('woman') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('amelia') || v.name.toLowerCase().includes('siti')));
                 if (femaleVoice) {
                     utterance.voice = femaleVoice;
                 }
-
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = () => {};
+        function speakLastAiMessage() {
+            if (lastSpokenText) speakText(lastSpokenText);
         }
 
-        // Simpan & Muat Avatar AI Iklimah
-        function loadAIAvatar() {
-            const savedAvatar = localStorage.getItem('medicalpro_ai_avatar');
-            if (savedAvatar) {
-                customAIAvatarBase64 = savedAvatar;
-                applyAIAvatar(savedAvatar);
-            }
+        function getTitlePrefix() {
+            if (!currentUser) return "Tuan/Puan";
+            return currentUser.gender === 'female' ? "Puan" : "Tuan";
         }
 
-        function applyAIAvatar(base64) {
-            if (base64) {
-                document.getElementById('aiAvatarContainer').innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
-                document.getElementById('aiSectionAvatar').innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
-            }
+        function initAiGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let timeGreeting = "Selamat malam";
+            if (hours >= 5 && hours < 12) timeGreeting = "Selamat pagi";
+            else if (hours >= 12 && hours < 15) timeGreeting = "Selamat tengah hari";
+            else if (hours >= 15 && hours < 19) timeGreeting = "Selamat petang";
+
+            const title = getTitlePrefix();
+            const greeting = `${timeGreeting}, ${title} ${currentUser.name}. Saya ${aiConfig.name}, sedia membantu memantau pengurusan ladang hari ini. Sila tanya apa sahaja di bawah.`;
+            
+            document.getElementById('aiChatResponseBox').innerText = greeting;
+            document.getElementById('aiGreetingText').innerText = `Menyapa ${title} ${currentUser.name}`;
+            speakText(greeting);
         }
 
-        function saveCustomAIAvatar() {
-            const file = document.getElementById('customAIAvatarInput').files[0];
-            if (!file) { alert("Sila pilih fail gambar!"); return; }
-            compressImage(file, function(base64) {
-                customAIAvatarBase64 = base64;
-                localStorage.setItem('medicalpro_ai_avatar', base64);
-                if (db) {
-                    db.collection("settings").doc("ai_avatar").set({ avatar: base64 }).catch(() => {});
-                }
-                applyAIAvatar(base64);
-                document.getElementById('aiAvatarStatusText').innerText = "Status: Avatar Iklimah berjaya disimpan!";
-                alert("Foto profil AI Iklimah berjaya dikemaskini!");
-            });
-        }
+        function askAi(queryType) {
+            let response = "";
+            const title = getTitlePrefix();
+            const name = currentUser ? currentUser.name : "";
 
-        if (db) {
-            db.collection("settings").doc("ai_avatar").get().then((doc) => {
-                if (doc.exists && doc.data().avatar) {
-                    customAIAvatarBase64 = doc.data().avatar;
-                    applyAIAvatar(doc.data().avatar);
-                    localStorage.setItem('medicalpro_ai_avatar', doc.data().avatar);
-                }
-            }).catch(() => {});
-        }
-
-
-        // --- 🌟 ASISTEN AI PINTAR IKLIMAH (KNOWLEDGE & VOICE) ---
-        function askSmartAI(queryText) {
-            if(!queryText) queryText = document.getElementById('aiUserQuestion').value;
-            if(!queryText) return;
-
-            const chatBox = document.getElementById('aiChatResponseBox');
-            chatBox.innerHTML += `<div class="mt-2 text-yellow-300"><b>Anda:</b> ${queryText}</div>`;
-            document.getElementById('aiUserQuestion').value = "";
-
-            let aiReply = "";
-            const lower = queryText.toLowerCase();
-
-            if (lower.includes('stok') || lower.includes('baja') || lower.includes('nutrisi')) {
-                let stockSummary = "";
-                if(inventory.length > 0) {
-                    inventory.forEach(i => { stockSummary += `• ${i.name}: ${i.stock} unit. `; });
+            if (queryType === 'stok baja') {
+                if (inventory.length === 0) {
+                    response = `Maaf ${title} ${name}, saat ini belum ada data stok bio baja yang terdaftar di sistem.`;
                 } else {
-                    stockSummary = "Belum ada master stok bio baja tercatat.";
+                    let stockSummary = inventory.map(i => `${i.name}: ${i.stock} unit`).join(', ');
+                    response = `Baik ${title} ${name}, berikut baki stok bio baja semasa di gudang: ${stockSummary}.`;
                 }
-                aiReply = `🌿 Berdasarkan data gudang bio baja terkini: ${stockSummary} Pastikan pemeriksaan rutin dilakukan agar tanaman Belimbing Buluh tidak kekurangan nutrisi.`;
-            } else if (lower.includes('cuaca') || lower.includes('rekomendasi') || lower.includes('suhu')) {
-                const temp = document.getElementById('tempDisplay').innerText;
-                const cond = document.getElementById('condDisplay').innerText;
-                const rec = document.getElementById('smartRecommendation').innerText;
-                aiReply = `🌤️ Kondisi cuaca Machap saat ini ${temp} (${cond}). Pesan pintar sistem: "${rec}"`;
-            } else if (lower.includes('tugas') || lower.includes('boss') || lower.includes('arahan') || lower.includes('jadwal')) {
-                let totalTasks = tasks.length;
-                let totalOrders = bossOrders.length;
-                let pendingOrders = bossOrders.filter(o => o.status === "Belum Dikerjakan").length;
-                aiReply = `📋 Terdapat ${totalTasks} rekod tugas harian dalam sistem. Untuk arahan boss, ada ${totalOrders} jumlah arahan dengan ${pendingOrders} arahan yang masih belum dikerjakan.`;
-            } else {
-                aiReply = `🤖 Halo! Saya Iklimah, asisten AI anda. Saya memantau data kebun, cuaca Machap, dan tugas harian. Anda boleh bertanya seputar stok bio baja, cuaca, atau rekap tugas kebun.`;
+            } else if (queryType === 'pekerja hari ini') {
+                const todayStr = new Date().toISOString().substring(0, 10);
+                const todayTasks = tasks.filter(t => t.date === todayStr);
+                if (todayTasks.length === 0) {
+                    response = `Untuk hari ini ${title} ${name}, belum ada tugasan pekerja yang direkodkan selesai.`;
+                } else {
+                    let taskList = todayTasks.map(t => `${t.worker} mengerjakan ${t.title}`).join('; ');
+                    response = `Hari ini ${title} ${name}, pekerja telah melaksanakan: ${taskList}.`;
+                }
+            } else if (queryType === 'pengeluaran bulan ini') {
+                const currentMonth = new Date().toISOString().substring(0, 7);
+                const monthExp = expenses.filter(e => e.month === currentMonth);
+                let total = monthExp.reduce((sum, e) => sum + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
+                response = `Jumlah perbelanjaan atau pengeluaran untuk bulan ini adalah sebanyak RM ${total.toFixed(2)}, ${title} ${name}.`;
+            } else if (queryType === 'pendapatan bulan ini') {
+                const currentMonth = new Date().toISOString().substring(0, 7);
+                const monthInc = incomeList.filter(i => i.month === currentMonth);
+                let total = monthInc.reduce((sum, i) => sum + parseFloat(i.amount.replace(/[^0-9.]/g, '') || 0), 0);
+                response = `Jumlah pendapatan hasil jualan kebun bulan ini adalah RM ${total.toFixed(2)}, ${title} ${name}.`;
             }
 
-            setTimeout(() => {
-                chatBox.innerHTML += `<div class="mt-2 text-indigo-200 bg-indigo-950/60 p-2.5 rounded-lg border border-indigo-500/30"><b>Iklimah AI:</b> ${aiReply}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-                
-                // AI Iklimah Ngomong dengan suara wanita
-                speakAI(aiReply);
-            }, 300);
+            document.getElementById('aiChatResponseBox').innerText = response;
+            speakText(response);
         }
 
-        function submitUserAIChat() {
-            const q = document.getElementById('aiUserQuestion').value;
-            if(q) askSmartAI(q);
+        function handleAiManualQuery(e) {
+            e.preventDefault();
+            const input = document.getElementById('aiManualInput').value.toLowerCase();
+            const title = getTitlePrefix();
+            const name = currentUser ? currentUser.name : "";
+            let response = `Maaf ${title} ${name}, saya kurang faham soalan itu. Cuba klik butang pertanyaan cepat di atas ya!`;
+
+            if (input.includes('baja') || input.includes('stok')) {
+                askAi('stok baja');
+                return;
+            } else if (input.includes('pekerja') || input.includes('kerja')) {
+                askAi('pekerja hari ini');
+                return;
+            } else if (input.includes('pengeluaran') || input.includes('belanja') || input.includes('kos')) {
+                askAi('pengeluaran bulan ini');
+                return;
+            } else if (input.includes('pendapatan') || input.includes('jualan') || input.includes('duit')) {
+                askAi('pendapatan bulan ini');
+                return;
+            }
+
+            document.getElementById('aiChatResponseBox').innerText = response;
+            speakText(response);
+            document.getElementById('aiManualInput').value = "";
         }
 
+        // Jalankan semakan profil pengguna saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            checkUserProfile();
+        });
 
         // --- SISTEM TAB / HALAMAN TERPISAH ---
         function switchTab(tabId) {
@@ -799,11 +788,6 @@
         } catch(e) {
             console.log("Firebase init error");
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadAIAvatar();
-            checkUserGreeting();
-        });
 
         // --- FITUR AUTO-CLEAN FOTO ---
         function autoCleanOldPhotos() {
@@ -860,7 +844,7 @@
             } else if (hours >= 5 && hours < 10) {
                 icon = "🌅";
                 condText = "Pagi Cerah & Segar";
-                advice = "🌅 Selamat pagi! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Udara segar, sangat ideal untuk tabur bio baja.";
+                advice = "🌅 Selamat pagi, Bro! Waktu terbaik untuk mula bekerja jam 07:00/08:00. Udara segar, sangat ideal untuk tabur bio baja.";
                 forecast3h = "Cerah Pagi";
             } else if (hours >= 10 && hours < 15) {
                 icon = "☀️";
@@ -969,7 +953,7 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
             } catch(e) {}
             document.getElementById('audioUnlockBanner').style.display = 'none';
-            alert("Mod Suara & Walkie-Talkie Berjaya Diaktifkan!");
+            alert("Mod Audio Sistem & Walkie-Talkie Berjaya Diaktifkan!");
         }
 
         if (db) {
@@ -1839,7 +1823,7 @@
             }
         }
 
-        // --- FUNGSI DOWNLOAD GAMBAR & REKAP ---
+        // --- FUNGSI DOWNLOAD GAMBAR & REKAP DENGAN NOTIFIKASI POP-UP ---
         function downloadImageFile(imageUrl, fileName) {
             if (!imageUrl) {
                 alert("⚠️ Tiada fail gambar untuk dimuat turun!");
