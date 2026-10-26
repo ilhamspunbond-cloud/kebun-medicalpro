@@ -520,6 +520,7 @@
                                 <th class="p-2.5">Tarikh</th>
                                 <th class="p-2.5">Keterangan / Item</th>
                                 <th class="p-2.5">Pekerja / Staff</th>
+                                <th class="p-2.5">Lampiran Foto HD</th>
                                 <th class="p-2.5 text-right rounded-r-lg">Jumlah / Kos (RM)</th>
                             </tr>
                         </thead>
@@ -1013,12 +1014,26 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    // Kualiti 0.85 menghasilkan ukuran sekitar 500KB - 1MB, sangat jernih dan tidak burem!
                     callback(canvas.toDataURL('image/jpeg', 0.85));
                 }
                 img.src = event.target.result;
             }
             reader.readAsDataURL(file);
+        }
+
+        // --- FUNGSI DOWNLOAD GAMBAR HD LANGSUNG ---
+        function downloadImageFile(imageUrl, fileName) {
+            if (!imageUrl) {
+                alert("⚠️ Tiada fail gambar untuk dimuat turun!");
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = imageUrl;
+            a.download = fileName || `Foto_HD_${Date.now()}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert(`📥 Berjaya Muat Turun!\nFail "${a.download}" telah disimpan ke peranti anda.`);
         }
 
         let audioUnlocked = false;
@@ -1516,7 +1531,7 @@
                 stockUsed: document.getElementById('taskStockItem').value || "Tiada",
                 photo: taskPhotoBase64 || "",
                 status: "Selesai ✓",
-                amount: "0" // Tugas harian bernilai 0 atau bebas
+                amount: "0"
             };
             if (db) db.collection("tasks").add(newTask).then(() => {
                 this.reset();
@@ -1559,7 +1574,14 @@
             filtered.forEach(t => {
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${t.photo ? `<a href="${t.photo}" target="_blank"><img src="${t.photo}" class="w-12 h-12 object-cover rounded shadow border"></a>` : 'Tiada'}</td>
+                        <td class="p-3">
+                            ${t.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${t.photo}" class="w-12 h-12 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${t.photo}', 'Tugas-${t.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download Foto</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
                         <td class="p-3 font-medium">${t.title}</td>
                         <td class="p-3">${t.category}</td>
                         <td class="p-3">${t.worker}</td>
@@ -1626,7 +1648,14 @@
             filtered.forEach(ex => {
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${ex.receipt ? `<a href="${ex.receipt}" target="_blank"><img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow border"></a>` : 'Tiada'}</td>
+                        <td class="p-3">
+                            ${ex.receipt ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${ex.receipt}" class="w-12 h-12 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${ex.receipt}', 'Resit-${ex.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download Foto</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
                         <td class="p-3">${ex.title}</td>
                         <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
                         <td class="p-3">${ex.date}</td>
@@ -1695,7 +1724,14 @@
             filtered.forEach(inc => {
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${inc.photo ? `<a href="${inc.photo}" target="_blank"><img src="${inc.photo}" class="w-12 h-12 object-cover rounded shadow border"></a>` : 'Tiada'}</td>
+                        <td class="p-3">
+                            ${inc.photo ? `
+                                <div class="flex flex-col gap-1">
+                                    <img src="${inc.photo}" class="w-12 h-12 object-cover rounded shadow border">
+                                    <a href="javascript:void(0);" onclick="downloadImageFile('${inc.photo}', 'Bukti-Jualan-${inc.id}.jpg')" class="text-[10px] text-blue-600 font-bold underline">📥 Download Foto</a>
+                                </div>
+                            ` : 'Tiada'}
+                        </td>
                         <td class="p-3">${inc.title}</td>
                         <td class="p-3 text-xs font-bold">${inc.staff || 'Staff'}</td>
                         <td class="p-3 font-bold text-emerald-600">${inc.amount}</td>
@@ -1718,7 +1754,6 @@
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
             if (canvas && !signaturePad) {
-                // Sesuaikan saiz canvas
                 canvas.width = canvas.parentElement.clientWidth;
                 canvas.height = canvas.parentElement.clientHeight;
                 signaturePad = new SignaturePad(canvas, {
@@ -1775,7 +1810,7 @@
             let grandTotal = 0;
 
             if (dataArr.length === 0) {
-                invTbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada rekod untuk tempoh ini.</td></tr>`;
+                invTbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada rekod untuk tempoh ini.</td></tr>`;
             } else {
                 dataArr.forEach((item, index) => {
                     let desc = item.title || item.item || '-';
@@ -1784,12 +1819,21 @@
                     let numericVal = parseFloat(amountStr.replace(/[^0-9.]/g, '')) || 0;
                     grandTotal += numericVal;
 
+                    let photoUrl = item.photo || item.receipt || '';
+                    let photoHtml = photoUrl ? `
+                        <div class="flex items-center gap-2">
+                            <img src="${photoUrl}" class="w-10 h-10 object-cover rounded border">
+                            <button onclick="downloadImageFile('${photoUrl}', 'Lampiran-Invoice-${index+1}.jpg')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-[10px] font-bold shadow whitespace-nowrap">📥 Download Foto</button>
+                        </div>
+                    ` : '<span class="text-slate-400 italic">Tiada Foto</span>';
+
                     invTbody.innerHTML += `
                         <tr class="hover:bg-slate-50">
                             <td class="p-2.5 font-mono">${index + 1}</td>
                             <td class="p-2.5">${item.date || '-'}</td>
                             <td class="p-2.5 font-medium">${desc}</td>
                             <td class="p-2.5">${workerStaff}</td>
+                            <td class="p-2.5">${photoHtml}</td>
                             <td class="p-2.5 text-right font-bold text-slate-700">${numericVal > 0 ? 'RM ' + numericVal.toFixed(2) : '-'}</td>
                         </tr>
                     `;
