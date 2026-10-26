@@ -83,7 +83,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI PINTAR & BERPIKIR MANDIRI (SMART FARM MANAGER) -->
+        <!-- WIDGET ASISTEN AI PINTAR & BERPIKIR MANDIRI -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -93,9 +93,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Pengurusan Aktif</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Logika Pekerja Aktif</span>
                         </div>
-                        <p id="aiGreetingText" class="text-xs text-indigo-200">Berfikir untuk kerja tambahan (Stor, Bilik Air, Mesin).</p>
+                        <p id="aiGreetingText" class="text-xs text-indigo-200">Menyusun tugas berasaskan nama input sebenar.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -115,12 +115,12 @@
 
             <!-- Kotak Perbualan / Analisis AI -->
             <div id="aiChatResponseBox" class="bg-black/30 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                AI sedang memeriksa log kerja harian dan status stor kebun...
+                AI sedang memeriksa senarai pekerja rasmi...
             </div>
 
             <!-- Butang Rekomendasi Pintar Cepat -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Syor Tugas Harian (Rojak & Holil)</button>
+                <button onclick="askAi('rekomendasi pekerja')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">👥 Syor Tugas Pekerja Aktif</button>
                 <button onclick="askAi('penyelenggaraan stor')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧹 Kemas Stor & Mesin</button>
                 <button onclick="askAi('jadual tuai')" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-xl border border-indigo-500 text-white font-semibold">🌾 Jadual Tuai & Panen</button>
                 <button onclick="askAi('status kewangan')" class="bg-indigo-800/80 hover:bg-indigo-700 px-3 py-1.5 rounded-xl border border-indigo-600 text-indigo-200">💰 Kewangan</button>
@@ -128,7 +128,7 @@
 
             <!-- Input Chat Manual ke AI -->
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa kerja tambahan untuk Rojak hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa kerja tambahan hari ni?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none focus:border-indigo-400">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya AI</button>
             </form>
         </section>
@@ -182,7 +182,7 @@
             </div>
 
             <form id="bossOrderForm" class="flex gap-2">
-                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru (Cth: Rojak kemas stor dan cuci bilik air)..." required class="flex-1 border border-amber-300 p-2.5 rounded-xl text-sm focus:outline-none bg-white">
+                <input type="text" id="bossInputMessage" placeholder="Taip arahan baru (Cth: Kemas stor dan cuci bilik air)..." required class="flex-1 border border-amber-300 p-2.5 rounded-xl text-sm focus:outline-none bg-white">
                 <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Hantar</button>
             </form>
 
@@ -537,12 +537,12 @@
                 <button onclick="saveGardenSettings()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Simpan Identitas</button>
             </div>
 
-            <!-- PENGURUSAN PEKERJA (OTOMATIS DIKENALI AI) -->
+            <!-- PENGURUSAN PEKERJA (HANYA NAMA YANG DIINPUT ADMIN) -->
             <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun (Auto-Sinkron AI)</h4>
-                <p class="text-xs text-slate-500 mb-2">Tambah pekerja baru di sini, AI akan otomatis mengenali nama dan memasukkan mereka ke dalam sistem syor tugas.</p>
+                <h4 class="font-bold text-sm text-slate-700 mb-2">Pengurusan Pekerja Kebun (Dinamis Sesuai Input Admin)</h4>
+                <p class="text-xs text-slate-500 mb-2">AI hanya akan menyebutkan nama pekerja yang ada dalam senarai di bawah ini.</p>
                 <div class="flex gap-2">
-                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja Baru (Cth: Joko)" class="flex-1 border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="newWorkerName" placeholder="Nama Pekerja Baru (Cth: Holil)" class="flex-1 border p-2 rounded-lg text-sm bg-white">
                     <button onclick="addWorker()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold">Tambah Pekerja</button>
                 </div>
                 <div id="workerListTags" class="flex flex-wrap gap-2 mt-3"></div>
@@ -645,7 +645,7 @@
             initAiGreeting();
         }
 
-        // --- SISTEM AI AGRONOMIST & OTAK BERFIKIR MANDIRI ---
+        // --- SISTEM AI AGRONOMIST & BERPIKIR MANDIRI ---
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
         let lastSpokenText = "";
         let currentWeatherData = { condition: "Cerah", isRain: false };
@@ -679,7 +679,9 @@
             lastSpokenText = text;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
+                // Hapus simbol asteris (*) untuk text yang dibacakan suara
+                const cleanTextForSpeech = text.replace(/[*_#]/g, '');
+                const utterance = new SpeechSynthesisUtterance(cleanTextForSpeech);
                 utterance.lang = 'ms-MY';
                 utterance.rate = 1.0;
                 
@@ -701,50 +703,56 @@
             return currentUser.gender === 'female' ? "Puan" : "Tuan";
         }
 
-        // --- LOGIKA BERFIKIR CERDAS AI (SMART FARM MANAGER) ---
+        // --- DAFTAR PEKERJA AKTIF (HANYA DARI INPUT ADMIN) ---
+        let workers = [];
+
+        // --- LOGIKA BERFIKIR CERDAS AI (TANPA BINTANG PADA NAMA, HANYA PEKERJA INPUT) ---
         function generateSmartAgronomyRecommendation(topic = 'general') {
             const title = getTitlePrefix();
             const name = currentUser ? currentUser.name : "Rojak";
             const todayStr = new Date().toISOString().substring(0, 10);
 
-            // Cek tugas hari ini yang sudah diinput untuk Rojak
+            // Cek tugas hari ini yang sudah diinput untuk user (Rojak)
             let rojakTasksToday = tasks.filter(t => t.date === todayStr && t.worker && t.worker.toLowerCase().includes(name.toLowerCase()));
             let hasWatered = rojakTasksToday.some(t => t.title.toLowerCase().includes('siram'));
             let hasDoneSecondTask = rojakTasksToday.length >= 2;
 
-            // Cek tugas Holil hari ini
-            let holilTasksToday = tasks.filter(t => t.date === todayStr && t.worker && t.worker.toLowerCase().includes('holil'));
-            let holilWorking = holilTasksToday.length > 0;
-
             let weatherAdvice = currentWeatherData.isRain 
-                ? "🌧️ Cuaca sedang hujan. Kerja luar ditangguhkan."
-                : "☀️ Cuaca cerah dan baik untuk aktiviti ladang.";
+                ? "Cuaca sedang hujan. Kerja luar ditangguhkan."
+                : "Cuaca cerah dan baik untuk aktiviti ladang.";
 
-            // Logika Pintar untuk Rojak (Wajib Siram Pagi + Tugas Kedua)
+            // Aturan harian Rojak (Wajib siram + tugas kedua)
             let rojakInstruction = "";
             if (!hasWatered) {
-                rojakInstruction = `Untuk **${name}**, prioritas pertama pagi ini wajib **siram pokok belimbing wuluh** terlebih dahulu. Selepas siram selesai dan diinput ke sistem, teruskan ke pekerjaan kedua seperti *pruning dahan*, *tuai buah*, atau cek aset kebun.`;
+                rojakInstruction = `Untuk ${name}, prioritas pertama pagi ini wajib siram pokok belimbing wuluh terlebih dahulu. Selepas siram selesai dan diinput ke sistem, teruskan ke pekerjaan kedua seperti pruning dahan, tuai buah, atau cek aset kebun.`;
             } else if (!hasDoneSecondTask) {
-                rojakInstruction = `Bagus, ${name} sudah selesai siram pokok hari ini! Mengikut aturan harian minimum 2 kerja, cadangan tugas seterusnya: **kemas stor, cuci bilik air, atau lakukan pruning** supaya kebun bersih dan teratur.`;
+                rojakInstruction = `Bagus, ${name} sudah selesai siram pokok hari ini! Mengikut aturan harian minimum 2 kerja, cadangan tugas seterusnya: kemas stor, cuci bilik air, atau lakukan pruning supaya kebun bersih dan teratur.`;
             } else {
-                rojakInstruction = `Kerja harian ${name} hari ini sudah lengkap (siram + tugas tambahan). Sila semak semula hasil tuai atau rehat sebentar.`;
+                rojakInstruction = `Kerja harian ${name} hari ini sudah lengkap. Sila semak semula hasil tuai atau rehat sebentar.`;
             }
 
-            // Logika Pintar untuk Holil & Pekerja Lain (Dinamis sesuai senarai pekerja)
+            // Menyusun instruksi HANYA untuk pekerja yang benar-benar di-input di dalam array workers
             let workerInstructions = [];
-            workers.forEach(w => {
-                let wLower = w.toLowerCase();
-                if (wLower.includes('holil')) {
-                    workerInstructions.push(`**${w}**: Fokus utama memotong rumput dan merapikan kawasan batas kebun agar tampak bersih.`);
-                } else if (!wLower.includes(name.toLowerCase())) {
-                    workerInstructions.push(`**${w}** (Pekerja Tambahan): Sila bantu kerja-kerja sokongan seperti angkut hasil tuai, susun tempat baja, atau bantu Holil bersihkan kawasan.`);
-                }
-            });
+            if (workers && workers.length > 0) {
+                workers.forEach(w => {
+                    let wLower = w.toLowerCase();
+                    if (!wLower.includes(name.toLowerCase())) {
+                        // Jika pekerja selain user (Cth: Holil atau pekerja lain yang diinput)
+                        if (wLower.includes('holil')) {
+                            workerInstructions.push(`${w}: Fokus utama memotong rumput dan merapikan kawasan batas kebun agar tampak bersih.`);
+                        } else {
+                            workerInstructions.push(`${w}: Sila bantu kerja-kerja sokongan seperti angkut hasil tuai atau susun tempat baja.`);
+                        }
+                    }
+                });
+            }
+
+            let workerText = workerInstructions.length > 0 ? workerInstructions.join(' ') : "Tiada pekerja tambahan didaftarkan buat masa ini.";
 
             if (topic === 'pekerja' || topic === 'general') {
-                return `Arahan Pengurusan Hari Ini, ${title} ${name}: ${rojakInstruction} Rekabentuk Pekerja Lain: ${workerInstructions.join(' ')} ${weatherAdvice}`;
+                return `Arahan Pengurusan Hari Ini, ${title} ${name}: ${rojakInstruction} ${workerText} ${weatherAdvice}`;
             } else if (topic === 'penyelenggaraan stor') {
-                return `Cadangan Penyelenggaraan Aset & Stor: Sila arahkan pekerja untuk **kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air kebun, serta cek enjin mesin potong rumput** agar peralatan tahan lama dan bersih, ${title} ${name}!`;
+                return `Cadangan Penyelenggaraan Aset & Stor: Sila arahkan pekerja untuk kemas stor utama, bersihkan tempat racun dan baja, cuci bilik air kebun, serta cek enjin mesin potong rumput agar peralatan tahan lama dan bersih, ${title} ${name}!`;
             } else if (topic === 'jadual tuai') {
                 return `Jadual Tuai & Panen: Kitaran tuai buah belimbing wuluh dan bunga kantan berjalan setiap minggu. Pastikan hasil dituai tepat masa, ${title} ${name}.`;
             } else if (topic === 'kewangan') {
@@ -942,7 +950,7 @@
             } else if (hours >= 5 && hours < 10) {
                 icon = "🌅";
                 condText = "Pagi Cerah & Segar";
-                advice = "🌅 Selamat pagi, Bro! Pagi ini Rojak wajib mula dengan siram pokok, manakala Holil potong rumput.";
+                advice = "🌅 Selamat pagi, Bro! Pagi ini Rojak wajib mula dengan siram pokok.";
                 forecast3h = "Cerah Pagi";
             } else if (hours >= 10 && hours < 15) {
                 icon = "☀️";
@@ -1343,29 +1351,42 @@
             }
         }
 
-        let workers = ["Holil", "Ahmad", "Budi", "Siti"];
+        // Sinkronisasi Pekerja dari Firebase / Default Kosong jika belum diinput
         function renderWorkersDropdown() {
             const select = document.getElementById('taskWorkerSelect');
             if(!select) return;
             select.innerHTML = `<option value="">Pilih Pekerja</option>`;
             workers.forEach(w => { select.innerHTML += `<option value="${w}">${w}</option>`; });
         }
+
         if (db) {
             db.collection("settings").doc("workers").get().then((doc) => {
-                if (doc.exists && doc.data().list) { workers = doc.data().list; renderWorkersDropdown(); }
+                if (doc.exists && doc.data().list) {
+                    workers = doc.data().list;
+                } else {
+                    workers = []; // Kosong secara default jika admin belum input
+                }
+                renderWorkersDropdown();
+                renderWorkersAdmin();
             }).catch(() => {});
+        } else {
+            renderWorkersDropdown();
         }
-        renderWorkersDropdown();
 
         function renderWorkersAdmin() {
             const container = document.getElementById('workerListTags');
             if(!container) return;
             container.innerHTML = "";
+            if (workers.length === 0) {
+                container.innerHTML = `<span class="text-xs text-slate-400 italic">Tiada pekerja diinput. Sila tambah di atas.</span>`;
+                return;
+            }
             workers.forEach((w, index) => {
                 container.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-2">${w} <button onclick="deleteWorker(${index})" class="text-rose-500 font-bold">×</button></span>`;
             });
             renderWorkersDropdown();
         }
+
         function addWorker() {
             const nameInput = document.getElementById('newWorkerName');
             if(nameInput && nameInput.value) {
@@ -1373,9 +1394,10 @@
                 if (db) db.collection("settings").doc("workers").set({ list: workers });
                 nameInput.value = "";
                 renderWorkersAdmin();
-                alert("Pekerja baru berjaya ditambah dan AI kini mengenali namanya!");
+                alert("Pekerja baru berjaya ditambah!");
             }
         }
+
         function deleteWorker(index) {
             workers.splice(index, 1);
             if (db) db.collection("settings").doc("workers").set({ list: workers });
