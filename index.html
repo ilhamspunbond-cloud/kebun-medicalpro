@@ -12,7 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <!-- Signature Pad untuk Tanda Tangan Boss di Invoice -->
+    <!-- Signature Pad untuk Tanda Tangan Boss -->
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
     <style>
         @media print {
@@ -271,7 +271,7 @@
                         <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('tasks')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('tasks')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rekap PDF</button>
                     </div>
                 </div>
 
@@ -334,7 +334,7 @@
                         <select id="filterSupplyMonth" onchange="renderSupplyApp()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('supply')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('supply')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Data Suplai PDF</button>
                     </div>
                 </div>
 
@@ -423,7 +423,7 @@
                         <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rekap PDF</button>
                     </div>
                 </div>
 
@@ -457,7 +457,7 @@
                         <select id="filterIncomeMonth" onchange="renderIncome()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('income')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('income')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rekap PDF</button>
                     </div>
                 </div>
 
@@ -498,7 +498,7 @@
 
     </main>
 
-    <!-- MODAL INVOICE PDF & TANDA TANGAN -->
+    <!-- MODAL CETAK REKAP / DATA SUPLAI -->
     <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
         <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
@@ -514,8 +514,8 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <h3 class="text-xl font-extrabold text-emerald-800 uppercase tracking-wider">INVOICE RASMI</h3>
-                        <p class="text-xs text-slate-500 font-mono" id="invModalDateNum">No: INV-2026-001</p>
+                        <h3 id="invModalMainHeader" class="text-xl font-extrabold text-emerald-800 uppercase tracking-wider">DATA SUPLAI KEBUN</h3>
+                        <p class="text-xs text-slate-500 font-mono" id="invModalDateNum">Tarikh Suplai: 2026-10-27</p>
                         <p class="text-xs text-slate-500" id="invModalPeriod">Tempoh: Semua Bulan</p>
                     </div>
                 </div>
@@ -527,7 +527,7 @@
                     </div>
                     <div>
                         <span class="text-slate-400 block font-semibold">Kategori Rekap:</span>
-                        <strong class="text-emerald-700" id="invModalCategoryName">Rekap</strong>
+                        <strong class="text-emerald-700" id="invModalCategoryName">Rekap Suplai</strong>
                     </div>
                     <div>
                         <span class="text-slate-400 block font-semibold">Jumlah Rekod:</span>
@@ -542,9 +542,9 @@
                                 <th class="p-2.5 rounded-l-lg">No</th>
                                 <th class="p-2.5">Tarikh</th>
                                 <th class="p-2.5">Keterangan / Item</th>
-                                <th class="p-2.5">Pekerja / Staff</th>
+                                <th class="p-2.5">Pekerja / Status</th>
                                 <th class="p-2.5">Lampiran Foto HD</th>
-                                <th class="p-2.5 text-right rounded-r-lg">Jumlah / Kos (RM)</th>
+                                <th class="p-2.5 text-right rounded-r-lg" id="invTableAmountHeader">Jumlah / Kos (RM)</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody" class="divide-y divide-slate-100"></tbody>
@@ -553,7 +553,7 @@
 
                 <div class="flex justify-end pt-2">
                     <div class="bg-emerald-50 border border-emerald-200 px-5 py-3 rounded-xl text-right min-w-[200px]">
-                        <span class="text-xs font-bold text-emerald-800 block uppercase">Jumlah Keseluruhan:</span>
+                        <span id="invoiceGrandTotalLabel" class="text-xs font-bold text-emerald-800 block uppercase">Jumlah Keseluruhan:</span>
                         <span class="text-lg font-black text-emerald-900" id="invoiceGrandTotal">RM 0.00</span>
                     </div>
                 </div>
@@ -1178,7 +1178,6 @@
             unitDisplay.value = (item === "Bunga Kantan") ? "tangkai" : "kg";
         }
 
-        let tempSupplyPhotoBase64 = "";
         function handleSupplyFormSubmit(e) {
             e.preventDefault();
             const editingId = document.getElementById('editingSupplyId').value;
@@ -1626,7 +1625,7 @@
             }
         }
 
-        // --- SIGNATURE & INVOICE PDF ---
+        // --- SIGNATURE & REKAP PDF ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -1644,13 +1643,15 @@
 
         function generateMonthlyInvoice(type) {
             let filterVal = 'all', title = "", dataArr = [];
+            const todayStr = new Date().toISOString().substring(0, 10);
+
             if(type === 'tasks') {
                 filterVal = document.getElementById('filterTaskMonth').value;
                 title = "Rekap Tugas Harian Estet";
                 dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal);
             } else if(type === 'supply') {
                 filterVal = document.getElementById('filterSupplyMonth').value;
-                title = "Rekap Hasil Tuai & Suplai Kebun";
+                title = "Data Suplai Kebun";
                 dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal);
             } else if(type === 'expenses') {
                 filterVal = document.getElementById('filterExpenseMonth').value;
@@ -1672,7 +1673,19 @@
             
             document.getElementById('invModalOwner').innerText = `${ownerName} ${isBoss ? '(Boss / Datu)' : '(' + (currentUser ? currentUser.gender : 'Perwakilan') + ')'}`;
             document.getElementById('invSignatureRoleLabel').innerText = roleLabel;
-            document.getElementById('invModalDateNum').innerText = `No: INV-${Date.now().toString().slice(-6)}`;
+
+            // Khusus untuk menu supply, ubah header menjadi TANPA NOMOR INVOICE, melainkan Tanggal Suplai
+            if (type === 'supply') {
+                document.getElementById('invModalMainHeader').innerText = "DATA SUPLAI KEBUN";
+                document.getElementById('invModalDateNum').innerText = `Tarikh Suplai: ${todayStr}`;
+                document.getElementById('invTableAmountHeader').innerText = "Jumlah / Satuan";
+                document.getElementById('invoiceGrandTotalLabel').innerText = "Jumlah Keseluruhan Satuan:";
+            } else {
+                document.getElementById('invModalMainHeader').innerText = "INVOICE RASMI";
+                document.getElementById('invModalDateNum').innerText = `No: INV-${Date.now().toString().slice(-6)}`;
+                document.getElementById('invTableAmountHeader').innerText = "Jumlah / Kos (RM)";
+                document.getElementById('invoiceGrandTotalLabel').innerText = "Jumlah Keseluruhan:";
+            }
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = ""; let grandTot = 0;
