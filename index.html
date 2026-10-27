@@ -138,7 +138,7 @@
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa rekap bulan ini atau status baja?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa khasiat teh daun belimbing atau rekap?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya</button>
             </form>
         </section>
@@ -569,7 +569,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-blue-900">🏢 Manajemen Penjualan & Stok Office (Produk Jadi)</h3>
-                        <p class="text-xs text-slate-500">Urus produk siap jualan dengan foto, catat order pelanggan & cetak invoice rasmi office</p>
+                        <p class="text-xs text-slate-500">Urus produk siap jualan dengan foto, khasiat/kandungan, catat order pelanggan & cetak invoice rasmi office</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <select id="filterOfficeMonth" onchange="renderOfficeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
@@ -594,9 +594,9 @@
                 <!-- Konten Utama Office (Terkunci Sebelum Login) -->
                 <div id="officeMainContent" class="space-y-6 opacity-50 pointer-events-none">
                     
-                    <!-- Sub-section: Tambah Produk Baru Office -->
+                    <!-- Sub-section: Tambah Produk Baru Office (Termasuk Khasiat/Kandungan) -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
-                        <h4 class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Office / Ubah Stok & Foto</h4>
+                        <h4 class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Office / Ubah Stok, Foto & Khasiat</h4>
                         <form id="officeProductForm" onsubmit="handleOfficeProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             <input type="text" id="prodName" placeholder="Nama Produk (Cth: Teh Daun Belimbing)" required class="border p-2 rounded-lg text-xs bg-white">
                             <input type="number" id="prodStock" placeholder="Stok Awal" min="0" required class="border p-2 rounded-lg text-xs bg-white">
@@ -604,10 +604,14 @@
                             <div>
                                 <input type="file" id="prodPhoto" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                             </div>
+                            <div class="sm:col-span-4">
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Khasiat, Manfaat & Kandungan Produk (Dibaca AI Otomatis)</label>
+                                <textarea id="prodBenefits" rows="2" placeholder="Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah." class="w-full border p-2.5 rounded-lg text-xs bg-white"></textarea>
+                            </div>
                             <button type="submit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Office Baru</button>
                         </form>
                         <!-- Senarai Produk & Stok Aktif -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2" id="officeProductSummaryContainer"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2" id="officeProductSummaryContainer"></div>
                     </div>
 
                     <!-- Sub-section: Borang Jualan Office (POS & Data Pelanggan) -->
@@ -1047,8 +1051,8 @@
         let officeProducts = [];
         let officeSales = [];
 
-        // --- AI KREATIF & MANDIRI ---
-        function generateFriendlyAiResponse(queryType = 'welcome') {
+        // --- AI KREATIF & MANDIRI (DENGAN BACAAN KHASIAT PRODUK) ---
+        function generateFriendlyAiResponse(queryType = 'welcome', manualText = '') {
             const fullName = getFullTitleName();
 
             let lowStockItems = inventory.filter(i => i.stock < 5).map(i => i.name);
@@ -1074,8 +1078,22 @@
             } else if (queryType === 'jobdesk') {
                 let workerNames = workers.length > 0 ? workers.map(w => typeof w === 'object' ? w.name : w).join(', ') : 'Belum ada pekerja diinput';
                 responseText = `📋 **Rekomendasi Job Desk Pekerja**:\n• Pekerja Bertugas: ${workerNames}\n• ${jobDeskRec}\n• Cuaca Estet: ${currentWeatherData.rainSoon ? 'Ada potensi hujan, utamakan kerja stor.' : 'Cerah dan stabil.'}`;
+            } else if (queryType === 'product_query') {
+                // Semak sama ada manualText menyentuh mana-mana produk office & khasiatnya
+                let matchedProduct = officeProducts.find(p => {
+                    let pName = (p.name || "").toLowerCase();
+                    let pBenefits = (p.benefits || "").toLowerCase();
+                    let terms = manualText.split(' ');
+                    return terms.some(term => term.length > 2 && (pName.includes(term) || pBenefits.includes(term)));
+                });
+
+                if (matchedProduct) {
+                    responseText = `🌿 **Info Produk ${matchedProduct.name}**:\n• Harga: RM ${parseFloat(matchedProduct.price).toFixed(2)}\n• Stok Tersedia: ${matchedProduct.stock} unit\n• **Khasiat & Kandungan**: ${matchedProduct.benefits || 'Membantu kesihatan tubuh badan secara semula jadi.'}`;
+                } else {
+                    responseText = `Terima kasih ${fullName}. Untuk kesihatan optimum, kami mengesyorkan produk herba berkualiti tinggi dari estet Machap. Sila semak senarai produk di menu Jual Office!`;
+                }
             } else {
-                responseText = `Silakan ${fullName}, ada yang bisa saya bantu? Mau tanya soal apa? Rekap pekerjaan, data pekerja, rekap bulanan (pengeluaran/pemasukan), stok baja, atau rekomendasi job desk pekerja?`;
+                responseText = `Silakan ${fullName}, ada yang bisa saya bantu? Mau tanya soal apa? Khasiat produk, rekap pekerjaan, data pekerja, rekap bulanan (pengeluaran/pemasukan), atau stok baja?`;
             }
 
             return responseText;
@@ -1097,13 +1115,14 @@
 
         function handleAiManualQuery(e) {
             e.preventDefault();
-            const val = document.getElementById('aiManualInput').value.toLowerCase();
+            const val = document.getElementById('aiManualInput').value.trim().toLowerCase();
             if (val) {
-                let queryType = 'rekap';
-                if (val.includes('baja') || val.includes('stok')) queryType = 'baja';
+                let queryType = 'product_query';
+                if (val.includes('rekap') || val.includes('bulan')) queryType = 'rekap';
+                else if (val.includes('baja') || val.includes('stok')) queryType = 'baja';
                 else if (val.includes('job') || val.includes('pekerja') || val.includes('tugas')) queryType = 'jobdesk';
                 
-                let res = generateFriendlyAiResponse(queryType);
+                let res = generateFriendlyAiResponse(queryType, val);
                 const chatBox = document.getElementById('aiChatResponseBox');
                 if (chatBox) chatBox.innerText = res;
                 speakText(res);
@@ -1122,11 +1141,12 @@
             recognition.onresult = function(event) {
                 statusNotice.classList.add('hidden');
                 let speech = event.results[0][0].transcript.toLowerCase();
-                let qType = 'rekap';
+                let qType = 'product_query';
                 if (speech.includes('baja') || speech.includes('stok')) qType = 'baja';
                 else if (speech.includes('job') || speech.includes('tugas')) qType = 'jobdesk';
+                else if (speech.includes('rekap')) qType = 'rekap';
 
-                let res = generateFriendlyAiResponse(qType);
+                let res = generateFriendlyAiResponse(qType, speech);
                 document.getElementById('aiChatResponseBox').innerText = res;
                 speakText(res);
             };
@@ -1631,7 +1651,7 @@
             }
         }
 
-        // --- MODULE 2: JUAL OFFICE (PRODUK JADI & PELANGGAN) ---
+        // --- MODULE 2: JUAL OFFICE (PRODUK JADI & PELANGGAN + KHASIAT) ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
@@ -1648,6 +1668,7 @@
             const name = document.getElementById('prodName').value.trim();
             const stock = parseInt(document.getElementById('prodStock').value) || 0;
             const price = parseFloat(document.getElementById('prodPrice').value) || 0;
+            const benefits = document.getElementById('prodBenefits').value.trim();
             const photoFile = document.getElementById('prodPhoto').files[0];
 
             if (!name) return;
@@ -1656,7 +1677,7 @@
                 let existing = officeProducts.find(p => p.name.toLowerCase() === name.toLowerCase());
                 if (db) {
                     if (existing) {
-                        let updateData = { stock, price };
+                        let updateData = { stock, price, benefits };
                         if (base64Photo) updateData.photo = base64Photo;
                         db.collection("office_products").doc(existing.firestoreId).update(updateData).then(() => {
                             alert(`Produk Office ${name} berjaya dikemaskini!`);
@@ -1668,6 +1689,7 @@
                             name,
                             stock,
                             price,
+                            benefits,
                             photo: base64Photo || ""
                         }).then(() => {
                             alert(`Produk Office ${name} berjaya ditambah!`);
@@ -1687,18 +1709,18 @@
             sel.innerHTML = `<option value="">-- Pilih Produk Office --</option>`;
 
             if (officeProducts.length === 0) {
-                sc.innerHTML = `<div class="col-span-4 text-xs text-slate-400 text-center py-2">Belum ada produk office didaftarkan.</div>`;
+                sc.innerHTML = `<div class="col-span-3 text-xs text-slate-400 text-center py-2">Belum ada produk office didaftarkan.</div>`;
                 return;
             }
 
             officeProducts.forEach(p => {
-                let imgTag = p.photo ? `<img src="${p.photo}" class="w-10 h-10 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-xl">🏢</span>`;
+                let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
                 sc.innerHTML += `
-                    <div class="bg-white border border-blue-200 p-2.5 rounded-xl shadow-sm text-center">
-                        ${imgTag}
-                        <div class="text-[11px] font-bold text-blue-900 truncate">${p.name}</div>
-                        <div class="text-xs text-slate-600 mt-1">Stok: <b class="text-emerald-700">${p.stock}</b></div>
-                        <div class="text-[10px] text-slate-500 font-mono">RM ${parseFloat(p.price).toFixed(2)}</div>
+                    <div class="bg-white border border-blue-200 p-3 rounded-xl shadow-sm space-y-1">
+                        <div class="text-center">${imgTag}</div>
+                        <div class="text-xs font-bold text-blue-900 text-center truncate">${p.name}</div>
+                        <div class="text-[11px] text-slate-600 flex justify-between"><span>Stok: <b class="text-emerald-700">${p.stock}</b></span><span class="font-mono font-bold">RM ${parseFloat(p.price).toFixed(2)}</span></div>
+                        <div class="text-[10px] text-slate-500 bg-slate-50 p-1.5 rounded border mt-1"><b>Khasiat:</b> ${p.benefits || 'Tiada keterangan khasiat'}</div>
                     </div>
                 `;
                 sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
