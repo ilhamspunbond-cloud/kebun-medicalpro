@@ -828,13 +828,19 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        // --- GOOGLE WEATHER STYLE REAL-TIME SYNC ---
+        
+      // --- GOOGLE WEATHER STYLE REAL-TIME SYNC (WAKTU MALAYSIA / GMT+8) ---
         function updateLiveClockAndWeather() {
+            // Menggunakan waktu lokal Malaysia (GMT+8) secara presisi
             const now = new Date();
+            const options = { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
+            
             const clockEl = document.getElementById('liveClock');
-            if (clockEl) clockEl.innerText = now.toTimeString().substring(0, 8);
+            if (clockEl) clockEl.innerText = timeString;
 
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max')
+            // Ambil data cuaca dari Open-Meteo untuk koordinat Machap, Johor
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FKuala_Lumpur')
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.current_weather && data.hourly) {
@@ -846,21 +852,22 @@
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
 
-                        const year = now.getFullYear();
-                        const month = String(now.getMonth() + 1).padStart(2, '0');
-                        const day = String(now.getDate()).padStart(2, '0');
-                        const hour = String(now.getHours()).padStart(2, '0');
-                        const currentExactIsoStr = `${year}-${month}-${day}T${hour}:00`;
+                        // Dapatkan jam lokal Malaysia saat ini (angka 0 - 23)
+                        const malaysiaHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour: 'numeric', hour12: false }).format(now);
+                        const currentHourInt = parseInt(malaysiaHourStr, 10);
+
+                        // Cari indeks data per jam yang cocok persis dengan waktu lokal Malaysia
+                        const todayDateStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now).split('/').reverse().join('-');
+                        const currentExactIsoStr = `${todayDateStr}T${String(currentHourInt).padStart(2, '0')}:00`;
 
                         let idx = hourlyTime.findIndex(t => t === currentExactIsoStr);
                         if (idx === -1) {
-                            idx = hourlyTime.findIndex(t => t.includes(`T${hour}:`));
+                            // Cari alternatif terdekat jika format string sedikit berbeda
+                            idx = hourlyTime.findIndex(t => t.includes(`T${String(currentHourInt).padStart(2, '0')}:`));
                             if (idx === -1) idx = 0;
                         }
 
-                        let currentHourNum = now.getHours();
                         let isNight = currentHourNum < 6 || currentHourNum >= 18;
-                        
                         let currentPrecipNow = hourlyPrecip[idx] || 0;
                         let rainSoon = currentPrecipNow > 0.1;
                         let condText = rainSoon ? "Hujan Ringan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
@@ -876,13 +883,14 @@
                         if (isNight) {
                             if (document.getElementById('illustrationEmoji')) document.getElementById('illustrationEmoji').innerText = "🌙";
                             if (document.getElementById('illustrationTitle')) document.getElementById('illustrationTitle').innerText = "Malam di Estet Machap";
-                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Suasana sejuk, waktu yang tepat untuk istirahat.";
+                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Suasana sejuk di kebun belimbing, waktu yang tepat untuk istirahat.";
                         } else {
                             if (document.getElementById('illustrationEmoji')) document.getElementById('illustrationEmoji').innerText = "☀️";
                             if (document.getElementById('illustrationTitle')) document.getElementById('illustrationTitle').innerText = "Siang di Estet Machap";
-                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Cuaca terang, bagus untuk perawatan tanaman belimbing.";
+                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Cuaca terang di estet Medicalpro, bagus untuk perawatan tanaman.";
                         }
 
+                        // Render Perkiraan Per Jam (Sinkron dengan Waktu Malaysia)
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
@@ -911,6 +919,7 @@
                             }
                         }
 
+                        // Prakiraan 5 Hari Kedepan
                         if (data.daily && data.daily.time) {
                             const dailyContainer = document.getElementById('dailyForecastContainer');
                             if (dailyContainer) {
@@ -938,14 +947,15 @@
                         const recEl = document.getElementById('smartRecommendation');
                         if (recEl) {
                             if (rainSoon) {
-                                recEl.innerText = "Peringatan AI: Terdeteksi potensi hujan dalam beberapa jam ke depan di Machap. Tunda penyemprotan bio-baja atau pestisida organik agar tidak luntur tercuci air hujan.";
+                                recEl.innerText = "Peringatan AI: Terdeteksi potensi hujan di area Machap. Tunda penyemprotan bio-baja atau pemupukan agar tidak luntur tercuci air hujan.";
                             } else {
-                                recEl.innerText = "Keputusan AI: Cuaca mendukung untuk aktivitas pemeliharaan kebun, pemupukan, atau pembersihan gulma di area 6 hektar.";
+                                recEl.innerText = "Keputusan AI: Cuaca di estet stabil dan mendukung untuk aktivitas perawatan tanaman belimbing dan pemeliharaan kebun.";
                             }
                         }
                     }
                 }).catch(err => console.log("Gagal memuat cuaca:", err));
         }
+
 
         // ==========================================
         // FITUR WALKIE-TALKIE & PORTAL BOSS (CLOUD)
