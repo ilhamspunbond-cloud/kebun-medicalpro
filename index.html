@@ -62,7 +62,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col items-center text-center gap-3">
             
             <div id="headerLogoContainer" class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-2xl overflow-hidden border-2 border-yellow-500 shadow-sm">
-                <img src="Logopit_1745513395623.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentNode.innerHTML='🌱';">
+                <img id="headerLogoImg" src="Logopit_1745513395623.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentNode.innerHTML='🌱';">
             </div>
 
             <div>
@@ -275,7 +275,8 @@
                     </div>
                 </div>
 
-                <form id="taskForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <form id="taskForm" onsubmit="handleTaskFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <input type="hidden" id="editingTaskId" value="">
                     <input type="text" id="taskTitle" placeholder="Nama Pekerjaan" required class="border p-2 rounded-lg text-sm">
                     <input type="text" id="taskCategory" placeholder="Kategori" required class="border p-2 rounded-lg text-sm">
                     <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
@@ -300,7 +301,7 @@
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (HD Maks 1MB)</label>
                         <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Simpan Report Kerja</button>
+                    <button type="submit" id="btnTaskSubmit" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-semibold text-sm">Simpan Report Kerja</button>
                 </form>
 
                 <div class="overflow-x-auto">
@@ -314,7 +315,7 @@
                                 <th class="p-3">Tarikh</th>
                                 <th class="p-3">Info Stok</th>
                                 <th class="p-3">Status</th>
-                                <th class="p-3">Tindakan</th>
+                                <th class="p-3 text-center">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody id="taskTableBody"></tbody>
@@ -329,7 +330,6 @@
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
                         <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau klik supply langsung pada baris data</p>
                     </div>
-                    <!-- Filter Bulan & Tombol Cetak Report Supply -->
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <select id="filterSupplyMonth" onchange="renderSupplyApp()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
@@ -338,8 +338,9 @@
                     </div>
                 </div>
 
-                <form id="supplyForm" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
-                    <div class="text-xs font-bold text-slate-700 uppercase">➕ Input Hasil Tuai Baru (Masuk Stok)</div>
+                <form id="supplyForm" onsubmit="handleSupplyFormSubmit(event)" class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-200">
+                    <input type="hidden" id="editingSupplyId" value="">
+                    <div id="supplyFormTitle" class="text-xs font-bold text-slate-700 uppercase">➕ Input Hasil Tuai Baru (Masuk Stok)</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-slate-600 block mb-1">Tanggal Tuai</label>
@@ -363,9 +364,8 @@
                         <div>
                             <label class="text-xs text-slate-600 block mb-1">Jumlah & Satuan (Otomatis)</label>
                             <div class="flex gap-1">
-                            <input type="number" id="inputQty" placeholder="Jumlah (Cth: 5.5)" step="0.01" min="0.01" required class="w-2/3 text-xs p-2 rounded-xl border bg-white">
-
-                            <input type="text" id="inputUnitDisplay" readonly value="kg" class="w-1/3 text-xs p-2 rounded-xl border bg-slate-100 font-bold text-emerald-700 text-center">
+                                <input type="number" id="inputQty" placeholder="Jumlah (Cth: 5.5)" step="0.01" min="0.01" required class="w-2/3 text-xs p-2 rounded-xl border bg-white">
+                                <input type="text" id="inputUnitDisplay" readonly value="kg" class="w-1/3 text-xs p-2 rounded-xl border bg-slate-100 font-bold text-emerald-700 text-center">
                             </div>
                         </div>
                         <div>
@@ -373,7 +373,7 @@
                             <input type="text" id="inputDesc" placeholder="Contoh: Blok A" class="w-full text-xs p-2 rounded-xl border bg-white">
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan ke Stok Gudang</button>
+                    <button type="submit" id="btnSupplySubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan ke Stok Gudang</button>
                 </form>
 
                 <div>
@@ -382,7 +382,7 @@
                 </div>
 
                 <div>
-                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat & Aksi Suplai (Klik "Supply" untuk Kirim Cepat):</div>
+                    <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat & Aksi Suplai:</div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
@@ -392,7 +392,7 @@
                                     <th class="p-2">Status / Aksi</th>
                                     <th class="p-2">Jumlah</th>
                                     <th class="p-2">Keterangan</th>
-                                    <th class="p-2 text-center">Tindakan Cepat</th>
+                                    <th class="p-2 text-center">Tindakan</th>
                                 </tr>
                             </thead>
                             <tbody id="supplyTableBody"></tbody>
@@ -427,7 +427,8 @@
                     </div>
                 </div>
 
-                <form id="expenseForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
+                <form id="expenseForm" onsubmit="handleExpenseFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
+                    <input type="hidden" id="editingExpenseId" value="">
                     <input type="text" id="expTitle" placeholder="Keterangan Belanja" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="text" id="expAmount" placeholder="Jumlah Kos (RM)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
@@ -435,13 +436,13 @@
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1">Resit HD</label>
                         <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
+                    <button type="submit" id="btnExpenseSubmit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
                 </form>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Resit HD</th><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-100 border-b"><th class="p-3">Resit HD</th><th class="p-3">Keterangan</th><th class="p-3">Kos</th><th class="p-3">Tarikh</th><th class="p-3 text-center">Tindakan</th></tr>
                         </thead>
                         <tbody id="expenseTableBody"></tbody>
                     </table>
@@ -471,21 +472,22 @@
                     </div>
                 </div>
 
-                <form id="incomeForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border opacity-50 pointer-events-none">
+                <form id="incomeForm" onsubmit="handleIncomeFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border opacity-50 pointer-events-none">
+                    <input type="hidden" id="editingIncomeId" value="">
                     <input type="text" id="incTitle" placeholder="Produk / Hasil" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="text" id="incAmount" placeholder="Jumlah (RM)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="incDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1">Bukti Foto HD</label>
-                        <input type="file" id="incPhotoInput" accept="image/*" required class="w-full border p-1 rounded-lg text-xs bg-white">
+                        <input type="file" id="incPhotoInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
-                    <button type="submit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Pendapatan</button>
+                    <button type="submit" id="btnIncomeSubmit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Simpan Pendapatan</button>
                 </form>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-100 border-b"><th class="p-3">Bukti Foto HD</th><th class="p-3">Keterangan</th><th class="p-3">Staff</th><th class="p-3">Jumlah</th><th class="p-3">Tarikh</th><th class="p-3">Tindakan</th></tr>
+                            <tr class="bg-slate-100 border-b"><th class="p-3">Bukti Foto HD</th><th class="p-3">Keterangan</th><th class="p-3">Staff</th><th class="p-3">Jumlah</th><th class="p-3">Tarikh</th><th class="p-3 text-center">Tindakan</th></tr>
                         </thead>
                         <tbody id="incomeTableBody"></tbody>
                     </table>
@@ -504,7 +506,7 @@
                 <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-4">
                     <div class="flex items-center gap-3">
                         <div id="invModalLogo" class="w-14 h-14 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-yellow-500">
-                            <img src="Logopit_1745513395623.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentNode.innerHTML='🌱';">
+                            <img id="invModalLogoImg" src="Logopit_1745513395623.png" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null;this.parentNode.innerHTML='🌱';">
                         </div>
                         <div>
                             <h2 class="text-lg font-black text-blue-900 uppercase">MEDICALPRO AGRO MANAGEMENT</h2>
@@ -601,6 +603,14 @@
                 <button type="button" onclick="closeAdminDashboard()" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
 
+            <div class="bg-amber-50 p-4 rounded-xl border border-amber-300 space-y-3">
+                <h4 class="font-bold text-sm text-amber-900">🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua HP)</h4>
+                <div class="flex items-center gap-3">
+                    <input type="file" id="settingLogoInput" accept="image/*" class="w-full border p-2 rounded-lg text-sm bg-white">
+                    <button type="button" onclick="saveGlobalLogo()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap">Simpan Logo</button>
+                </div>
+            </div>
+
             <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-300 space-y-3">
                 <h4 class="font-bold text-sm text-indigo-900">👩‍💻 Pengurusan AI Asisten Kebun</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -623,7 +633,7 @@
 
             <div class="bg-slate-50 p-4 rounded-xl border">
                 <h4 class="font-bold text-sm text-slate-700 mb-2">Tambah Master Stok Bio Baja</h4>
-                <form id="inventoryForm" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <form id="inventoryForm" onsubmit="handleInventoryFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                     <input type="text" id="invName" placeholder="Nama Bio Baja" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="number" id="invStock" placeholder="Stok Awal" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="text" id="invAdvice" placeholder="Kegunaan / Manfaat Baja" required class="border p-2 rounded-lg text-sm bg-white sm:col-span-2">
@@ -678,8 +688,30 @@
         }
 
         let aiConfig = { name: "Asisten Kebun AI", avatar: "" };
+        let globalLogoUrl = "";
         let lastSpokenText = "";
         let currentWeatherData = { rainSoon: false };
+
+        function applyGlobalLogo() {
+            if (globalLogoUrl) {
+                const img1 = document.getElementById('headerLogoImg');
+                const img2 = document.getElementById('invModalLogoImg');
+                if(img1) img1.src = globalLogoUrl;
+                if(img2) img2.src = globalLogoUrl;
+            }
+        }
+
+        function saveGlobalLogo() {
+            const file = document.getElementById('settingLogoInput').files[0];
+            compressImageHD(file, function(base64) {
+                if (base64) {
+                    globalLogoUrl = base64;
+                    if (db) db.collection("settings").doc("global_logo").set({ url: base64 }).catch(() => {});
+                    applyGlobalLogo();
+                    alert("Logo sistem berjaya dikemaskini untuk semua HP!");
+                }
+            });
+        }
 
         function applyAiSettings() {
             document.getElementById('lblAiName').innerText = aiConfig.name || "Asisten Kebun AI";
@@ -693,6 +725,9 @@
         if (db) {
             db.collection("settings").doc("ai_config").get().then((doc) => {
                 if (doc.exists) { aiConfig = doc.data(); applyAiSettings(); }
+            }).catch(() => {});
+            db.collection("settings").doc("global_logo").get().then((doc) => {
+                if (doc.exists && doc.data().url) { globalLogoUrl = doc.data().url; applyGlobalLogo(); }
             }).catch(() => {});
         } else { applyAiSettings(); }
 
@@ -728,6 +763,7 @@
         let workers = [];
         let inventory = [];
         let tasks = [];
+        let supplyData = [];
         let expenses = [];
         let incomeList = [];
 
@@ -828,10 +864,8 @@
             if (activeBtn) activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
         }
 
-        
-      // --- GOOGLE WEATHER STYLE REAL-TIME SYNC (WAKTU MALAYSIA / GMT+8) ---
+        // --- CUACA REAL-TIME ---
         function updateLiveClockAndWeather() {
-            // Menggunakan waktu lokal Malaysia (GMT+8) secara presisi
             const now = new Date();
             const options = { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
             const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
@@ -839,7 +873,6 @@
             const clockEl = document.getElementById('liveClock');
             if (clockEl) clockEl.innerText = timeString;
 
-            // Ambil data cuaca dari Open-Meteo untuk koordinat Machap, Johor
             fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FKuala_Lumpur')
                 .then(res => res.json())
                 .then(data => {
@@ -852,22 +885,19 @@
                         const hourlyPrecip = data.hourly.precipitation;
                         const hourlyTemp = data.hourly.temperature_2m;
 
-                        // Dapatkan jam lokal Malaysia saat ini (angka 0 - 23)
                         const malaysiaHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour: 'numeric', hour12: false }).format(now);
                         const currentHourInt = parseInt(malaysiaHourStr, 10);
 
-                        // Cari indeks data per jam yang cocok persis dengan waktu lokal Malaysia
                         const todayDateStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now).split('/').reverse().join('-');
                         const currentExactIsoStr = `${todayDateStr}T${String(currentHourInt).padStart(2, '0')}:00`;
 
                         let idx = hourlyTime.findIndex(t => t === currentExactIsoStr);
                         if (idx === -1) {
-                            // Cari alternatif terdekat jika format string sedikit berbeda
                             idx = hourlyTime.findIndex(t => t.includes(`T${String(currentHourInt).padStart(2, '0')}:`));
                             if (idx === -1) idx = 0;
                         }
 
-                        let isNight = currentHourNum < 6 || currentHourNum >= 18;
+                        let isNight = currentHourInt < 6 || currentHourInt >= 18;
                         let currentPrecipNow = hourlyPrecip[idx] || 0;
                         let rainSoon = currentPrecipNow > 0.1;
                         let condText = rainSoon ? "Hujan Ringan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
@@ -880,17 +910,6 @@
                         if (document.getElementById('detailWind')) document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
                         if (document.getElementById('detailPrecipitation')) document.getElementById('detailPrecipitation').innerText = `${Math.round(currentPrecipNow * 50)}%`;
 
-                        if (isNight) {
-                            if (document.getElementById('illustrationEmoji')) document.getElementById('illustrationEmoji').innerText = "🌙";
-                            if (document.getElementById('illustrationTitle')) document.getElementById('illustrationTitle').innerText = "Malam di Estet Machap";
-                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Suasana sejuk di kebun belimbing, waktu yang tepat untuk istirahat.";
-                        } else {
-                            if (document.getElementById('illustrationEmoji')) document.getElementById('illustrationEmoji').innerText = "☀️";
-                            if (document.getElementById('illustrationTitle')) document.getElementById('illustrationTitle').innerText = "Siang di Estet Machap";
-                            if (document.getElementById('weatherIllustrationText')) document.getElementById('weatherIllustrationText').innerText = "Cuaca terang di estet Medicalpro, bagus untuk perawatan tanaman.";
-                        }
-
-                        // Render Perkiraan Per Jam (Sinkron dengan Waktu Malaysia)
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
                             hContainer.innerHTML = "";
@@ -899,7 +918,6 @@
                                 if (tIdx < hourlyTime.length) {
                                     let timeStr = hourlyTime[tIdx];
                                     let timeHourInt = parseInt(timeStr.substring(11, 13), 10);
-                                    
                                     let displayHour = i === 0 ? "Sekarang" : ((timeHourInt % 12 || 12) + (timeHourInt >= 12 ? " PM" : " AM"));
                                     let pVal = hourlyPrecip[tIdx] || 0;
                                     let tVal = Math.round(hourlyTemp[tIdx]);
@@ -918,48 +936,11 @@
                                 }
                             }
                         }
-
-                        // Prakiraan 5 Hari Kedepan
-                        if (data.daily && data.daily.time) {
-                            const dailyContainer = document.getElementById('dailyForecastContainer');
-                            if (dailyContainer) {
-                                dailyContainer.innerHTML = "";
-                                const daysName = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
-                                for (let d = 0; d < 5; d++) {
-                                    let dDate = new Date(data.daily.time[d]);
-                                    let dayStr = d === 0 ? "Hari Ini" : daysName[dDate.getDay()];
-                                    let maxT = Math.round(data.daily.temperature_2m_max[d]);
-                                    let minT = Math.round(data.daily.temperature_2m_min[d]);
-                                    let probRain = data.daily.precipitation_probability_max[d] || 10;
-                                    let dIcon = probRain > 40 ? "🌧️" : "⛅";
-
-                                    dailyContainer.innerHTML += `
-                                        <div class="bg-slate-950/60 p-2.5 rounded-2xl border border-slate-800 flex flex-col items-center justify-between text-center">
-                                            <span class="text-xs font-bold text-slate-300">${dayStr}</span>
-                                            <span class="text-2xl my-1.5">${dIcon}</span>
-                                            <div class="text-xs font-semibold text-slate-200">${maxT}°<span class="text-slate-500 font-normal">/${minT}°</span></div>
-                                        </div>
-                                    `;
-                                }
-                            }
-                        }
-
-                        const recEl = document.getElementById('smartRecommendation');
-                        if (recEl) {
-                            if (rainSoon) {
-                                recEl.innerText = "Peringatan AI: Terdeteksi potensi hujan di area Machap. Tunda penyemprotan bio-baja atau pemupukan agar tidak luntur tercuci air hujan.";
-                            } else {
-                                recEl.innerText = "Keputusan AI: Cuaca di estet stabil dan mendukung untuk aktivitas perawatan tanaman belimbing dan pemeliharaan kebun.";
-                            }
-                        }
                     }
-                }).catch(err => console.log("Gagal memuat cuaca:", err));
+                }).catch(err => {});
         }
 
-
-        // ==========================================
-        // FITUR WALKIE-TALKIE & PORTAL BOSS (CLOUD)
-        // ==========================================
+        // --- WALKIE-TALKIE & PORTAL BOSS (CLOUD) ---
         let bossMode = 'text';
         let mediaRecorder;
         let audioChunks = [];
@@ -999,11 +980,7 @@
                     sender: senderName,
                     content: text,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    input.value = "";
-                }).catch(err => alert("Gagal menghantar arahan: " + err.message));
-            } else {
-                alert("Database Firebase belum tersambung!");
+                }).then(() => { input.value = ""; }).catch(err => alert("Gagal menghantar arahan: " + err.message));
             }
         }
 
@@ -1013,11 +990,7 @@
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-
-                    mediaRecorder.ondataavailable = event => {
-                        if (event.data.size > 0) audioChunks.push(event.data);
-                    };
-
+                    mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         const reader = new FileReader();
@@ -1030,28 +1003,22 @@
                             document.getElementById('btnSendVoice').classList.remove('hidden');
                         };
                     };
-
                     mediaRecorder.start();
                     isRecording = true;
                     document.getElementById('recordBtnText').innerText = "Berhenti Rakam";
-                    document.getElementById('btnRecordAudio').className = "bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow transition flex items-center gap-2 animate-pulse";
-                    document.getElementById('recordingStatus').innerText = "🎙️ Sedang merakam suara walkie-talkie...";
-                } catch (err) {
-                    alert("Tidak dapat mengakses mikrofon. Sila beri izin mikrofon pada pelayar.");
-                }
+                    document.getElementById('recordingStatus').innerText = "🎙️ Sedang merakam suara...";
+                } catch (err) { alert("Tidak dapat mengakses mikrofon."); }
             } else {
                 mediaRecorder.stop();
                 isRecording = false;
                 document.getElementById('recordBtnText').innerText = "Mula Rakam Semula";
-                document.getElementById('btnRecordAudio').className = "bg-rose-600 hover:bg-rose-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow transition flex items-center gap-2";
-                document.getElementById('recordingStatus').innerText = "Rakaman selesai. Sila semak atau klik Kirim.";
+                document.getElementById('recordingStatus').innerText = "Rakaman selesai. Sila klik Kirim.";
             }
         }
 
         function sendBossVoiceOrder() {
             if (!recordedAudioBase64) return;
             const senderName = getFullTitleName();
-
             if (db) {
                 db.collection("boss_orders").add({
                     type: "voice",
@@ -1062,17 +1029,15 @@
                     recordedAudioBase64 = null;
                     document.getElementById('audioPlayback').classList.add('hidden');
                     document.getElementById('btnSendVoice').classList.add('hidden');
-                    document.getElementById('recordingStatus').innerText = "Tekan butang untuk rakam suara walkie-talkie.";
+                    document.getElementById('recordingStatus').innerText = "Tekan butang untuk rakam suara.";
                     document.getElementById('recordBtnText').innerText = "Mula Rakam";
-                }).catch(err => alert("Gagal menghantar suara: " + err.message));
+                });
             }
         }
 
         function deleteBossOrder(docId) {
-            if (confirm("Adakah anda pasti mahu memadam arahan ini secara kekal dari semua HP?")) {
-                if (db) {
-                    db.collection("boss_orders").doc(docId).delete().catch(err => alert("Gagal memadam: " + err.message));
-                }
+            if (confirm("Padam arahan ini secara kekal dari semua HP?")) {
+                if (db) db.collection("boss_orders").doc(docId).delete();
             }
         }
 
@@ -1081,37 +1046,20 @@
             db.collection("boss_orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
-                
-                if (snapshot.empty) {
-                    container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">Belum ada arahan atau walkie-talkie.</div>`;
-                    return;
-                }
-
+                if (snapshot.empty) { container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">Belum ada arahan.</div>`; return; }
                 container.innerHTML = "";
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const id = doc.id;
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
-
-                    let contentHtml = "";
-                    if (data.type === "text") {
-                        contentHtml = `<p class="text-sm text-slate-200 mt-1">${data.content}</p>`;
-                    } else {
-                        contentHtml = `
-                            <div class="mt-2">
-                                <div class="text-[11px] text-amber-300 font-semibold mb-1">🎙️ Pesan Suara Walkie-Talkie:</div>
-                                <audio controls src="${data.content}" class="w-full h-8"></audio>
-                            </div>
-                        `;
-                    }
-
+                    let contentHtml = data.type === "text" ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` : `<div class="mt-2"><audio controls src="${data.content}" class="w-full h-8"></audio></div>`;
                     container.innerHTML += `
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
                             <div class="flex justify-between items-center text-xs">
                                 <span class="font-bold text-amber-400">👑 ${data.sender || 'Boss'}</span>
                                 <div class="flex items-center gap-2">
                                     <span class="text-[10px] text-slate-500 font-mono">${timeStr}</span>
-                                    <button onclick="deleteBossOrder('${id}')" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-950/40 border border-rose-900/50" title="Padam Permanen">🗑️</button>
+                                    <button onclick="deleteBossOrder('${id}')" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️</button>
                                 </div>
                             </div>
                             ${contentHtml}
@@ -1159,7 +1107,7 @@
         };
         let closeAdminDashboard = () => document.getElementById('adminDashboardModal').classList.add('hidden');
 
-        // Firestore sync listeners
+        // --- FIRESTORE REAL-TIME SYNC ---
         if (db) {
             db.collection("settings").doc("workers").get().then(doc => {
                 if (doc.exists && doc.data().list) { workers = doc.data().list; renderWorkersDropdown(); }
@@ -1173,6 +1121,11 @@
                 tasks = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); tasks.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterTaskMonth', m); renderTasks();
+            });
+            db.collection("supply").orderBy("id", "desc").onSnapshot(snap => {
+                supplyData = []; let m = new Set();
+                snap.forEach(d => { let x = d.data(); supplyData.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
+                updateMonthDropdown('filterSupplyMonth', m); renderSupplyApp();
             });
             db.collection("expenses").orderBy("id", "desc").onSnapshot(snap => {
                 expenses = []; let m = new Set();
@@ -1216,59 +1169,94 @@
             renderWorkersAdmin(); renderWorkersDropdown();
         }
 
-        // Supply & Stock Management (DENGAN FITUR TOMBOL SUPPLY REAL-TIME & REPORT BULANAN)
-        let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
+        // --- SUPPLY & STOCK (DENGAN EDIT & CLOUD SYNC) ---
         document.getElementById('inputDate').valueAsDate = new Date();
 
         function onSupplyItemChange() {
             const item = document.getElementById('inputItem').value;
             const unitDisplay = document.getElementById('inputUnitDisplay');
-            if (item === "Bunga Kantan") {
-                unitDisplay.value = "tangkai";
-            } else {
-                unitDisplay.value = "kg";
-            }
+            unitDisplay.value = (item === "Bunga Kantan") ? "tangkai" : "kg";
         }
 
-        // Input awal selalu berstatus "stok" (Hasil Tuai)
-        document.getElementById('supplyForm').addEventListener('submit', function(e) {
+        let tempSupplyPhotoBase64 = "";
+        function handleSupplyFormSubmit(e) {
             e.preventDefault();
+            const editingId = document.getElementById('editingSupplyId').value;
             const itemVal = document.getElementById('inputItem').value;
             const unitVal = (itemVal === "Bunga Kantan") ? "tangkai" : "kg";
             const dVal = document.getElementById('inputDate').value;
 
-            supplyData.unshift({
-                id: Date.now(),
+            const supplyObj = {
+                id: editingId ? parseInt(editingId) : Date.now(),
                 date: dVal,
                 month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
                 item: itemVal,
-                action: 'stok', // Status awal di gudang
+                action: 'stok',
                 qty: parseFloat(document.getElementById('inputQty').value),
                 unit: unitVal,
                 desc: document.getElementById('inputDesc').value || '-'
-            });
-            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
-            this.reset(); document.getElementById('inputDate').valueAsDate = new Date();
-            document.getElementById('inputUnitDisplay').value = "kg";
-            renderSupplyApp();
-        });
+            };
 
-        // Fungsi Tombol Cepat: Ubah status dari 'stok' menjadi 'suplai' dengan tanggal real-time
+            if (db) {
+                if (editingId) {
+                    db.collection("supply").where("id", "==", parseInt(editingId)).get().then(snap => {
+                        snap.forEach(d => d.ref.update(supplyObj));
+                        resetSupplyForm();
+                        alert("Data suplai berjaya dikemaskini di semua HP!");
+                    });
+                } else {
+                    db.collection("supply").add(supplyObj).then(() => {
+                        resetSupplyForm();
+                        alert("Hasil tuai disimpan ke cloud!");
+                    });
+                }
+            }
+        }
+
+        function resetSupplyForm() {
+            document.getElementById('supplyForm').reset();
+            document.getElementById('editingSupplyId').value = "";
+            document.getElementById('inputDate').valueAsDate = new Date();
+            document.getElementById('inputUnitDisplay').value = "kg";
+            document.getElementById('btnSupplySubmit').innerText = "Simpan ke Stok Gudang";
+            document.getElementById('supplyFormTitle').innerText = "➕ Input Hasil Tuai Baru (Masuk Stok)";
+        }
+
+        function editSupply(id) {
+            let record = supplyData.find(i => i.id === id);
+            if (record) {
+                document.getElementById('editingSupplyId').value = record.id;
+                document.getElementById('inputDate').value = record.date;
+                document.getElementById('inputItem').value = record.item;
+                onSupplyItemChange();
+                document.getElementById('inputQty').value = record.qty;
+                document.getElementById('inputDesc').value = record.desc;
+                document.getElementById('btnSupplySubmit').innerText = "Kemaskini Suplai";
+                document.getElementById('supplyFormTitle').innerText = "✏️ Kemaskini Data Suplai";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
         function markAsSupplied(id) {
             let record = supplyData.find(i => i.id === id);
             if(record) {
-                record.action = 'suplai';
                 const now = new Date();
                 const yyyy = now.getFullYear();
                 const mm = String(now.getMonth() + 1).padStart(2, '0');
                 const dd = String(now.getDate()).padStart(2, '0');
-                record.date = `${yyyy}-${mm}-${dd}`;
-                record.month = `${yyyy}-${mm}`;
-                record.desc = (record.desc && record.desc !== '-' ? record.desc + ' ' : '') + '(Telah Disuplain)';
-                
-                localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
-                renderSupplyApp();
-                alert("Status berjaya ditukar menjadi: Sudah Disuplain (Tarikh dikemaskini hari ini)!");
+                let updatedData = {
+                    action: 'suplai',
+                    date: `${yyyy}-${mm}-${dd}`,
+                    month: `${yyyy}-${mm}`,
+                    desc: (record.desc && record.desc !== '-' ? record.desc + ' ' : '') + '(Telah Disuplain)'
+                };
+
+                if (db) {
+                    db.collection("supply").where("id", "==", id).get().then(snap => {
+                        snap.forEach(d => d.ref.update(updatedData));
+                        alert("Status berjaya ditukar menjadi: Sudah Disuplain di semua HP!");
+                    });
+                }
             }
         }
 
@@ -1290,9 +1278,7 @@
             supplyData.forEach(r => {
                 let key = `${r.item} (${r.unit})`;
                 if(!stocks[key]) stocks[key] = 0;
-                if(r.action === 'stok') {
-                    stocks[key] += r.qty;
-                }
+                if(r.action === 'stok') stocks[key] += r.qty;
             });
 
             for(let [key, val] of Object.entries(stocks)) {
@@ -1311,7 +1297,7 @@
                 
                 let actionBtn = r.action === 'stok' ? 
                     `<button type="button" onclick="markAsSupplied(${r.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-xs font-bold shadow">🚀 Supply</button>` : 
-                    `<span class="text-slate-400 text-[11px] italic">Selesai Dikirim</span>`;
+                    `<span class="text-slate-400 text-[11px] italic">Selesai</span>`;
 
                 tbody.innerHTML += `
                     <tr class="border-b">
@@ -1320,21 +1306,22 @@
                         <td class="p-2">${statusBadge}</td>
                         <td class="p-2 font-bold">${r.qty} ${r.unit || 'kg'}</td>
                         <td class="p-2">${r.desc}</td>
-                        <td class="p-2 text-center flex justify-center gap-2 items-center">
+                        <td class="p-2 text-center flex justify-center gap-1.5 items-center">
                             ${actionBtn}
-                            <button type="button" onclick="deleteSupply(${r.id})" class="text-red-500 text-xs px-1.5 py-0.5 rounded bg-red-50">✕</button>
+                            <button type="button" onclick="editSupply(${r.id})" class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-semibold">✏️ Edit</button>
+                            <button type="button" onclick="deleteSupply(${r.id})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
                         </td>
                     </tr>`;
             });
         }
 
         function deleteSupply(id) {
-            supplyData = supplyData.filter(i => i.id !== id);
-            localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
-            renderSupplyApp();
+            if(confirm("Padam rekod ini secara kekal dari semua HP?")) {
+                if(db) db.collection("supply").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete()));
+            }
         }
-        renderSupplyApp();
 
+        // --- INVENTORY / BIO BAJA ---
         function renderInventory() {
             const c = document.getElementById('inventoryContainer');
             const sel = document.getElementById('taskStockItem');
@@ -1353,39 +1340,80 @@
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${item.name}</td><td class="p-2 font-bold">${item.stock}</td><td class="p-2"><button type="button" onclick="deleteInv(${i})" class="text-rose-500">Hapus</button></td></tr>`;
             });
         }
-        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+        function handleInventoryFormSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('invName').value;
             const stock = parseInt(document.getElementById('invStock').value) || 0;
             const advice = document.getElementById('invAdvice').value;
             compressImageHD(document.getElementById('invImageInput').files[0], function(base64) {
                 if(db) db.collection("inventory").add({ id: Date.now(), name, stock, advice, photo: base64 });
-                this.reset(); alert("Stok baja ditambah!");
-            }.bind(this));
-        });
+                e.target.reset(); alert("Stok baja ditambah!");
+            });
+        }
         function deleteInv(i) { if(db) db.collection("inventory").doc(inventory[i].firestoreId).delete(); }
 
+        // --- TASKS (DENGAN EDIT & CLOUD SYNC) ---
         let taskPhotoBase64 = "";
         document.getElementById('imageInput').addEventListener('change', function(e) {
             compressImageHD(e.target.files[0], b => { taskPhotoBase64 = b; });
         });
-        document.getElementById('taskForm').addEventListener('submit', function(e) {
+
+        function handleTaskFormSubmit(e) {
             e.preventDefault();
+            const editingId = document.getElementById('editingTaskId').value;
             const dVal = document.getElementById('taskDate').value;
-            const newTask = {
-                id: Date.now(),
+            
+            let taskObj = {
                 title: document.getElementById('taskTitle').value,
                 category: document.getElementById('taskCategory').value,
                 worker: document.getElementById('taskWorkerSelect').value,
                 date: dVal,
                 month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
                 stockUsed: document.getElementById('taskStockItem').value || "Tiada",
-                photo: taskPhotoBase64 || "",
                 status: "Selesai ✓",
                 amount: "0"
             };
-            if(db) db.collection("tasks").add(newTask).then(() => { this.reset(); taskPhotoBase64 = ""; alert("Report tugas disimpan!"); });
-        });
+            if (taskPhotoBase64) taskObj.photo = taskPhotoBase64;
+
+            if (db) {
+                if (editingId) {
+                    db.collection("tasks").where("id", "==", parseInt(editingId)).get().then(snap => {
+                        snap.forEach(d => d.ref.update(taskObj));
+                        resetTaskForm();
+                        alert("Tugas berjaya dikemaskini di semua HP!");
+                    });
+                } else {
+                    taskObj.id = Date.now();
+                    taskObj.photo = taskPhotoBase64 || "";
+                    db.collection("tasks").add(taskObj).then(() => {
+                        resetTaskForm();
+                        alert("Report tugas disimpan ke cloud!");
+                    });
+                }
+            }
+        }
+
+        function resetTaskForm() {
+            document.getElementById('taskForm').reset();
+            document.getElementById('editingTaskId').value = "";
+            taskPhotoBase64 = "";
+            document.getElementById('btnTaskSubmit').innerText = "Simpan Report Kerja";
+        }
+
+        function editTask(id) {
+            let t = tasks.find(item => item.id === id);
+            if (t) {
+                document.getElementById('editingTaskId').value = t.id;
+                document.getElementById('taskTitle').value = t.title;
+                document.getElementById('taskCategory').value = t.category;
+                document.getElementById('taskWorkerSelect').value = t.worker;
+                document.getElementById('taskDate').value = t.date;
+                document.getElementById('taskStockItem').value = t.stockUsed !== "Tiada" ? t.stockUsed : "";
+                document.getElementById('btnTaskSubmit').innerText = "Kemaskini Tugas";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
         function updateMonthDropdown(id, set) {
             const sel = document.getElementById(id);
             if(!sel) return;
@@ -1394,43 +1422,115 @@
             Array.from(set).sort().reverse().forEach(m => sel.innerHTML += `<option value="${m}">Bulan: ${m}</option>`);
             sel.value = cv;
         }
+
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             const fm = document.getElementById('filterTaskMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             tasks.filter(t => fm === 'all' || t.month === fm).forEach(t => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${t.photo}','Tugas.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3 font-bold">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td><td class="p-3"><button type="button" onclick="deleteTask(${t.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${t.photo}','Tugas.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td>
+                        <td class="p-3 font-medium">${t.title}</td>
+                        <td class="p-3">${t.category}</td>
+                        <td class="p-3 font-bold">${t.worker}</td>
+                        <td class="p-3">${t.date}</td>
+                        <td class="p-3">${t.stockUsed}</td>
+                        <td class="p-3">${t.status}</td>
+                        <td class="p-3 text-center flex justify-center gap-1.5 items-center">
+                            <button type="button" onclick="editTask(${t.id})" class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-semibold">✏️ Edit</button>
+                            <button type="button" onclick="deleteTask(${t.id})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
+                        </td>
+                    </tr>`;
             });
         }
-        function deleteTask(id) { if(db) db.collection("tasks").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
+        function deleteTask(id) {
+            if(confirm("Padam tugas ini dari semua HP?")) {
+                if(db) db.collection("tasks").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete()));
+            }
+        }
 
+        // --- EXPENSES (DENGAN EDIT & CLOUD SYNC) ---
         let expReceiptBase64 = "";
         document.getElementById('expReceiptInput').addEventListener('change', function(e) {
             compressImageHD(e.target.files[0], b => { expReceiptBase64 = b; });
         });
-        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+
+        function handleExpenseFormSubmit(e) {
             e.preventDefault();
+            const editingId = document.getElementById('editingExpenseId').value;
             const dVal = document.getElementById('expDate').value;
-            const newEx = {
-                id: Date.now(),
+            
+            let expObj = {
                 title: document.getElementById('expTitle').value,
                 amount: document.getElementById('expAmount').value,
                 date: dVal,
-                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                receipt: expReceiptBase64 || ""
+                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7)
             };
-            if(db) db.collection("expenses").add(newEx).then(() => { this.reset(); expReceiptBase64=""; alert("Perbelanjaan disimpan!"); });
-        });
+            if (expReceiptBase64) expObj.receipt = expReceiptBase64;
+
+            if (db) {
+                if (editingId) {
+                    db.collection("expenses").where("id", "==", parseInt(editingId)).get().then(snap => {
+                        snap.forEach(d => d.ref.update(expObj));
+                        resetExpenseForm();
+                        alert("Perbelanjaan berjaya dikemaskini di semua HP!");
+                    });
+                } else {
+                    expObj.id = Date.now();
+                    expObj.receipt = expReceiptBase64 || "";
+                    db.collection("expenses").add(expObj).then(() => {
+                        resetExpenseForm();
+                        alert("Perbelanjaan disimpan ke cloud!");
+                    });
+                }
+            }
+        }
+
+        function resetExpenseForm() {
+            document.getElementById('expenseForm').reset();
+            document.getElementById('editingExpenseId').value = "";
+            expReceiptBase64 = "";
+            document.getElementById('btnExpenseSubmit').innerText = "Tambah Perbelanjaan";
+        }
+
+        function editExpense(id) {
+            let ex = expenses.find(item => item.id === id);
+            if (ex) {
+                document.getElementById('editingExpenseId').value = ex.id;
+                document.getElementById('expTitle').value = ex.title;
+                document.getElementById('expAmount').value = ex.amount;
+                document.getElementById('expDate').value = ex.date;
+                document.getElementById('btnExpenseSubmit').innerText = "Kemaskini Perbelanjaan";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
             const fm = document.getElementById('filterExpenseMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             expenses.filter(e => fm === 'all' || e.month === fm).forEach(ex => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${ex.receipt}','Resit.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td><td class="p-3"><button type="button" onclick="deleteExpense(${ex.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${ex.receipt}','Resit.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td>
+                        <td class="p-3 font-medium">${ex.title}</td>
+                        <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
+                        <td class="p-3">${ex.date}</td>
+                        <td class="p-3 text-center flex justify-center gap-1.5 items-center">
+                            <button type="button" onclick="editExpense(${ex.id})" class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-semibold">✏️ Edit</button>
+                            <button type="button" onclick="deleteExpense(${ex.id})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
+                        </td>
+                    </tr>`;
             });
         }
-        function deleteExpense(id) { if(db) db.collection("expenses").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
+        function deleteExpense(id) {
+            if(confirm("Padam perbelanjaan ini dari semua HP?")) {
+                if(db) db.collection("expenses").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete()));
+            }
+        }
 
+        // --- INCOME (DENGAN EDIT & CLOUD SYNC) ---
         let staffAccounts = [{ name: "Kasir Utama", pass: "kasir123" }];
         let activeStaffName = "";
         function verifyStaffLogin() {
@@ -1443,35 +1543,90 @@
                 alert("Berjaya log masuk staff!");
             } else { alert("Kata sandi salah!"); }
         }
+
         let incPhotoBase64 = "";
         document.getElementById('incPhotoInput').addEventListener('change', function(e) {
             compressImageHD(e.target.files[0], b => { incPhotoBase64 = b; });
         });
-        document.getElementById('incomeForm').addEventListener('submit', function(e) {
+
+        function handleIncomeFormSubmit(e) {
             e.preventDefault();
-            if(!activeStaffName) { alert("Sila log masuk staff!"); return; }
+            if(!activeStaffName) { alert("Sila log masuk staff terlebih dahulu!"); return; }
+            const editingId = document.getElementById('editingIncomeId').value;
             const dVal = document.getElementById('incDate').value;
-            const newInc = {
-                id: Date.now(),
+            
+            let incObj = {
                 title: document.getElementById('incTitle').value,
                 amount: document.getElementById('incAmount').value,
                 date: dVal,
                 month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                staff: activeStaffName,
-                photo: incPhotoBase64 || ""
+                staff: activeStaffName
             };
-            if(db) db.collection("income").add(newInc).then(() => { this.reset(); incPhotoBase64=""; alert("Pendapatan disimpan!"); });
-        });
+            if (incPhotoBase64) incObj.photo = incPhotoBase64;
+
+            if (db) {
+                if (editingId) {
+                    db.collection("income").where("id", "==", parseInt(editingId)).get().then(snap => {
+                        snap.forEach(d => d.ref.update(incObj));
+                        resetIncomeForm();
+                        alert("Pendapatan berjaya dikemaskini di semua HP!");
+                    });
+                } else {
+                    incObj.id = Date.now();
+                    incObj.photo = incPhotoBase64 || "";
+                    db.collection("income").add(incObj).then(() => {
+                        resetIncomeForm();
+                        alert("Pendapatan disimpan ke cloud!");
+                    });
+                }
+            }
+        }
+
+        function resetIncomeForm() {
+            document.getElementById('incomeForm').reset();
+            document.getElementById('editingIncomeId').value = "";
+            incPhotoBase64 = "";
+            document.getElementById('btnIncomeSubmit').innerText = "Simpan Pendapatan";
+        }
+
+        function editIncome(id) {
+            let inc = incomeList.find(item => item.id === id);
+            if (inc) {
+                document.getElementById('editingIncomeId').value = inc.id;
+                document.getElementById('incTitle').value = inc.title;
+                document.getElementById('incAmount').value = inc.amount;
+                document.getElementById('incDate').value = inc.date;
+                document.getElementById('btnIncomeSubmit').innerText = "Kemaskini Pendapatan";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
         function renderIncome() {
             const tbody = document.getElementById('incomeTableBody');
             const fm = document.getElementById('filterIncomeMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             incomeList.filter(i => fm === 'all' || i.month === fm).forEach(inc => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${inc.photo?`<img src="${inc.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${inc.photo}','Bukti.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td><td class="p-3">${inc.title}</td><td class="p-3 text-xs font-bold">${inc.staff}</td><td class="p-3 font-bold text-emerald-600">${inc.amount}</td><td class="p-3">${inc.date}</td><td class="p-3"><button type="button" onclick="deleteIncome(${inc.id})" class="text-rose-500">Hapus</button></td></tr>`;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${inc.photo?`<img src="${inc.photo}" class="w-10 h-10 object-cover rounded"><button type="button" onclick="downloadImageFile('${inc.photo}','Bukti.jpg')" class="text-[10px] text-blue-600 underline block">Download</button>`:'Tiada'}</td>
+                        <td class="p-3 font-medium">${inc.title}</td>
+                        <td class="p-3 text-xs font-bold">${inc.staff}</td>
+                        <td class="p-3 font-bold text-emerald-600">${inc.amount}</td>
+                        <td class="p-3">${inc.date}</td>
+                        <td class="p-3 text-center flex justify-center gap-1.5 items-center">
+                            <button type="button" onclick="editIncome(${inc.id})" class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs font-semibold">✏️ Edit</button>
+                            <button type="button" onclick="deleteIncome(${inc.id})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
+                        </td>
+                    </tr>`;
             });
         }
-        function deleteIncome(id) { if(db) db.collection("income").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
+        function deleteIncome(id) {
+            if(confirm("Padam pendapatan ini dari semua HP?")) {
+                if(db) db.collection("income").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete()));
+            }
+        }
 
+        // --- SIGNATURE & INVOICE PDF ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
