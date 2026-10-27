@@ -565,7 +565,7 @@
             </section>
 
             <!-- Office Sales & Products Page (Jual Office / Produk Jadi) -->
-            <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-6">
+            <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-blue-900">🏢 Manajemen Penjualan & Stok Office (Produk Jadi)</h3>
@@ -592,12 +592,16 @@
                 </div>
 
                 <!-- Konten Utama Office (Terkunci Sebelum Login) -->
-                <div id="officeMainContent" class="space-y-6">
+                <div id="officeMainContent" class="space-y-6 opacity-50 pointer-events-none">
                     
                     <!-- Sub-section: Tambah Produk Baru Office (Termasuk Khasiat/Kandungan) -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
-                        <h4 class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Office / Ubah Stok, Foto & Khasiat</h4>
+                        <div class="flex justify-between items-center">
+                            <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Office Baru</h4>
+                            <button type="button" id="btnCancelOfficeEdit" onclick="resetOfficeProductForm()" class="hidden text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-bold">Batal Edit</button>
+                        </div>
                         <form id="officeProductForm" onsubmit="handleOfficeProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <input type="hidden" id="editingOfficeProductId" value="">
                             <input type="text" id="prodName" placeholder="Nama Produk (Cth: Teh Daun Belimbing)" required class="border p-2 rounded-lg text-xs bg-white">
                             <input type="number" id="prodStock" placeholder="Stok Awal" min="0" required class="border p-2 rounded-lg text-xs bg-white">
                             <input type="text" id="prodPrice" placeholder="Harga Seunit (RM)" required class="border p-2 rounded-lg text-xs bg-white">
@@ -608,7 +612,7 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Khasiat, Manfaat & Kandungan Produk (Dibaca AI Otomatis)</label>
                                 <textarea id="prodBenefits" rows="2" placeholder="Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah." class="w-full border p-2.5 rounded-lg text-xs bg-white"></textarea>
                             </div>
-                            <button type="submit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Office Baru</button>
+                            <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Office Baru</button>
                         </form>
                         <!-- Senarai Produk & Stok Aktif -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2" id="officeProductSummaryContainer"></div>
@@ -1170,7 +1174,7 @@
             }
         }
 
-        // --- CUACA REAL-TIME ---
+        // --- CUACA REAL-TIME & KEPUTUSAN AI ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const options = { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -1206,8 +1210,22 @@
                         let isNight = currentHourInt < 6 || currentHourInt >= 18;
                         let currentPrecipNow = hourlyPrecip[idx] || 0;
                         let rainSoon = currentPrecipNow > 0.1;
+                        
+                        // Simpan status cuaca untuk AI
+                        currentWeatherData = { temp, windSpeed, rainSoon, currentPrecipNow };
+
                         let condText = rainSoon ? "Hujan Ringan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
                         let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
+
+                        // Keputusan AI Berdasarkan Cuaca Live
+                        let aiRecommendationText = "";
+                        if (rainSoon) {
+                            aiRecommendationText = `⚠️ <b>Perhatian Bro ${getRealNameOnly()}!</b> Terdeteksi potensi hujan/presipitasi (${currentPrecipNow} mm). Disarankan menunda penyemprotan bio baja cair pada daun belimbing agar tidak luntur tercuci air hujan. Fokuskan pekerja ke perawatan dalam gudang atau pemangkasan ringan.`;
+                        } else if (temp > 33) {
+                            aiRecommendationText = `☀️ Suhu di Estet cukup terik (${temp}°C). Pastikan pengairan/penyiraman bibit Belimbing Buluh dan tanaman herbal dicukupi pada pagi atau petang hari untuk mengelakkan kekeringan tanah.`;
+                        } else {
+                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C, angin ${windSpeed} km/j). Kondisi sangat ideal untuk aktiviti lapangan, pemupukan bio baja rutin, atau penuaian daun teh belimbing.`;
+                        }
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
@@ -1215,6 +1233,7 @@
                         if (document.getElementById('weatherMainIconContainer')) document.getElementById('weatherMainIconContainer').innerText = mainIcon;
                         if (document.getElementById('detailWind')) document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
                         if (document.getElementById('detailPrecipitation')) document.getElementById('detailPrecipitation').innerText = `${Math.round(currentPrecipNow * 50)}%`;
+                        if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerHTML = aiRecommendationText;
 
                         const hContainer = document.getElementById('hourlyForecastContainer');
                         if (hContainer) {
@@ -1243,7 +1262,11 @@
                             }
                         }
                     }
-                }).catch(err => {});
+                }).catch(err => {
+                    if (document.getElementById('smartRecommendation')) {
+                        document.getElementById('smartRecommendation').innerText = "Gagal memuat ramalan cuaca live. Periksa sambungan internet.";
+                    }
+                });
         }
 
         // --- WALKIE-TALKIE & PORTAL BOSS (CLOUD) ---
@@ -1650,7 +1673,7 @@
             }
         }
 
-        // --- MODULE 2: JUAL OFFICE (PRODUK JADI & PELANGGAN + KHASIAT) ---
+        // --- MODULE 2: JUAL OFFICE (PRODUK JADI & PELANGGAN + KHASIAT + EDIT) ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
@@ -1662,8 +1685,33 @@
             }
         }
 
+        function editOfficeProduct(firestoreId) {
+            let p = officeProducts.find(item => item.firestoreId === firestoreId);
+            if (!p) return;
+
+            document.getElementById('editingOfficeProductId').value = p.firestoreId;
+            document.getElementById('prodName').value = p.name || "";
+            document.getElementById('prodStock').value = p.stock || 0;
+            document.getElementById('prodPrice').value = p.price || 0;
+            document.getElementById('prodBenefits').value = p.benefits || "";
+            document.getElementById('officeFormTitleLabel').innerText = `✏️ Edit Produk: ${p.name}`;
+            document.getElementById('btnOfficeProdSubmit').innerText = "Kemaskini Produk Office";
+            document.getElementById('btnCancelOfficeEdit').classList.remove('hidden');
+
+            window.scrollTo({ top: document.getElementById('officeProductForm').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetOfficeProductForm() {
+            document.getElementById('officeProductForm').reset();
+            document.getElementById('editingOfficeProductId').value = "";
+            document.getElementById('officeFormTitleLabel').innerText = "➕ Tambah Produk Office Baru";
+            document.getElementById('btnOfficeProdSubmit').innerText = "Simpan / Tambah Produk Office Baru";
+            document.getElementById('btnCancelOfficeEdit').classList.add('hidden');
+        }
+
         function handleOfficeProductSubmit(e) {
             e.preventDefault();
+            const editingId = document.getElementById('editingOfficeProductId').value;
             const name = document.getElementById('prodName').value.trim();
             const stock = parseInt(document.getElementById('prodStock').value) || 0;
             const price = parseFloat(document.getElementById('prodPrice').value) || 0;
@@ -1673,14 +1721,16 @@
             if (!name) return;
 
             compressImageHD(photoFile, function(base64Photo) {
-                let existing = officeProducts.find(p => p.name.toLowerCase() === name.toLowerCase());
                 if (db) {
-                    if (existing) {
-                        let updateData = { stock, price, benefits };
+                    if (editingId) {
+                        let existing = officeProducts.find(p => p.firestoreId === editingId);
+                        let updateData = { name, stock, price, benefits };
                         if (base64Photo) updateData.photo = base64Photo;
-                        db.collection("office_products").doc(existing.firestoreId).update(updateData).then(() => {
+                        else if (existing && existing.photo) updateData.photo = existing.photo;
+
+                        db.collection("office_products").doc(editingId).update(updateData).then(() => {
                             alert(`Produk Office ${name} berjaya dikemaskini!`);
-                            e.target.reset();
+                            resetOfficeProductForm();
                         });
                     } else {
                         db.collection("office_products").add({
@@ -1692,7 +1742,7 @@
                             photo: base64Photo || ""
                         }).then(() => {
                             alert(`Produk Office ${name} berjaya ditambah!`);
-                            e.target.reset();
+                            resetOfficeProductForm();
                         });
                     }
                 }
@@ -1715,15 +1765,25 @@
             officeProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
                 sc.innerHTML += `
-                    <div class="bg-white border border-blue-200 p-3 rounded-xl shadow-sm space-y-1">
+                    <div class="bg-white border border-blue-200 p-3 rounded-xl shadow-sm space-y-1.5 relative group">
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">✏️ Edit</button>
+                            <button type="button" onclick="deleteOfficeProduct('${p.firestoreId}', '${p.name}')" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">✕</button>
+                        </div>
                         <div class="text-center">${imgTag}</div>
-                        <div class="text-xs font-bold text-blue-900 text-center truncate">${p.name}</div>
-                        <div class="text-[11px] text-slate-600 flex justify-between"><span>Stok: <b class="text-emerald-700">${p.stock}</b></span><span class="font-mono font-bold">RM ${parseFloat(p.price).toFixed(2)}</span></div>
+                        <div class="text-xs font-bold text-blue-900 text-center truncate pr-10 pl-2">${p.name}</div>
+                        <div class="text-[11px] text-slate-600 flex justify-between px-1"><span>Stok: <b class="text-emerald-700">${p.stock}</b></span><span class="font-mono font-bold">RM ${parseFloat(p.price).toFixed(2)}</span></div>
                         <div class="text-[10px] text-slate-500 bg-slate-50 p-1.5 rounded border mt-1"><b>Khasiat:</b> ${p.benefits || 'Tiada keterangan khasiat'}</div>
                     </div>
                 `;
                 sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
             });
+        }
+
+        function deleteOfficeProduct(firestoreId, name) {
+            if (confirm(`Padam produk "${name}" dari senarai office?`)) {
+                if (db) db.collection("office_products").doc(firestoreId).delete().then(() => alert("Produk berjaya dipadam!"));
+            }
         }
 
         function onOfficeProductSelected() {
@@ -2048,7 +2108,6 @@
             document.getElementById('invModalInvoiceNo').innerText = `No: ${salesData.invoiceNo || 'INV-' + Date.now().toString().slice(-6)}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${salesData.date || '-'}`;
             
-            // Masukkan Alamat Office Dinamik
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
 
             document.getElementById('invCustomerName').innerText = salesData.customer || 'Tunai';
@@ -2108,7 +2167,6 @@
             document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             
-            // Masukkan Alamat Office Dinamik
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
 
             document.getElementById('invCustomerName').innerText = "Pengurusan Korporat / Umum";
