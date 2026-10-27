@@ -1872,7 +1872,7 @@
         }
         function deleteWorker(i) { workers.splice(i, 1); if(db) db.collection("settings").doc("workers").set({ list: workers }); renderWorkersAdmin(); renderWorkersDropdown(); }
 
-        // --- SUPPLY & STOCK ---
+        // --- SUPPLY & STOCK (DIPERBAIKI: Bunga Kantan = tangkai, lainnya = kg, tanpa ringgit) ---
         document.getElementById('inputDate').valueAsDate = new Date();
         function onSupplyItemChange() {
             const item = document.getElementById('inputItem').value;
