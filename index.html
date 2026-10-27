@@ -260,7 +260,6 @@
             <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-1">💵 Jual Kebun</button>
             <button onclick="switchTab('office')" id="tabBtn-office" class="bg-white text-blue-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-1">🏢 Jual Office</button>
             <button onclick="switchTab('customer_orders')" id="tabBtn-customer_orders" class="bg-white text-indigo-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-2 sm:col-span-1">📦 PO Masuk</button>
-
         </div>
 
         <!-- CONTAINER HALAMAN / TAB -->
@@ -566,34 +565,33 @@
                 </div>
             </section>
 
-            
-<!-- TAB KELOLA PO MASUK PELANGGAN -->
-<section id="page-customer_orders" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-    <div class="flex justify-between items-center border-b pb-3">
-        <div>
-            <h3 class="text-lg font-bold text-indigo-900">📦 Kelola Purchase Order (PO) Masuk dari Customer</h3>
-            <p class="text-xs text-slate-500">Pantau pesanan masuk secara real-time, cetak invoice rasmi, dan kemaskini nomor resi</p>
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs border-collapse">
-            <thead>
-                <tr class="bg-slate-100 border-b">
-                    <th class="p-2">No PO</th>
-                    <th class="p-2">Tarikh</th>
-                    <th class="p-2">Pelanggan</th>
-                    <th class="p-2">Rincian Pesanan</th>
-                    <th class="p-2">Kurir & Pembayaran</th>
-                    <th class="p-2">Status & Resi</th>
-                    <th class="p-2 text-center">Tindakan</th>
-                </tr>
-            </thead>
-            <tbody id="adminCustomerOrdersTableBody">
-                <tr><td colspan="7" class="p-4 text-center text-slate-400">Memuat pesanan masuk...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</section>
+            <!-- TAB KELOLA PO MASUK PELANGGAN -->
+            <section id="page-customer_orders" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-900">📦 Kelola Purchase Order (PO) Masuk dari Customer</h3>
+                        <p class="text-xs text-slate-500">Pantau pesanan masuk secara real-time, cetak invoice rasmi, dan kemaskini nomor resi</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 border-b">
+                                <th class="p-2">No PO</th>
+                                <th class="p-2">Tarikh</th>
+                                <th class="p-2">Pelanggan</th>
+                                <th class="p-2">Rincian Pesanan</th>
+                                <th class="p-2">Kurir & Pembayaran</th>
+                                <th class="p-2">Status & Resi</th>
+                                <th class="p-2 text-center">Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCustomerOrdersTableBody">
+                            <tr><td colspan="7" class="p-4 text-center text-slate-400">Memuat pesanan masuk...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
             <!-- Office Sales & Products Page (Jual Office / Produk Jadi) -->
             <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
@@ -1094,6 +1092,7 @@
         let incomeList = [];
         let officeProducts = [];
         let officeSales = [];
+        let customerOrdersList = [];
 
         // --- SISTEM AI MANDIRI: MEMORI GLOBAL & BACAAN LINK ---
         function saveConversationToCloud(userText, aiReply) {
@@ -1142,7 +1141,6 @@
                 let sampleMemories = globalAiMemory.slice(0, 3).map(m => `"${m.userText}"`).join(' | ');
                 responseText = `🧠 **Memori Global & Kosakata Mandiri**:\n• Total Percakapan Tersimpan dari Semua HP: ${recentMemoryCount} interaksi.\n• Topik/Link Terbaru: ${sampleMemories || 'Belum ada obrolan tambahan'}.\nAI terus merekam setiap input link dan kosakata baru agar semakin pintar!`;
             } else if (queryType === 'product_query' || manualText) {
-                // Deteksi jika user mengirimkan link
                 let isLink = manualText.includes('http://') || manualText.includes('https://') || manualText.includes('www.');
                 
                 let matchedProduct = officeProducts.find(p => {
@@ -1240,6 +1238,8 @@
             if (activeBtn) {
                 if(tabId === 'office') {
                     activeBtn.className = "bg-blue-700 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
+                } else if(tabId === 'customer_orders') {
+                    activeBtn.className = "bg-indigo-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
                 } else {
                     activeBtn.className = "bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs";
                 }
@@ -1541,6 +1541,11 @@
                 officeSales = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); officeSales.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterOfficeMonth', m); renderOfficeSales();
+            });
+            db.collection("customer_orders").orderBy("timestamp", "desc").onSnapshot(snap => {
+                customerOrdersList = [];
+                snap.forEach(d => customerOrdersList.push({ firestoreId: d.id, ...d.data() }));
+                renderAdminCustomerOrders();
             });
         }
 
@@ -1977,95 +1982,104 @@
         function closeInvoiceModal() { document.getElementById('invoiceModal').classList.add('hidden'); }
         function downloadInvoicePdfOrText() { window.print(); }
 
+        // --- CUSTOMER ORDERS (PO MASUK) ---
+        function renderAdminCustomerOrders() {
+            const tbody = document.getElementById('adminCustomerOrdersTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            if (customerOrdersList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">Belum ada Purchase Order (PO) masuk.</td></tr>`;
+                return;
+            }
+            customerOrdersList.forEach((o, index) => {
+                let itemsText = (o.items || []).map(i => `${i.name} (${i.qty} unit)`).join(', ');
+                window[`orderData_${index}`] = o;
+
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 font-mono font-bold">${o.invoiceNo || 'INV-PO-' + o.id}</td>
+                        <td class="p-2">${o.date || '-'}</td>
+                        <td class="p-2 font-semibold">${o.customerName || 'Pelanggan'}<br><span class="text-[10px] text-slate-500">${o.customerPhone || '-'}</span></td>
+                        <td class="p-2 text-xs">${itemsText}</td>
+                        <td class="p-2 text-xs">Kurir: ${o.shipping || '-'}<br>Bayar: ${o.payment || '-'}</td>
+                        <td class="p-2">
+                            <input type="text" id="resi_${o.firestoreId}" value="${o.trackingNo || ''}" placeholder="No Resi..." class="border p-1 rounded text-xs w-28 mb-1">
+                            <button type="button" onclick="saveTrackingResi('${o.firestoreId}')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Simpan Resi</button>
+                        </td>
+                        <td class="p-2 text-center space-y-1">
+                            <button type="button" onclick='showCustomerOrderInvoice(window.orderData_${index})' class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold block w-full shadow cursor-pointer">📄 Invoice</button>
+                            <a href="https://wa.me/${(o.customerPhone || '').replace(/[^0-9]/g,'')}?text=${encodeURIComponent('Halo ' + (o.customerName || 'Pelanggan') + ', pesanan PO dengan nomor ' + (o.invoiceNo || '') + ' sedang diproses.')}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded text-xs block font-semibold">💬 WhatsApp</a>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function saveTrackingResi(firestoreId) {
+            let resiVal = document.getElementById(`resi_${firestoreId}`).value.trim();
+            if (db) {
+                db.collection("customer_orders").doc(firestoreId).update({ 
+                    trackingNo: resiVal, 
+                    status: resiVal ? "Dalam Penghantaran 🚚" : "Sedang Diproses 📦" 
+                }).then(() => {
+                    alert("Nomor resi & status berjaya dikemaskini ke sistem customer!");
+                }).catch(err => alert("Gagal menyimpan resi: " + err.message));
+            }
+        }
+
+        function showCustomerOrderInvoice(orderObj) {
+            if (!orderObj) return;
+            
+            document.getElementById('invModalMainHeader').innerText = "INVOICE PURCHASE ORDER (PO)";
+            document.getElementById('invModalInvoiceNo').innerText = `No: ${orderObj.invoiceNo || 'INV-PO-' + (orderObj.id || '')}`;
+            document.getElementById('invModalDateNum').innerText = `Tarikh: ${orderObj.date || '-'}`;
+            document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
+            document.getElementById('invCustomerName').innerText = orderObj.customerName || 'Pelanggan Umum';
+            document.getElementById('invCustomerAddress').innerText = `Alamat: ${orderObj.customerAddress || '-'}`;
+            document.getElementById('invCustomerPhone').innerText = `Tel: ${orderObj.customerPhone || '-'}`;
+            document.getElementById('invModalOwner').innerText = getRealNameOnly();
+
+            const tbody = document.getElementById('invoiceTableBody');
+            tbody.innerHTML = "";
+            
+            let grandTot = 0;
+            if (orderObj.items && Array.isArray(orderObj.items)) {
+                orderObj.items.forEach((item, idx) => {
+                    let itemTotal = (parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0);
+                    grandTot += itemTotal;
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="p-2.5">${idx + 1}</td>
+                            <td class="p-2.5 font-bold text-slate-800">${item.name || 'Produk'}</td>
+                            <td class="p-2.5 text-center">${item.qty || 1}</td>
+                            <td class="p-2.5 text-right">RM ${(parseFloat(item.price) || 0).toFixed(2)}</td>
+                            <td class="p-2.5 text-right font-bold text-emerald-700">RM ${itemTotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                grandTot = parseFloat(orderObj.grandTotal) || 0;
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-2.5">1</td>
+                        <td class="p-2.5 font-bold text-slate-800">Pesanan Produk Medicalpro</td>
+                        <td class="p-2.5 text-center">1</td>
+                        <td class="p-2.5 text-right">RM ${grandTot.toFixed(2)}</td>
+                        <td class="p-2.5 text-right font-bold text-emerald-700">RM ${grandTot.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
+            document.getElementById('invoiceModal').classList.remove('hidden');
+            setTimeout(initSignaturePad, 200);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             checkUserProfile();
             updateLiveClockAndWeather();
             loadBossOrdersRealtime();
         });
-
-        let customerOrdersList = [];
-
-// Fungsi untuk merender data PO masuk dari Firestore secara real-time
-if (db) {
-    db.collection("customer_orders").orderBy("timestamp", "desc").onSnapshot(snap => {
-        customerOrdersList = [];
-        snap.forEach(d => customerOrdersList.push({ firestoreId: d.id, ...d.data() }));
-        renderAdminCustomerOrders();
-    });
-}
-
-function renderAdminCustomerOrders() {
-    const tbody = document.getElementById('adminCustomerOrdersTableBody');
-    if (!tbody) return;
-    tbody.innerHTML = "";
-    if (customerOrdersList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">Belum ada Purchase Order (PO) masuk.</td></tr>`;
-        return;
-    }
-    customerOrdersList.forEach((o, index) => {
-        let itemsText = (o.items || []).map(i => `${i.name} (${i.qty} unit)`).join(', ');
-        
-        // Simpan data order ke variabel global sementara agar aman dipanggil
-        window[`orderData_${index}`] = o;
-
-        tbody.innerHTML += `
-            <tr class="border-b">
-                <td class="p-2 font-mono font-bold">${o.invoiceNo}</td>
-                <td class="p-2">${o.date || '-'}</td>
-                <td class="p-2 font-semibold">${o.customerName}<br><span class="text-[10px] text-slate-500">${o.customerPhone}</span></td>
-                <td class="p-2 text-xs">${itemsText}</td>
-                <td class="p-2 text-xs">Kurir: ${o.shipping}<br>Bayar: ${o.payment}</td>
-                <td class="p-2">
-                    <input type="text" id="resi_${o.firestoreId}" value="${o.trackingNo || ''}" placeholder="No Resi..." class="border p-1 rounded text-xs w-28 mb-1">
-                    <button type="button" onclick="saveTrackingResi('${o.firestoreId}')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Simpan Resi</button>
-                </td>
-                <td class="p-2 text-center space-y-1">
-                    <button type="button" onclick='showCustomerOrderInvoice(window.orderData_${index})' class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs block w-full hover:bg-indigo-100 font-bold cursor-pointer">📄 Invoice</button>
-                    <a href="https://wa.me/${o.customerPhone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent('Halo ' + o.customerName + ', pesanan ' + o.invoiceNo + ' sedang diproses.')}" target="_blank" class="bg-emerald-600 text-white px-2 py-1 rounded text-xs block">💬 WhatsApp</a>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-        
-
-function saveTrackingResi(firestoreId) {
-    let resiVal = document.getElementById(`resi_${firestoreId}`).value.trim();
-    if (db) {
-        db.collection("customer_orders").doc(firestoreId).update({ 
-            trackingNo: resiVal, 
-            status: resiVal ? "Dalam Penghantaran 🚚" : "Sedang Diproses 📦" 
-        }).then(() => {
-            alert("Nomor resi & status berjaya dikemaskini ke HP customer!");
-        });
-    }
-}
-
-function showCustomerOrderInvoice(orderObj) {
-    document.getElementById('invModalInvoiceNo').innerText = `No: ${orderObj.invoiceNo}`;
-    document.getElementById('invModalDateNum').innerText = `Tarikh: ${orderObj.date}`;
-    document.getElementById('invCustomerName').innerText = orderObj.customerName;
-    document.getElementById('invCustomerAddress').innerText = `Alamat: ${orderObj.customerAddress}`;
-    document.getElementById('invCustomerPhone').innerText = `Tel: ${orderObj.customerPhone}`;
-    document.getElementById('invPaymentMethodDisplay').innerText = orderObj.payment;
-
-    const tbody = document.getElementById('invoiceTableBody');
-    tbody.innerHTML = "";
-    orderObj.items.forEach((item, idx) => {
-        tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-bold">${item.name}</td><td class="p-2.5 text-center">${item.qty}</td><td class="p-2.5 text-right">RM ${item.price.toFixed(2)}</td><td class="p-2.5 text-right font-bold text-emerald-700">RM ${(item.price * item.qty).toFixed(2)}</td></tr>`;
-    });
-    document.getElementById('invoiceGrandTotal').innerText = `RM ${orderObj.grandTotal.toFixed(2)}`;
-    document.getElementById('invoiceModal').classList.remove('hidden');
-    setTimeout(() => {
-        const canvas = document.getElementById('signatureCanvas');
-        if (canvas && !signaturePad) {
-            canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight;
-            signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgba(0,0,0,0)', penColor: 'rgb(15, 23, 42)' });
-        }
-    }, 200);
-}
-
     </script>
 </body>
 </html>
