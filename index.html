@@ -258,7 +258,7 @@
             <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🚜 <span id="navAssets">Aset Kebun</span></button>
             <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">💰 <span id="navExpenses">Perbelanjaan</span></button>
             <button onclick="switchTab('income')" id="tabBtn-income" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-1">💵 Jual Kebun</button>
-            <button onclick="switchTab('office')" id="tabBtn-office" class="bg-white text-blue-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-1">🏢 Jual Office</button>
+            <button onclick="switchTab('office')" id="tabBtn-office" class="bg-white text-blue-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-1">🏢 Produk & Invoice Offline</button>
             <button onclick="switchTab('customer_orders')" id="tabBtn-customer_orders" class="bg-white text-indigo-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs col-span-2 sm:col-span-1">📦 PO Masuk</button>
         </div>
 
@@ -565,7 +565,7 @@
                 </div>
             </section>
 
-            <!-- TAB KELOLA PO MASUK PELANGGAN -->
+            <!-- TAB KELOLA PO MASUK PELANGGAN (DIPROTEKSI KATA SANDI) -->
             <section id="page-customer_orders" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
                     <div>
@@ -573,31 +573,46 @@
                         <p class="text-xs text-slate-500">Pantau pesanan masuk secara real-time, cetak invoice rasmi, dan kemaskini nomor resi</p>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 border-b">
-                                <th class="p-2">No PO</th>
-                                <th class="p-2">Tarikh</th>
-                                <th class="p-2">Pelanggan</th>
-                                <th class="p-2">Rincian Pesanan</th>
-                                <th class="p-2">Kurir & Pembayaran</th>
-                                <th class="p-2">Status & Resi</th>
-                                <th class="p-2 text-center">Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminCustomerOrdersTableBody">
-                            <tr><td colspan="7" class="p-4 text-center text-slate-400">Memuat pesanan masuk...</td></tr>
-                        </tbody>
-                    </table>
+
+                <!-- Panel Login Khusus PO Masuk -->
+                <div id="poLoginPanel" class="bg-indigo-50 border-2 border-indigo-300 p-6 rounded-2xl text-center space-y-3 max-w-md mx-auto my-6">
+                    <span class="text-3xl">🔐</span>
+                    <h4 class="font-bold text-sm text-indigo-950">Akses Dilindungi Kata Sandi Admin</h4>
+                    <p class="text-xs text-slate-600">Sila masukkan kata sandi admin utama untuk melihat dan menguruskan pesanan PO masuk.</p>
+                    <div class="flex gap-2">
+                        <input type="password" id="poPassInput" placeholder="Masukkan Kata Sandi" class="border p-2 rounded-xl text-xs bg-white flex-1">
+                        <button type="button" onclick="verifyPoLogin()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Buka Akses</button>
+                    </div>
+                </div>
+
+                <!-- Konten Tabel PO (Terkunci Sebelum Password Betul) -->
+                <div id="poMainContent" class="space-y-4 opacity-50 pointer-events-none">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 border-b">
+                                    <th class="p-2">No PO</th>
+                                    <th class="p-2">Tarikh</th>
+                                    <th class="p-2">Pelanggan</th>
+                                    <th class="p-2">Rincian Pesanan</th>
+                                    <th class="p-2">Kurir & Pembayaran</th>
+                                    <th class="p-2">Status & Resi</th>
+                                    <th class="p-2 text-center">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminCustomerOrdersTableBody">
+                                <tr><td colspan="7" class="p-4 text-center text-slate-400">Sila masukkan kata sandi di atas untuk memuat pesanan masuk...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
-            <!-- Office Sales & Products Page (Jual Office / Produk Jadi) -->
+            <!-- Office Sales & Products Page (Produk & Invoice Offline) -->
             <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
-                        <h3 class="text-lg font-bold text-blue-900">🏢 Manajemen Penjualan & Stok Office (Produk Jadi)</h3>
+                        <h3 class="text-lg font-bold text-blue-900">🏢 Produk & Invoice Offline</h3>
                         <p class="text-xs text-slate-500">Urus produk siap jualan dengan foto, khasiat/kandungan, catat order pelanggan & cetak invoice rasmi office</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -611,12 +626,12 @@
                 <!-- Panel Login Admin Office -->
                 <div id="officeLoginPanel" class="bg-blue-50 border-2 border-blue-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div>
-                        <h4 class="font-bold text-sm text-blue-900">🔐 Akses Admin Office / Penjualan</h4>
+                        <h4 class="font-bold text-sm text-blue-900">🔐 Akses Admin Produk & Invoice Offline</h4>
                         <p class="text-xs text-blue-700" id="officeStatusText">Status: Belum Log Masuk (Masukkan Kata Sandi Admin Utama)</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
                         <input type="password" id="officePassInput" placeholder="Kata Sandi Admin" class="border p-2 rounded-lg text-xs bg-white w-full sm:w-40">
-                        <button type="button" onclick="verifyOfficeLogin()" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Masuk Office</button>
+                        <button type="button" onclick="verifyOfficeLogin()" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Masuk</button>
                     </div>
                 </div>
 
@@ -626,7 +641,7 @@
                     <!-- Sub-section: Tambah Produk Baru Office (Termasuk Khasiat/Kandungan) -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
                         <div class="flex justify-between items-center">
-                            <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Office Baru</h4>
+                            <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Offline Baru</h4>
                             <button type="button" id="btnCancelOfficeEdit" onclick="resetOfficeProductForm()" class="hidden text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-bold">Batal Edit</button>
                         </div>
                         <form id="officeProductForm" onsubmit="handleOfficeProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -641,7 +656,7 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Khasiat, Manfaat & Kandungan Produk (Dibaca AI Otomatis)</label>
                                 <textarea id="prodBenefits" rows="2" placeholder="Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah." class="w-full border p-2.5 rounded-lg text-xs bg-white"></textarea>
                             </div>
-                            <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Office Baru</button>
+                            <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Offline Baru</button>
                         </form>
                         <!-- Senarai Produk & Stok Aktif -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2" id="officeProductSummaryContainer"></div>
@@ -650,7 +665,7 @@
                     <!-- Sub-section: Borang Jualan Office (POS & Data Pelanggan) -->
                     <form id="officeSalesForm" onsubmit="handleOfficeSalesSubmit(event)" class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-200 space-y-3">
                         <input type="hidden" id="editingOfficeSalesId" value="">
-                        <div class="text-xs font-bold text-indigo-900 uppercase">🛒 Catat Transaksi Jualan Office Baru (Order Pelanggan)</div>
+                        <div id="officeSalesFormTitle" class="text-xs font-bold text-indigo-900 uppercase">🛒 Catat Transaksi Jualan Offline Baru (Order Pelanggan)</div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                                 <label class="text-[10px] text-slate-600 block mb-1">Pilih Produk</label>
@@ -689,12 +704,15 @@
                                 <input type="file" id="salesPhotoInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                             </div>
                         </div>
-                        <button type="submit" id="btnOfficeSalesSubmit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Jualan & Cetak Invoice Rasmi</button>
+                        <div class="flex gap-2">
+                            <button type="submit" id="btnOfficeSalesSubmit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Jualan & Cetak Invoice Rasmi</button>
+                            <button type="button" id="btnCancelOfficeSalesEdit" onclick="resetOfficeSalesForm()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold py-2.5 px-4 rounded-xl">Batal</button>
+                        </div>
                     </form>
 
                     <!-- Sub-section: Riwayat Jualan Office -->
                     <div>
-                        <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Jualan Office & Pelanggan:</div>
+                        <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Jualan Offline & Pelanggan:</div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs border-collapse">
                                <thead>
@@ -1133,7 +1151,7 @@
 
             let responseText = "";
             if (queryType === 'rekap') {
-                responseText = `📊 **Rekap Sistem & Keuangan Estet**:\n• Total Pekerja: ${workers.length} orang\n• Total Pengeluaran: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Kebun: RM ${totalInc.toFixed(2)}\n• Jualan Produk Office: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
+                responseText = `📊 **Rekap Sistem & Keuangan Estet**:\n• Total Pekerja: ${workers.length} orang\n• Total Pengeluaran: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Kebun: RM ${totalInc.toFixed(2)}\n• Jualan Produk & Invoice Offline: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
             } else if (queryType === 'baja') {
                 responseText = `🧪 **Analisis & Jadwal Pemupukan (Siklus 2 Minggu)**:\n${bajaWarning}\n${pemupukanAdvice}`;
             } else if (queryType === 'memori') {
@@ -1649,13 +1667,13 @@
             });
         }
 
-        // --- MODULE 2: JUAL OFFICE ---
+        // --- MODULE 2: PRODUK & INVOICE OFFLINE ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
-                document.getElementById('officeStatusText').innerText = "Status: Berjaya Log Masuk (Admin Office)";
+                document.getElementById('officeStatusText').innerText = "Status: Berjaya Log Masuk (Admin)";
                 document.getElementById('officeMainContent').classList.remove('opacity-50', 'pointer-events-none');
-                alert("Akses Admin Office dibuka!");
+                alert("Akses Produk & Invoice Offline dibuka!");
             } else { alert("Kata sandi salah!"); }
         }
 
@@ -1692,9 +1710,9 @@
                         let updateData = { name, stock, price, benefits };
                         if (base64Photo) updateData.photo = base64Photo;
                         else if (existing && existing.photo) updateData.photo = existing.photo;
-                        db.collection("office_products").doc(editingId).update(updateData).then(() => { alert("Produk Office dikemaskini!"); resetOfficeProductForm(); });
+                        db.collection("office_products").doc(editingId).update(updateData).then(() => { alert("Produk Offline dikemaskini!"); resetOfficeProductForm(); });
                     } else {
-                        db.collection("office_products").add({ id: Date.now(), name, stock, price, benefits, photo: base64Photo || "" }).then(() => { alert("Produk Office ditambah!"); resetOfficeProductForm(); });
+                        db.collection("office_products").add({ id: Date.now(), name, stock, price, benefits, photo: base64Photo || "" }).then(() => { alert("Produk Offline ditambah!"); resetOfficeProductForm(); });
                     }
                 }
             });
@@ -1704,7 +1722,7 @@
             const sc = document.getElementById('officeProductSummaryContainer');
             const sel = document.getElementById('salesProductSelect');
             if (!sc || !sel) return;
-            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Office --</option>`;
+            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Offline --</option>`;
             officeProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
                 sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${p.name}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | RM ${parseFloat(p.price).toFixed(2)}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${p.benefits || '-'}</div></div>`;
@@ -1728,6 +1746,7 @@
 
         function handleOfficeSalesSubmit(e) {
             e.preventDefault();
+            const editingSalesId = document.getElementById('editingOfficeSalesId').value;
             const prodName = document.getElementById('salesProductSelect').value;
             const qty = parseInt(document.getElementById('salesQty').value) || 0;
             const total = document.getElementById('salesTotalAmount').value;
@@ -1737,26 +1756,70 @@
             const dVal = document.getElementById('salesDate').value;
             const photoFile = document.getElementById('salesPhotoInput').files[0];
             let productObj = officeProducts.find(p => p.name === prodName);
-            if (!productObj || productObj.stock < qty) { alert("Stok tidak mencukupi atau produk tidak sah."); return; }
+            if (!productObj) { alert("Produk tidak sah."); return; }
 
             compressImageHD(photoFile, function(base64Photo) {
                 const salesObj = {
-                    id: Date.now(), invoiceNo: `INV-OFFICE-${Date.now().toString().slice(-6)}`,
+                    id: editingSalesId ? undefined : Date.now(),
+                    invoiceNo: `INV-OFFICE-${Date.now().toString().slice(-6)}`,
                     date: dVal, month: dVal.substring(0, 7), product: prodName, qty: qty,
                     total: `RM ${parseFloat(total).toFixed(2)}`, amount: parseFloat(total) || 0,
                     customer, address, phone, photo: base64Photo || productObj.photo || ""
                 };
+
                 if (db) {
-                    db.collection("office_sales").add(salesObj).then(() => {
-                        db.collection("office_products").doc(productObj.firestoreId).update({ stock: productObj.stock - qty }).then(() => {
-                            document.getElementById('officeSalesForm').reset();
-                            document.getElementById('salesDate').valueAsDate = new Date();
-                            alert("Jualan office berjaya direkod!");
-                            showCustomInvoiceModal(salesObj, 'Jualan Produk Office (Medicalpro)');
+                    if (editingSalesId) {
+                        db.collection("office_sales").doc(editingSalesId).update(salesObj).then(() => {
+                            resetOfficeSalesForm();
+                            alert("Riwayat jualan offline berjaya dikemaskini!");
                         });
-                    });
+                    } else {
+                        db.collection("office_sales").add(salesObj).then(() => {
+                            db.collection("office_products").doc(productObj.firestoreId).update({ stock: productObj.stock - qty }).then(() => {
+                                resetOfficeSalesForm();
+                                alert("Jualan offline berjaya direkod!");
+                                showCustomInvoiceModal(salesObj, 'Jualan Produk & Invoice Offline');
+                            });
+                        });
+                    }
                 }
             });
+        }
+
+        function editOfficeSale(firestoreId) {
+            let s = officeSales.find(item => item.firestoreId === firestoreId);
+            if (!s) return;
+            document.getElementById('editingOfficeSalesId').value = s.firestoreId;
+            document.getElementById('salesProductSelect').value = s.product || "";
+            document.getElementById('salesQty').value = s.qty || 1;
+            document.getElementById('salesTotalAmount').value = s.amount || 0;
+            document.getElementById('salesCustomer').value = s.customer || "";
+            document.getElementById('salesAddress').value = s.address || "";
+            document.getElementById('salesPhone').value = s.phone || "";
+            document.getElementById('salesDate').value = s.date || "";
+            document.getElementById('officeSalesFormTitle').innerText = "✏️ Edit Transaksi Jualan Offline";
+            document.getElementById('btnOfficeSalesSubmit').innerText = "Kemaskini Jualan";
+            document.getElementById('btnCancelOfficeSalesEdit').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('officeSalesForm').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetOfficeSalesForm() {
+            document.getElementById('officeSalesForm').reset();
+            document.getElementById('editingOfficeSalesId').value = "";
+            document.getElementById('salesDate').valueAsDate = new Date();
+            document.getElementById('officeSalesFormTitle').innerText = "🛒 Catat Transaksi Jualan Offline Baru (Order Pelanggan)";
+            document.getElementById('btnOfficeSalesSubmit').innerText = "Simpan Jualan & Cetak Invoice Rasmi";
+            document.getElementById('btnCancelOfficeSalesEdit').classList.add('hidden');
+        }
+
+        function deleteOfficeSale(firestoreId) {
+            if (confirm("Yakin ingin memadamkan riwayat jualan offline ini secara kekal?")) {
+                if (db) {
+                    db.collection("office_sales").doc(firestoreId).delete().then(() => {
+                        alert("Riwayat jualan berjaya dipadam!");
+                    }).catch(err => alert("Gagal memadam: " + err.message));
+                }
+            }
         }
 
         function renderOfficeSales() {
@@ -1764,8 +1827,27 @@
             const fm = document.getElementById('filterOfficeMonth') ? document.getElementById('filterOfficeMonth').value : 'all';
             if (!tbody) return;
             tbody.innerHTML = "";
-            officeSales.filter(s => fm === 'all' || s.month === fm).forEach(s => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty} unit</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Produk Office')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invoice</button></td></tr>`;
+            let filtered = officeSales.filter(s => fm === 'all' || s.month === fm);
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada riwayat jualan offline.</td></tr>`;
+                return;
+            }
+            filtered.forEach((s, index) => {
+                window[`officeSale_${index}`] = s;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2">${s.date}</td>
+                        <td class="p-2 font-medium">${s.product}</td>
+                        <td class="p-2">${s.qty} unit</td>
+                        <td class="p-2 font-bold text-emerald-600">${s.total}</td>
+                        <td class="p-2">${s.customer}<br><span class="text-[10px] text-slate-500">${s.phone || '-'}</span></td>
+                        <td class="p-2 text-center space-x-1">
+                            <button type="button" onclick='showCustomInvoiceModal(window.officeSale_${index}, "Jualan Produk & Invoice Offline")' class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold">📄 Invoice</button>
+                            <button type="button" onclick="editOfficeSale('${s.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️ Edit</button>
+                            <button type="button" onclick="deleteOfficeSale('${s.firestoreId}')" class="bg-rose-50 text-rose-700 px-2 py-1 rounded text-xs font-bold">🗑️ Padam</button>
+                        </td>
+                    </tr>
+                `;
             });
         }
 
@@ -1954,7 +2036,7 @@
             else if(type === 'supply') { filterVal = document.getElementById('filterSupplyMonth').value; title = "Data Suplai Kebun"; dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal); }
             else if(type === 'expenses') { filterVal = document.getElementById('filterExpenseMonth').value; title = "Rekap Perbelanjaan Kebun"; dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal); }
             else if(type === 'income') { filterVal = document.getElementById('filterIncomeMonth').value; title = "Rekap Jualan Kebun"; dataArr = incomeList.filter(i => filterVal === 'all' || i.month === filterVal); }
-            else if(type === 'office') { filterVal = document.getElementById('filterOfficeMonth').value; title = "Rekap Jualan Office"; dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); }
+            else if(type === 'office') { filterVal = document.getElementById('filterOfficeMonth').value; title = "Rekap Produk & Invoice Offline"; dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); }
 
             document.getElementById('invModalMainHeader').innerText = title;
             document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
@@ -1982,7 +2064,18 @@
         function closeInvoiceModal() { document.getElementById('invoiceModal').classList.add('hidden'); }
         function downloadInvoicePdfOrText() { window.print(); }
 
-        // --- CUSTOMER ORDERS (PO MASUK) ---
+        // --- CUSTOMER ORDERS (PO MASUK) DENGAN PROTEKSI PASSWORD ---
+        function verifyPoLogin() {
+            const pass = document.getElementById('poPassInput').value;
+            if (pass === secretAdminCode) {
+                document.getElementById('poLoginPanel').classList.add('hidden');
+                document.getElementById('poMainContent').classList.remove('opacity-50', 'pointer-events-none');
+                alert("Akses PO Masuk berjaya dibuka!");
+            } else {
+                alert("Kata sandi salah! Sila masukkan kata sandi admin yang sah.");
+            }
+        }
+
         function renderAdminCustomerOrders() {
             const tbody = document.getElementById('adminCustomerOrdersTableBody');
             if (!tbody) return;
