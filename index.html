@@ -252,7 +252,7 @@
 
         <!-- Navigation Tabs -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2 sticky top-2 z-40 bg-slate-50/90 backdrop-blur pb-2">
-            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md border text-center font-bold text-xs">📋 <span id="navTasks">Tugas Harian</span></button>
+            <button onclick="switchTab('tasks')" id="tabBtn-tasks" class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-sm border text-center font-bold text-xs">📋 <span id="navTasks">Tugas Harian</span></button>
             <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">📦 <span id="navSupply">Stok & Suplai</span></button>
             <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🧪 <span id="navStock">Bio Baja</span></button>
             <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🚜 <span id="navAssets">Aset Kebun</span></button>
@@ -330,13 +330,13 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
-                        <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau klik supply langsung pada baris data</p>
+                        <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau cetak Laporan Supply Kebun</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <select id="filterSupplyMonth" onchange="renderSupplyApp()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('supply')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Data Suplai PDF</button>
+                        <button type="button" onclick="generateSupplyReportModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Laporan Supply PDF</button>
                     </div>
                 </div>
 
@@ -358,7 +358,7 @@
                                 <option value="Daun obat/krim Belimbing Buluh">Daun obat/krim Belimbing Buluh (kg)</option>
                                 <option value="Daun Tajus">Daun Tajus (kg)</option>
                                 <option value="Limau">Limau (kg)</option>
-                                <option value="Bunga Kantan">Bunga Kantan (Tangkai)</option>
+                                <option value="Bunga Kantan">Bunga Kantan (tangkai)</option>
                             </select>
                         </div>
                     </div>
@@ -737,13 +737,13 @@
 
     </main>
 
-    <!-- MODAL CETAK INVOICE / REKAP PROFESIONAL -->
+    <!-- MODAL CETAK INVOICE / LAPORAN KEBUN PROFESIONAL -->
     <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
         <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
             <div id="printableInvoiceArea" class="space-y-6 bg-white p-6 rounded-2xl border border-slate-200">
                 
-                <!-- Header Invoice Korporat dengan Logo & Alamat Office Dinamik -->
+                <!-- Header Dokumen Korporat dengan Logo & Alamat Office Dinamik -->
                 <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-4">
                     <div class="flex items-center gap-3">
                         <div id="invModalLogo" class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-yellow-500 shadow-sm">
@@ -763,10 +763,10 @@
                     </div>
                 </div>
 
-                <!-- Maklumat Pelanggan (Bill To) -->
+                <!-- Maklumat / Keterangan Dokumen -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div>
-                        <span class="text-slate-400 block font-semibold mb-1">Kepada (Pelanggan / Pembeli):</span>
+                        <span class="text-slate-400 block font-semibold mb-1" id="invRecipientLabel">Kepada (Pelanggan / Pembeli):</span>
                         <strong class="text-slate-900 text-sm block" id="invCustomerName">-</strong>
                         <span class="text-slate-600 block mt-1" id="invCustomerAddress">Alamat: -</span>
                         <span class="text-slate-600 block" id="invCustomerPhone">Tel: -</span>
@@ -782,7 +782,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
-                            <tr class="bg-emerald-800 text-white">
+                            <tr class="bg-emerald-800 text-white" id="invoiceTableHeaderRow">
                                 <th class="p-2.5 rounded-l-lg">No</th>
                                 <th class="p-2.5">Keterangan / Produk</th>
                                 <th class="p-2.5 text-center">Kuantiti</th>
@@ -794,8 +794,8 @@
                     </table>
                 </div>
 
-                <!-- Jumlah Keseluruhan -->
-                <div class="flex justify-end pt-2">
+                <!-- Jumlah Keseluruhan (Disembunyikan Otomatis untuk Laporan Supply) -->
+                <div class="flex justify-end pt-2" id="invoiceGrandTotalWrapper">
                     <div class="bg-emerald-50 border border-emerald-200 px-6 py-3 rounded-xl text-right min-w-[240px]">
                         <span class="text-xs font-bold text-emerald-800 block uppercase mb-0.5">Jumlah Keseluruhan (Grand Total):</span>
                         <span class="text-xl font-black text-emerald-900" id="invoiceGrandTotal">RM 0.00</span>
@@ -805,7 +805,7 @@
                 <!-- Tandatangan & Pengesahan -->
                 <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
                     <div>
-                        <p class="text-[11px] text-slate-500 italic">* Dokumen rasmi digital sah dikeluarkan oleh sistem Medicalpro.</p>
+                        <p class="text-[11px] text-slate-500 italic" id="invFooterNote">* Dokumen rasmi digital sah dikeluarkan oleh sistem Medicalpro.</p>
                         <p class="text-xs font-bold text-slate-700 mt-1" id="invSignatureRoleLabel">Disahkan Oleh:</p>
                     </div>
                     <div class="text-center">
@@ -822,7 +822,7 @@
 
             <div class="flex justify-end gap-3 pt-2 border-t no-print">
                 <button type="button" onclick="closeInvoiceModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-semibold">Tutup ✕</button>
-                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak Invoice</button>
+                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak Laporan</button>
             </div>
 
         </div>
@@ -1872,7 +1872,7 @@
         }
         function deleteWorker(i) { workers.splice(i, 1); if(db) db.collection("settings").doc("workers").set({ list: workers }); renderWorkersAdmin(); renderWorkersDropdown(); }
 
-        // --- SUPPLY & STOCK (DIPERBAIKI: Bunga Kantan = tangkai, lainnya = kg, tanpa ringgit) ---
+        // --- SUPPLY & STOCK (Bunga Kantan = tangkai, lainnya = kg, tanpa ringgit) ---
         document.getElementById('inputDate').valueAsDate = new Date();
         function onSupplyItemChange() {
             const item = document.getElementById('inputItem').value;
@@ -1882,10 +1882,11 @@
             e.preventDefault();
             const itemVal = document.getElementById('inputItem').value;
             const dVal = document.getElementById('inputDate').value;
+            const unitVal = (itemVal === "Bunga Kantan") ? "tangkai" : "kg";
             const supplyObj = {
                 id: Date.now(), date: dVal, month: dVal.substring(0, 7), item: itemVal,
                 action: 'stok', qty: parseFloat(document.getElementById('inputQty').value),
-                unit: (itemVal === "Bunga Kantan") ? "tangkai" : "kg", desc: document.getElementById('inputDesc').value || '-'
+                unit: unitVal, desc: document.getElementById('inputDesc').value || '-'
             };
             if(db) db.collection("supply").add(supplyObj).then(() => { document.getElementById('supplyForm').reset(); alert("Suplai disimpan!"); });
         }
@@ -1904,7 +1905,7 @@
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${badge}</td><td class="p-2 font-bold">${r.qty} ${r.unit}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center">${btn}</td></tr>`;
             });
         }
-        function markAsSupplied(id) { if(db) db.collection("supply").where("id","==",id).get().then(s => s.forEach(d => d.ref.update({ action: 'suplai' }))); }
+        function markAsSupplied(id) { if(db) db.collection("supply").where("id","","==").get().then(s => s.forEach(d => d.ref.update({ action: 'suplai' }))); }
 
         // --- INVENTORY & TASKS & EXPENSES ---
         function renderInventory() {
@@ -1985,7 +1986,7 @@
             sel.value = cv;
         }
 
-        // --- SIGNATURE & INVOICE PROFESIONAL ---
+        // --- SIGNATURE & LAPORAN SUPPLY / INVOICE PROFESIONAL ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -2006,10 +2007,21 @@
             document.getElementById('invModalInvoiceNo').innerText = `No: ${salesData.invoiceNo || 'INV-' + Date.now().toString().slice(-6)}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${salesData.date || '-'}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
+            document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
             document.getElementById('invCustomerName').innerText = salesData.customer || 'Tunai';
             document.getElementById('invCustomerAddress').innerText = `Alamat: ${salesData.address || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${salesData.phone || '-'}`;
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
+            document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
+
+            // Header tabel normal (dengan harga & jumlah)
+            document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                <th class="p-2.5 rounded-l-lg">No</th>
+                <th class="p-2.5">Keterangan / Produk</th>
+                <th class="p-2.5 text-center">Kuantiti</th>
+                <th class="p-2.5 text-right">Harga Seunit</th>
+                <th class="p-2.5 text-right rounded-r-lg">Jumlah (RM)</th>
+            `;
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = "";
@@ -2029,11 +2041,64 @@
             setTimeout(initSignaturePad, 200);
         }
 
+        // KHUSUS CETAK LAPORAN SUPPLY KEBUN (TANPA HARGA, TANPA GRAND TOTAL, MURNI KILO/TANGKAI)
+        function generateSupplyReportModal() {
+            let filterVal = document.getElementById('filterSupplyMonth').value;
+            let dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal);
+            const todayStr = new Date().toISOString().substring(0, 10);
+
+            document.getElementById('invModalMainHeader').innerText = "LAPORAN SUPPLY KEBUN";
+            document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
+            document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
+            document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
+            document.getElementById('invRecipientLabel').innerText = "Keterangan Dokumen:";
+            document.getElementById('invCustomerName').innerText = "Rekod Suplai & Hasil Tuai Dalaman Estet";
+            document.getElementById('invCustomerAddress').innerText = "Lokasi: Estet Machap, Johor";
+            document.getElementById('invCustomerPhone').innerText = "Status: Pengiriman Internal Kebun (Bukan Penjualan)";
+            document.getElementById('invModalOwner').innerText = getRealNameOnly();
+
+            // Sembunyikan kotak grand total total karena ini bukan invoice jual
+            document.getElementById('invoiceGrandTotalWrapper').style.display = 'none';
+
+            // Ubah header tabel khusus laporan supply (Tanpa Kolom Harga)
+            document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                <th class="p-2.5 rounded-l-lg">No</th>
+                <th class="p-2.5">Tanggal</th>
+                <th class="p-2.5">Jenis Hasil Kebun (Item)</th>
+                <th class="p-2.5 text-center">Kuantiti & Satuan</th>
+                <th class="p-2.5 rounded-r-lg">Keterangan / Blok</th>
+            `;
+
+            const tbody = document.getElementById('invoiceTableBody');
+            tbody.innerHTML = "";
+            if (dataArr.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada data supply untuk tempoh ini.</td></tr>`;
+            } else {
+                dataArr.forEach((item, idx) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="p-2.5">${idx + 1}</td>
+                            <td class="p-2.5 font-mono">${item.date || '-'}</td>
+                            <td class="p-2.5 font-bold text-slate-800">${item.item || '-'}</td>
+                            <td class="p-2.5 text-center font-bold text-emerald-700">${item.qty || 0} ${item.unit || 'kg'}</td>
+                            <td class="p-2.5 text-slate-600">${item.desc || '-'}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('invoiceModal').classList.remove('hidden');
+            setTimeout(initSignaturePad, 200);
+        }
+
         function generateMonthlyInvoice(type) {
             let filterVal = 'all', title = "", dataArr = [];
             const todayStr = new Date().toISOString().substring(0, 10);
+            
+            // Jika dipanggil dari tombol supply, arahkan ke fungsi khusus supply report
+            if(type === 'supply') { generateSupplyReportModal(); return; }
+
             if(type === 'tasks') { filterVal = document.getElementById('filterTaskMonth').value; title = "Rekap Tugas Harian Estet"; dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal); }
-            else if(type === 'supply') { filterVal = document.getElementById('filterSupplyMonth').value; title = "Data Suplai Kebun"; dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal); }
             else if(type === 'expenses') { filterVal = document.getElementById('filterExpenseMonth').value; title = "Rekap Perbelanjaan Kebun"; dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal); }
             else if(type === 'income') { filterVal = document.getElementById('filterIncomeMonth').value; title = "Rekap Jualan Kebun"; dataArr = incomeList.filter(i => filterVal === 'all' || i.month === filterVal); }
             else if(type === 'office') { filterVal = document.getElementById('filterOfficeMonth').value; title = "Rekap Produk & Invoice Offline"; dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); }
@@ -2042,10 +2107,20 @@
             document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
+            document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
             document.getElementById('invCustomerName').innerText = "Pengurusan Korporat / Umum";
             document.getElementById('invCustomerAddress').innerText = "Alamat: Estet Machap, Johor";
             document.getElementById('invCustomerPhone').innerText = "Tel: Rasmi Medicalpro";
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
+            document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
+
+            document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                <th class="p-2.5 rounded-l-lg">No</th>
+                <th class="p-2.5">Keterangan / Produk</th>
+                <th class="p-2.5 text-center">Kuantiti</th>
+                <th class="p-2.5 text-right">Harga Seunit</th>
+                <th class="p-2.5 text-right rounded-r-lg">Jumlah (RM)</th>
+            `;
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = ""; let grandTot = 0;
@@ -2138,10 +2213,20 @@
             document.getElementById('invModalInvoiceNo').innerText = `No: ${orderObj.invoiceNo || 'INV-PO-' + (orderObj.id || '')}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${orderObj.date || '-'}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
+            document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
             document.getElementById('invCustomerName').innerText = orderObj.customerName || 'Pelanggan Umum';
             document.getElementById('invCustomerAddress').innerText = `Alamat: ${orderObj.customerAddress || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${orderObj.customerPhone || '-'}`;
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
+            document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
+
+            document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                <th class="p-2.5 rounded-l-lg">No</th>
+                <th class="p-2.5">Keterangan / Produk</th>
+                <th class="p-2.5 text-center">Kuantiti</th>
+                <th class="p-2.5 text-right">Harga Seunit</th>
+                <th class="p-2.5 text-right rounded-r-lg">Jumlah (RM)</th>
+            `;
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = "";
