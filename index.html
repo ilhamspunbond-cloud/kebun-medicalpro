@@ -324,10 +324,17 @@
 
             <!-- Supply & Stock Management Page -->
             <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <div class="flex justify-between items-center border-b pb-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
                         <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau klik supply langsung pada baris data</p>
+                    </div>
+                    <!-- Filter Bulan & Tombol Cetak Report Supply -->
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <select id="filterSupplyMonth" onchange="renderSupplyApp()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                            <option value="all">Semua Bulan (Global)</option>
+                        </select>
+                        <button type="button" onclick="generateMonthlyInvoice('supply')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Invoice PDF</button>
                     </div>
                 </div>
 
@@ -341,7 +348,7 @@
                         <div>
                             <label class="text-xs text-slate-600 block mb-1">Jenis Hasil Kebun</label>
                             <select id="inputItem" onchange="onSupplyItemChange()" class="w-full text-xs p-2 rounded-xl border bg-white">
-                                <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh kering (kg)</option>
+                                <option value="Buah Belimbing Buluh kering">Buah Belimbing Buluh kering (kg)</option>
                                 <option value="Buah Belimbing Buluh besar">Buah Belimbing Buluh besar (kg)</option>
                                 <option value="Buah Belimbing kismis">Buah Belimbing kismis (kg)</option>
                                 <option value="Daun Teh Belimbing Buluh">Daun Teh Belimbing Buluh (kg)</option>
@@ -1199,7 +1206,7 @@
             renderWorkersAdmin(); renderWorkersDropdown();
         }
 
-        // Supply & Stock Management (DENGAN FITUR TOMBOL SUPPLY REAL-TIME)
+        // Supply & Stock Management (DENGAN FITUR TOMBOL SUPPLY REAL-TIME & REPORT BULANAN)
         let supplyData = JSON.parse(localStorage.getItem('kebunSupplyData')) || [];
         document.getElementById('inputDate').valueAsDate = new Date();
 
@@ -1218,10 +1225,12 @@
             e.preventDefault();
             const itemVal = document.getElementById('inputItem').value;
             const unitVal = (itemVal === "Bunga Kantan") ? "tangkai" : "kg";
+            const dVal = document.getElementById('inputDate').value;
 
             supplyData.unshift({
                 id: Date.now(),
-                date: document.getElementById('inputDate').value,
+                date: dVal,
+                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
                 item: itemVal,
                 action: 'stok', // Status awal di gudang
                 qty: parseFloat(document.getElementById('inputQty').value),
@@ -1239,12 +1248,12 @@
             let record = supplyData.find(i => i.id === id);
             if(record) {
                 record.action = 'suplai';
-                // Tanggal real-time saat tombol supply dipencet
                 const now = new Date();
                 const yyyy = now.getFullYear();
                 const mm = String(now.getMonth() + 1).padStart(2, '0');
                 const dd = String(now.getDate()).padStart(2, '0');
                 record.date = `${yyyy}-${mm}-${dd}`;
+                record.month = `${yyyy}-${mm}`;
                 record.desc = (record.desc && record.desc !== '-' ? record.desc + ' ' : '') + '(Telah Disuplain)';
                 
                 localStorage.setItem('kebunSupplyData', JSON.stringify(supplyData));
@@ -1256,14 +1265,21 @@
         function renderSupplyApp() {
             const tbody = document.getElementById('supplyTableBody');
             const sc = document.getElementById('stockSummaryContainer');
+            const fm = document.getElementById('filterSupplyMonth') ? document.getElementById('filterSupplyMonth').value : 'all';
+            
             if(!tbody || !sc) return;
             tbody.innerHTML = ""; sc.innerHTML = "";
             
+            let monthsSet = new Set();
+            supplyData.forEach(r => { if(r.month) monthsSet.add(r.month); });
+            updateMonthDropdown('filterSupplyMonth', monthsSet);
+
+            let filteredSupply = supplyData.filter(r => fm === 'all' || r.month === fm);
+
             let stocks = {};
             supplyData.forEach(r => {
                 let key = `${r.item} (${r.unit})`;
                 if(!stocks[key]) stocks[key] = 0;
-                // Hanya hitung yang masih berstatus 'stok' untuk sisa gudang
                 if(r.action === 'stok') {
                     stocks[key] += r.qty;
                 }
@@ -1273,7 +1289,12 @@
                 sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`;
             }
 
-            supplyData.forEach(r => {
+            if(filteredSupply.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada rekod suplai untuk tempoh ini.</td></tr>`;
+                return;
+            }
+
+            filteredSupply.forEach(r => {
                 let statusBadge = r.action === 'stok' ? 
                     `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">📦 Masih Stok</span>` : 
                     `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">🚀 Sudah Disuplain</span>`;
@@ -1462,6 +1483,10 @@
                 filterVal = document.getElementById('filterTaskMonth').value;
                 title = "Rekap Tugas Harian Estet";
                 dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal);
+            } else if(type === 'supply') {
+                filterVal = document.getElementById('filterSupplyMonth').value;
+                title = "Rekap Hasil Tuai & Suplai Kebun";
+                dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal);
             } else if(type === 'expenses') {
                 filterVal = document.getElementById('filterExpenseMonth').value;
                 title = "Rekap Perbelanjaan Kebun";
@@ -1492,17 +1517,27 @@
             } else {
                 dataArr.forEach((item, idx) => {
                     let desc = item.title || item.item || '-';
-                    let wStaff = item.worker || item.staff || '-';
-                    let amt = parseFloat((item.amount || '0').replace(/[^0-9.]/g, '')) || 0;
-                    grandTot += amt;
+                    let wStaff = item.worker || item.staff || (item.action ? `Status: ${item.action.toUpperCase()}` : '-');
+                    let amt = parseFloat((item.amount || item.qty || '0').toString().replace(/[^0-9.]/g, '')) || 0;
+                    if (type !== 'supply') grandTot += amt;
+
                     let pUrl = item.photo || item.receipt || '';
                     let pHtml = pUrl ? `<div class="flex items-center gap-2"><img src="${pUrl}" class="w-8 h-8 object-cover rounded"><button type="button" onclick="downloadImageFile('${pUrl}','Foto-${idx+1}.jpg')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Download</button></div>` : 'Tiada';
 
-                    tbody.innerHTML += `<tr class="border-b"><td class="p-2">${idx+1}</td><td class="p-2">${item.date||'-'}</td><td class="p-2 font-medium">${desc}</td><td class="p-2">${wStaff}</td><td class="p-2">${pHtml}</td><td class="p-2 text-right font-bold">${amt>0?'RM '+amt.toFixed(2):'-'}</td></tr>`;
+                    let displayAmtCol = type === 'supply' ? `<span class="font-bold text-slate-700">${item.qty} ${item.unit || 'kg'}</span>` : (amt>0?'RM '+amt.toFixed(2):'-');
+
+                    tbody.innerHTML += `<tr class="border-b"><td class="p-2">${idx+1}</td><td class="p-2">${item.date||'-'}</td><td class="p-2 font-medium">${desc} (${item.desc || ''})</td><td class="p-2">${wStaff}</td><td class="p-2">${pHtml}</td><td class="p-2 text-right">${displayAmtCol}</td></tr>`;
                 });
             }
 
-            document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
+            if(type === 'supply') {
+                let totalKg = dataArr.reduce((sum, i) => sum + (i.unit !== 'tangkai' ? i.qty : 0), 0);
+                let totalTangkai = dataArr.reduce((sum, i) => sum + (i.unit === 'tangkai' ? i.qty : 0), 0);
+                document.getElementById('invoiceGrandTotal').innerText = `${totalKg} kg | ${totalTangkai} tangkai`;
+            } else {
+                document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
+            }
+
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
         }
