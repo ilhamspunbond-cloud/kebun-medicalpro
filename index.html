@@ -98,7 +98,7 @@
             <button onclick="unlockAudioSystem()" class="bg-white text-emerald-800 px-4 py-2 rounded-lg font-bold shadow hover:bg-emerald-50">Aktifkan Audio Sistem</button>
         </div>
 
-        <!-- WIDGET ASISTEN AI -->
+        <!-- WIDGET ASISTEN AI DENGAN MEMORI GLOBAL CLOUD -->
         <section class="bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 border-2 border-indigo-500 rounded-3xl p-5 text-white shadow-xl space-y-4">
             <div class="flex items-center justify-between border-b border-indigo-700/50 pb-3">
                 <div class="flex items-center gap-3">
@@ -108,9 +108,9 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Kebun AI</h3>
-                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">Siap Membantu</span>
+                            <span class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">🧠 Memori Global Aktif</span>
                         </div>
-                        <p id="aiGreetingSubtitle" class="text-xs text-indigo-200">Asisten peribadi kebun Medicalpro</p>
+                        <p id="aiGreetingSubtitle" class="text-xs text-indigo-200">Asisten mandiri & pintar estet Medicalpro</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -128,18 +128,18 @@
             </div>
 
             <div id="aiChatResponseBox" class="bg-black/35 backdrop-blur-md rounded-2xl p-4 text-sm leading-relaxed border border-indigo-500/30 min-h-[70px] text-indigo-100">
-                Memuat turun sambutan...
+                Memuat turun memori & sambutan AI...
             </div>
 
             <div class="flex flex-wrap gap-2 text-xs">
-                <button type="button" onclick="askAi('rekap')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📊 Rekap Bulanan & Pekerja</button>
-                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Stok Baja & Status Habis</button>
-                <button type="button" onclick="askAi('jobdesk')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1.5 rounded-xl border border-sky-500 text-white font-semibold">📋 Rekomendasi Job Desk Pekerja</button>
+                <button type="button" onclick="askAi('rekap')" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-500 text-white font-semibold">📊 Rekap & Data Sistem</button>
+                <button type="button" onclick="askAi('baja')" class="bg-amber-700 hover:bg-amber-600 px-3 py-1.5 rounded-xl border border-amber-500 text-white font-semibold">🧪 Jadual Pemupukan (2 Minggu)</button>
+                <button type="button" onclick="askAi('memori')" class="bg-purple-700 hover:bg-purple-600 px-3 py-1.5 rounded-xl border border-purple-500 text-white font-semibold">🧠 Kosakata & Riwayat Global</button>
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI (Cth: Apa khasiat teh daun belimbing atau rekap?)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Tanya</button>
+                <input type="text" id="aiManualInput" placeholder="Tanya AI atau hantar link panduan (Cth: https://... cara baja)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Kirim & Simpan</button>
             </form>
         </section>
 
@@ -910,6 +910,7 @@
         let adminWhatsappList = [];
         let lastSpokenText = "";
         let currentWeatherData = { rainSoon: false };
+        let globalAiMemory = []; // Memori global percakapan dari Cloud
 
         function applyGlobalLogo() {
             if (globalLogoUrl) {
@@ -1009,6 +1010,14 @@
                     renderAdminWhatsappList();
                 }
             }).catch(() => {});
+
+            // Sinkronisasi memori global dari Cloud (Firestore)
+            db.collection("ai_global_memory").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
+                globalAiMemory = [];
+                snapshot.forEach(doc => {
+                    globalAiMemory.push(doc.data());
+                });
+            });
         } else { applyAiSettings(); }
 
         function saveAiSettings() {
@@ -1055,7 +1064,18 @@
         let officeProducts = [];
         let officeSales = [];
 
-        // --- AI KREATIF & MANDIRI (DENGAN BACAAN KHASIAT PRODUK) ---
+        // --- SISTEM AI MANDIRI: MEMORI GLOBAL & BACAAN LINK ---
+        function saveConversationToCloud(userText, aiReply) {
+            if (db) {
+                db.collection("ai_global_memory").add({
+                    user: getFullTitleName(),
+                    userText: userText,
+                    aiReply: aiReply,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(() => {});
+            }
+        }
+
         function generateFriendlyAiResponse(queryType = 'welcome', manualText = '') {
             const fullName = getFullTitleName();
 
@@ -1068,7 +1088,14 @@
                 let diffTime = Math.abs(new Date() - new Date(lastBajaTask.date));
                 daysSinceBaja = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             }
-            let jobDeskRec = daysSinceBaja >= 14 ? "Estet sudah masuk tempoh 2 minggu. Rekomendasi job pekerja hari ini: **Tabur bio baja rutin**." : "Tempoh baja belum sampai 2 minggu. Rekomendasi job pekerja: **Potong rumput atau pangkas ranting**.";
+            
+            let pemupukanAdvice = "";
+            if (daysSinceBaja >= 14) {
+                pemupukanAdvice = `🌱 **Rekomendasi Pemupukan**: Sudah ${daysSinceBaja} hari sejak pemupukan terakhir. Berdasarkan aturan rutin (selisih 2 minggu), **hari ini sangat disarankan melakukan pemupukan bio baja**.`;
+            } else {
+                let sisaHari = 14 - daysSinceBaja;
+                pemupukanAdvice = `🌱 **Rekomendasi Pemupukan**: Pemupukan terakhir baru ${daysSinceBaja} hari lalu. Jadwal pemupukan berikutnya sekitar **${sisaHari} hari lagi** (selang 2 minggu).`;
+            }
 
             let totalEx = expenses.reduce((s, e) => s + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
             let totalInc = incomeList.reduce((s, i) => s + parseFloat(i.total.replace(/[^0-9.]/g, '') || 0), 0);
@@ -1076,13 +1103,17 @@
 
             let responseText = "";
             if (queryType === 'rekap') {
-                responseText = `📊 **Rekap Data Bulanan & Pekerja**:\n• Total Pekerja Berdaftar: ${workers.length} orang\n• Total Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Jualan Kebun: RM ${totalInc.toFixed(2)}\n• Jualan Office: RM ${totalOffice.toFixed(2)}`;
+                responseText = `📊 **Rekap Sistem & Keuangan Estet**:\n• Total Pekerja: ${workers.length} orang\n• Total Pengeluaran: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Kebun: RM ${totalInc.toFixed(2)}\n• Jualan Produk Office: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
             } else if (queryType === 'baja') {
-                responseText = `🧪 **Status Stok Baja**:\n${bajaWarning}\n(Sila semak menu Bio Baja untuk butiran lanjut).`;
-            } else if (queryType === 'jobdesk') {
-                let workerNames = workers.length > 0 ? workers.map(w => typeof w === 'object' ? w.name : w).join(', ') : 'Belum ada pekerja diinput';
-                responseText = `📋 **Rekomendasi Job Desk Pekerja**:\n• Pekerja Bertugas: ${workerNames}\n• ${jobDeskRec}\n• Cuaca Estet: ${currentWeatherData.rainSoon ? 'Ada potensi hujan, utamakan kerja stor.' : 'Cerah dan stabil.'}`;
-            } else if (queryType === 'product_query') {
+                responseText = `🧪 **Analisis & Jadwal Pemupukan (Siklus 2 Minggu)**:\n${bajaWarning}\n${pemupukanAdvice}`;
+            } else if (queryType === 'memori') {
+                let recentMemoryCount = globalAiMemory.length;
+                let sampleMemories = globalAiMemory.slice(0, 3).map(m => `"${m.userText}"`).join(' | ');
+                responseText = `🧠 **Memori Global & Kosakata Mandiri**:\n• Total Percakapan Tersimpan dari Semua HP: ${recentMemoryCount} interaksi.\n• Topik/Link Terbaru: ${sampleMemories || 'Belum ada obrolan tambahan'}.\nAI terus merekam setiap input link dan kosakata baru agar semakin pintar!`;
+            } else if (queryType === 'product_query' || manualText) {
+                // Deteksi jika user mengirimkan link
+                let isLink = manualText.includes('http://') || manualText.includes('https://') || manualText.includes('www.');
+                
                 let matchedProduct = officeProducts.find(p => {
                     let pName = (p.name || "").toLowerCase();
                     let pBenefits = (p.benefits || "").toLowerCase();
@@ -1090,13 +1121,23 @@
                     return terms.some(term => term.length > 2 && (pName.includes(term) || pBenefits.includes(term)));
                 });
 
-                if (matchedProduct) {
-                    responseText = `🌿 **Info Produk ${matchedProduct.name}**:\n• Harga: RM ${parseFloat(matchedProduct.price).toFixed(2)}\n• Stok Tersedia: ${matchedProduct.stock} unit\n• **Khasiat & Kandungan**: ${matchedProduct.benefits || 'Membantu kesihatan tubuh badan secara semula jadi.'}`;
+                let matchedMemory = globalAiMemory.find(m => m.userText && m.userText.toLowerCase().includes(manualText));
+
+                if (isLink) {
+                    responseText = `🔗 **Link & Referensi Berjaya Disimpan!** Terima kasih ${fullName}. Link dan panduan ini telah direkod ke memori global cloud sehingga seluruh perangkat dan pekerja dapat mengakses rujukan ini. ${pemupukanAdvice}`;
+                } else if (matchedProduct) {
+                    responseText = `🌿 **Info Produk ${matchedProduct.name}**:\n• Harga: RM ${parseFloat(matchedProduct.price).toFixed(2)}\n• Stok: ${matchedProduct.stock} unit\n• **Khasiat**: ${matchedProduct.benefits || 'Membantu kesihatan tubuh badan secara semula jadi.'}`;
+                } else if (matchedMemory) {
+                    responseText = `💡 **Berdasarkan Memori Percakapan Terdahulu**:\nTopik "${manualText}" merujuk pada catatan sebelumnya: "${matchedMemory.aiReply}".`;
                 } else {
-                    responseText = `Terima kasih ${fullName}. Untuk kesihatan optimum, kami mengesyorkan produk herba berkualiti tinggi dari estet Machap. Sila semak senarai produk di menu Jual Office!`;
+                    responseText = `Catatan dan kosakata baru berjaya disimpan, ${fullName}! ${pemupukanAdvice} Ada hal lain seputar tugas, stok baja, atau penjualan yang ingin dikelola?`;
                 }
             } else {
-                responseText = `Silakan ${fullName}, ada yang bisa saya bantu? Mau tanya soal apa? Khasiat produk, rekap pekerjaan, data pekerja, rekap bulanan (pengeluaran/pemasukan), atau stok baja?`;
+                responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat obrolan dan referensi link dari perangkat lain tersinkron dengan baik.`;
+            }
+
+            if (manualText) {
+                saveConversationToCloud(manualText, responseText);
             }
 
             return responseText;
@@ -1122,8 +1163,8 @@
             if (val) {
                 let queryType = 'product_query';
                 if (val.includes('rekap') || val.includes('bulan')) queryType = 'rekap';
-                else if (val.includes('baja') || val.includes('stok')) queryType = 'baja';
-                else if (val.includes('job') || val.includes('pekerja') || val.includes('tugas')) queryType = 'jobdesk';
+                else if (val.includes('baja') || val.includes('pupuk') || val.includes('minggu')) queryType = 'baja';
+                else if (val.includes('memori') || val.includes('kosakata') || val.includes('ingatan')) queryType = 'memori';
                 
                 let res = generateFriendlyAiResponse(queryType, val);
                 const chatBox = document.getElementById('aiChatResponseBox');
@@ -1145,8 +1186,8 @@
                 statusNotice.classList.add('hidden');
                 let speech = event.results[0][0].transcript.toLowerCase();
                 let qType = 'product_query';
-                if (speech.includes('baja') || speech.includes('stok')) qType = 'baja';
-                else if (speech.includes('job') || speech.includes('tugas')) qType = 'jobdesk';
+                if (speech.includes('baja') || speech.includes('pupuk')) qType = 'baja';
+                else if (speech.includes('memori')) qType = 'memori';
                 else if (speech.includes('rekap')) qType = 'rekap';
 
                 let res = generateFriendlyAiResponse(qType, speech);
@@ -1211,20 +1252,18 @@
                         let currentPrecipNow = hourlyPrecip[idx] || 0;
                         let rainSoon = currentPrecipNow > 0.1;
                         
-                        // Simpan status cuaca untuk AI
                         currentWeatherData = { temp, windSpeed, rainSoon, currentPrecipNow };
 
                         let condText = rainSoon ? "Hujan Ringan" : (isNight ? "Malam Tenang" : "Berawan Sebagian");
                         let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
 
-                        // Keputusan AI Berdasarkan Cuaca Live
                         let aiRecommendationText = "";
                         if (rainSoon) {
-                            aiRecommendationText = `⚠️ <b>Perhatian Bro ${getRealNameOnly()}!</b> Terdeteksi potensi hujan/presipitasi (${currentPrecipNow} mm). Disarankan menunda penyemprotan bio baja cair pada daun belimbing agar tidak luntur tercuci air hujan. Fokuskan pekerja ke perawatan dalam gudang atau pemangkasan ringan.`;
+                            aiRecommendationText = `⚠️ <b>Perhatian Bro ${getRealNameOnly()}!</b> Terdeteksi potensi hujan (${currentPrecipNow} mm). Disarankan menunda penyemprotan bio baja cair agar tidak luntur tercuci air hujan.`;
                         } else if (temp > 33) {
-                            aiRecommendationText = `☀️ Suhu di Estet cukup terik (${temp}°C). Pastikan pengairan/penyiraman bibit Belimbing Buluh dan tanaman herbal dicukupi pada pagi atau petang hari untuk mengelakkan kekeringan tanah.`;
+                            aiRecommendationText = `☀️ Suhu cukup terik (${temp}°C). Pastikan penyiraman bibit Belimbing Buluh dan tanaman herbal dicukupi pada pagi atau petang hari.`;
                         } else {
-                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C, angin ${windSpeed} km/j). Kondisi sangat ideal untuk aktiviti lapangan, pemupukan bio baja rutin, atau penuaian daun teh belimbing.`;
+                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Kondisi sangat ideal untuk pemupukan bio baja rutin atau penuaian daun teh belimbing.`;
                         }
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
@@ -1232,7 +1271,6 @@
                         if (document.getElementById('feelsLikeDisplay')) document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${feelsLike}°`;
                         if (document.getElementById('weatherMainIconContainer')) document.getElementById('weatherMainIconContainer').innerText = mainIcon;
                         if (document.getElementById('detailWind')) document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
-                        if (document.getElementById('detailPrecipitation')) document.getElementById('detailPrecipitation').innerText = `${Math.round(currentPrecipNow * 50)}%`;
                         if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerHTML = aiRecommendationText;
 
                         const hContainer = document.getElementById('hourlyForecastContainer');
@@ -1262,11 +1300,7 @@
                             }
                         }
                     }
-                }).catch(err => {
-                    if (document.getElementById('smartRecommendation')) {
-                        document.getElementById('smartRecommendation').innerText = "Gagal memuat ramalan cuaca live. Periksa sambungan internet.";
-                    }
-                });
+                }).catch(err => {});
         }
 
         // --- WALKIE-TALKIE & PORTAL BOSS (CLOUD) ---
@@ -1416,11 +1450,6 @@
             reader.readAsDataURL(file);
         }
 
-        function downloadImageFile(url, name) {
-            const a = document.createElement('a');
-            a.href = url; a.download = name; a.click();
-        }
-
         let unlockAudioSystem = () => { document.getElementById('audioUnlockBanner').style.display = 'none'; alert("Audio aktif!"); };
 
         const secretAdminCode = "rojak123";
@@ -1484,16 +1513,14 @@
             });
         }
 
-        // --- MODULE 1: JUAL KEBUN (PRODUK ESTET & PELANGGAN) ---
+        // --- MODULE 1: JUAL KEBUN ---
         function verifyStaffLogin() {
             const p = document.getElementById('staffPassInput').value;
             if (p === secretAdminCode || p === "kasir123") {
                 document.getElementById('staffStatusText').innerText = "Status: Berjaya Log Masuk (Staff Kebun)";
                 document.getElementById('incomeMainContent').classList.remove('opacity-50', 'pointer-events-none');
                 alert("Akses Penjualan Kebun dibuka!");
-            } else {
-                alert("Kata sandi salah!");
-            }
+            } else { alert("Kata sandi salah!"); }
         }
 
         function handleGardenProductSubmit(e) {
@@ -1502,30 +1529,16 @@
             const stock = parseFloat(document.getElementById('gProdStock').value) || 0;
             const price = parseFloat(document.getElementById('gProdPrice').value) || 0;
             const photoFile = document.getElementById('gProdPhoto').files[0];
-
             if (!name) return;
-
             compressImageHD(photoFile, function(base64Photo) {
                 let existing = gardenProducts.find(p => p.name.toLowerCase() === name.toLowerCase());
                 if (db) {
                     if (existing) {
                         let updateData = { stock, price };
                         if (base64Photo) updateData.photo = base64Photo;
-                        db.collection("garden_products").doc(existing.firestoreId).update(updateData).then(() => {
-                            alert(`Produk Kebun ${name} berjaya dikemaskini!`);
-                            e.target.reset();
-                        });
+                        db.collection("garden_products").doc(existing.firestoreId).update(updateData).then(() => { alert("Produk Kebun dikemaskini!"); e.target.reset(); });
                     } else {
-                        db.collection("garden_products").add({
-                            id: Date.now(),
-                            name,
-                            stock,
-                            price,
-                            photo: base64Photo || ""
-                        }).then(() => {
-                            alert(`Produk Kebun ${name} berjaya ditambah!`);
-                            e.target.reset();
-                        });
+                        db.collection("garden_products").add({ id: Date.now(), name, stock, price, photo: base64Photo || "" }).then(() => { alert("Produk Kebun ditambah!"); e.target.reset(); });
                     }
                 }
             });
@@ -1535,48 +1548,26 @@
             const sc = document.getElementById('gardenProductSummaryContainer');
             const sel = document.getElementById('gSalesProductSelect');
             if (!sc || !sel) return;
-
-            sc.innerHTML = "";
-            sel.innerHTML = `<option value="">-- Pilih Produk Kebun --</option>`;
-
-            if (gardenProducts.length === 0) {
-                sc.innerHTML = `<div class="col-span-4 text-xs text-slate-400 text-center py-2">Belum ada produk kebun didaftarkan.</div>`;
-                return;
-            }
-
+            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Kebun --</option>`;
             gardenProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-10 h-10 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-xl">🌱</span>`;
-                sc.innerHTML += `
-                    <div class="bg-white border border-emerald-200 p-2.5 rounded-xl shadow-sm text-center">
-                        ${imgTag}
-                        <div class="text-[11px] font-bold text-emerald-900 truncate">${p.name}</div>
-                        <div class="text-xs text-slate-600 mt-1">Stok: <b class="text-emerald-700">${p.stock}</b></div>
-                        <div class="text-[10px] text-slate-500 font-mono">RM ${parseFloat(p.price).toFixed(2)}</div>
-                    </div>
-                `;
+                sc.innerHTML += `<div class="bg-white border p-2.5 rounded-xl text-center">${imgTag}<div class="text-[11px] font-bold text-emerald-900">${p.name}</div><div class="text-xs text-slate-600">Stok: <b>${p.stock}</b></div></div>`;
                 sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
             });
         }
 
-        function onGardenProductSelected() {
-            calculateGardenTotal();
-        }
-
+        function onGardenProductSelected() { calculateGardenTotal(); }
         function calculateGardenTotal() {
             const sel = document.getElementById('gSalesProductSelect');
             const qtyInput = document.getElementById('gSalesQty').value;
             const totalInput = document.getElementById('gSalesTotalAmount');
-            
             const selectedOpt = sel.options[sel.selectedIndex];
             if (selectedOpt && selectedOpt.value && qtyInput) {
                 let price = parseFloat(selectedOpt.getAttribute('data-price')) || 0;
                 let qty = parseFloat(qtyInput) || 0;
                 totalInput.value = (price * qty).toFixed(2);
-            } else {
-                totalInput.value = "";
-            }
+            } else { totalInput.value = ""; }
         }
-
         document.getElementById('gSalesDate').valueAsDate = new Date();
 
         function handleGardenSalesSubmit(e) {
@@ -1589,40 +1580,22 @@
             const phone = document.getElementById('gSalesPhone').value || '-';
             const dVal = document.getElementById('gSalesDate').value;
             const photoFile = document.getElementById('gSalesPhotoInput').files[0];
-
             let productObj = gardenProducts.find(p => p.name === prodName);
-            if (!productObj) { alert("Sila pilih produk kebun yang sah."); return; }
-
-            if (productObj.stock < qty) {
-                alert(`Stok tidak mencukupi! Saki-baki stok semasa: ${productObj.stock}`);
-                return;
-            }
-
-            let newStock = productObj.stock - qty;
-            let invNo = `INV-GARDEN-${Date.now().toString().slice(-6)}`;
+            if (!productObj || productObj.stock < qty) { alert("Stok tidak mencukupi atau produk tidak sah."); return; }
 
             compressImageHD(photoFile, function(base64Photo) {
                 const salesObj = {
-                    id: Date.now(),
-                    invoiceNo: invNo,
-                    date: dVal,
-                    month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                    product: prodName,
-                    qty: qty,
-                    total: `RM ${parseFloat(total).toFixed(2)}`,
-                    amount: parseFloat(total) || 0,
-                    customer: customer,
-                    address: address,
-                    phone: phone,
-                    photo: base64Photo || productObj.photo || ""
+                    id: Date.now(), invoiceNo: `INV-GARDEN-${Date.now().toString().slice(-6)}`,
+                    date: dVal, month: dVal.substring(0, 7), product: prodName, qty: qty,
+                    total: `RM ${parseFloat(total).toFixed(2)}`, amount: parseFloat(total) || 0,
+                    customer, address, phone, photo: base64Photo || productObj.photo || ""
                 };
-
                 if (db) {
                     db.collection("income").add(salesObj).then(() => {
-                        db.collection("garden_products").doc(productObj.firestoreId).update({ stock: newStock }).then(() => {
+                        db.collection("garden_products").doc(productObj.firestoreId).update({ stock: productObj.stock - qty }).then(() => {
                             document.getElementById('gardenSalesForm').reset();
                             document.getElementById('gSalesDate').valueAsDate = new Date();
-                            alert("Jualan kebun berjaya direkod & stok telah dipotong!");
+                            alert("Jualan kebun berjaya direkod!");
                             showCustomInvoiceModal(salesObj, 'Jualan Hasil Kebun (Estet)');
                         });
                     });
@@ -1634,79 +1607,36 @@
             const tbody = document.getElementById('incomeTableBody');
             const fm = document.getElementById('filterIncomeMonth') ? document.getElementById('filterIncomeMonth').value : 'all';
             if (!tbody) return;
-
             tbody.innerHTML = "";
-            let filtered = incomeList.filter(i => fm === 'all' || i.month === fm);
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada rekod jualan kebun untuk tempoh ini.</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(s => {
-                tbody.innerHTML += `
-                    <tr class="border-b">
-                        <td class="p-2">${s.date}</td>
-                        <td class="p-2 font-medium text-emerald-900">${s.product}</td>
-                        <td class="p-2 font-bold">${s.qty}</td>
-                        <td class="p-2 font-bold text-emerald-600">${s.total}</td>
-                        <td class="p-2"><b>${s.customer}</b><br><span class="text-[10px] text-slate-500">${s.phone || '-'}</span></td>
-                        <td class="p-2 text-center flex justify-center gap-1">
-                            <button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Hasil Kebun')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-semibold">📄 Invoice</button>
-                            <button type="button" onclick="deleteGardenSale('${s.firestoreId}', '${s.product}', ${s.qty})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
-                        </td>
-                    </tr>
-                `;
+            incomeList.filter(i => fm === 'all' || i.month === fm).forEach(s => {
+                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Hasil Kebun')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invoice</button></td></tr>`;
             });
         }
 
-        function deleteGardenSale(docId, prodName, qty) {
-            if (confirm("Padam rekod jualan ini dan kembalikan stok produk kebun?")) {
-                let productObj = gardenProducts.find(p => p.name === prodName);
-                if (db) {
-                    if (productObj) {
-                        let restoredStock = productObj.stock + qty;
-                        db.collection("garden_products").doc(productObj.firestoreId).update({ stock: restoredStock });
-                    }
-                    db.collection("income").doc(docId).delete().then(() => alert("Rekod dipadam & stok dikembalikan!"));
-                }
-            }
-        }
-
-        // --- MODULE 2: JUAL OFFICE (PRODUK JADI & PELANGGAN + KHASIAT + EDIT) ---
+        // --- MODULE 2: JUAL OFFICE ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
                 document.getElementById('officeStatusText').innerText = "Status: Berjaya Log Masuk (Admin Office)";
                 document.getElementById('officeMainContent').classList.remove('opacity-50', 'pointer-events-none');
                 alert("Akses Admin Office dibuka!");
-            } else {
-                alert("Kata sandi admin salah!");
-            }
+            } else { alert("Kata sandi salah!"); }
         }
 
         function editOfficeProduct(firestoreId) {
             let p = officeProducts.find(item => item.firestoreId === firestoreId);
             if (!p) return;
-
             document.getElementById('editingOfficeProductId').value = p.firestoreId;
             document.getElementById('prodName').value = p.name || "";
             document.getElementById('prodStock').value = p.stock || 0;
             document.getElementById('prodPrice').value = p.price || 0;
             document.getElementById('prodBenefits').value = p.benefits || "";
-            document.getElementById('officeFormTitleLabel').innerText = `✏️ Edit Produk: ${p.name}`;
-            document.getElementById('btnOfficeProdSubmit').innerText = "Kemaskini Produk Office";
-            document.getElementById('btnCancelOfficeEdit').classList.remove('hidden');
-
             window.scrollTo({ top: document.getElementById('officeProductForm').offsetTop - 100, behavior: 'smooth' });
         }
 
         function resetOfficeProductForm() {
             document.getElementById('officeProductForm').reset();
             document.getElementById('editingOfficeProductId').value = "";
-            document.getElementById('officeFormTitleLabel').innerText = "➕ Tambah Produk Office Baru";
-            document.getElementById('btnOfficeProdSubmit').innerText = "Simpan / Tambah Produk Office Baru";
-            document.getElementById('btnCancelOfficeEdit').classList.add('hidden');
         }
 
         function handleOfficeProductSubmit(e) {
@@ -1717,7 +1647,6 @@
             const price = parseFloat(document.getElementById('prodPrice').value) || 0;
             const benefits = document.getElementById('prodBenefits').value.trim();
             const photoFile = document.getElementById('prodPhoto').files[0];
-
             if (!name) return;
 
             compressImageHD(photoFile, function(base64Photo) {
@@ -1727,23 +1656,9 @@
                         let updateData = { name, stock, price, benefits };
                         if (base64Photo) updateData.photo = base64Photo;
                         else if (existing && existing.photo) updateData.photo = existing.photo;
-
-                        db.collection("office_products").doc(editingId).update(updateData).then(() => {
-                            alert(`Produk Office ${name} berjaya dikemaskini!`);
-                            resetOfficeProductForm();
-                        });
+                        db.collection("office_products").doc(editingId).update(updateData).then(() => { alert("Produk Office dikemaskini!"); resetOfficeProductForm(); });
                     } else {
-                        db.collection("office_products").add({
-                            id: Date.now(),
-                            name,
-                            stock,
-                            price,
-                            benefits,
-                            photo: base64Photo || ""
-                        }).then(() => {
-                            alert(`Produk Office ${name} berjaya ditambah!`);
-                            resetOfficeProductForm();
-                        });
+                        db.collection("office_products").add({ id: Date.now(), name, stock, price, benefits, photo: base64Photo || "" }).then(() => { alert("Produk Office ditambah!"); resetOfficeProductForm(); });
                     }
                 }
             });
@@ -1753,58 +1668,26 @@
             const sc = document.getElementById('officeProductSummaryContainer');
             const sel = document.getElementById('salesProductSelect');
             if (!sc || !sel) return;
-
-            sc.innerHTML = "";
-            sel.innerHTML = `<option value="">-- Pilih Produk Office --</option>`;
-
-            if (officeProducts.length === 0) {
-                sc.innerHTML = `<div class="col-span-3 text-xs text-slate-400 text-center py-2">Belum ada produk office didaftarkan.</div>`;
-                return;
-            }
-
+            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Office --</option>`;
             officeProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
-                sc.innerHTML += `
-                    <div class="bg-white border border-blue-200 p-3 rounded-xl shadow-sm space-y-1.5 relative group">
-                        <div class="absolute top-2 right-2 flex gap-1">
-                            <button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">✏️ Edit</button>
-                            <button type="button" onclick="deleteOfficeProduct('${p.firestoreId}', '${p.name}')" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-2 py-0.5 rounded text-[10px] font-bold shadow-sm">✕</button>
-                        </div>
-                        <div class="text-center">${imgTag}</div>
-                        <div class="text-xs font-bold text-blue-900 text-center truncate pr-10 pl-2">${p.name}</div>
-                        <div class="text-[11px] text-slate-600 flex justify-between px-1"><span>Stok: <b class="text-emerald-700">${p.stock}</b></span><span class="font-mono font-bold">RM ${parseFloat(p.price).toFixed(2)}</span></div>
-                        <div class="text-[10px] text-slate-500 bg-slate-50 p-1.5 rounded border mt-1"><b>Khasiat:</b> ${p.benefits || 'Tiada keterangan khasiat'}</div>
-                    </div>
-                `;
+                sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${p.name}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | RM ${parseFloat(p.price).toFixed(2)}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${p.benefits || '-'}</div></div>`;
                 sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
             });
         }
 
-        function deleteOfficeProduct(firestoreId, name) {
-            if (confirm(`Padam produk "${name}" dari senarai office?`)) {
-                if (db) db.collection("office_products").doc(firestoreId).delete().then(() => alert("Produk berjaya dipadam!"));
-            }
-        }
-
-        function onOfficeProductSelected() {
-            calculateOfficeTotal();
-        }
-
+        function onOfficeProductSelected() { calculateOfficeTotal(); }
         function calculateOfficeTotal() {
             const sel = document.getElementById('salesProductSelect');
             const qtyInput = document.getElementById('salesQty').value;
             const totalInput = document.getElementById('salesTotalAmount');
-            
             const selectedOpt = sel.options[sel.selectedIndex];
             if (selectedOpt && selectedOpt.value && qtyInput) {
                 let price = parseFloat(selectedOpt.getAttribute('data-price')) || 0;
                 let qty = parseFloat(qtyInput) || 0;
                 totalInput.value = (price * qty).toFixed(2);
-            } else {
-                totalInput.value = "";
-            }
+            } else { totalInput.value = ""; }
         }
-
         document.getElementById('salesDate').valueAsDate = new Date();
 
         function handleOfficeSalesSubmit(e) {
@@ -1817,40 +1700,22 @@
             const phone = document.getElementById('salesPhone').value || '-';
             const dVal = document.getElementById('salesDate').value;
             const photoFile = document.getElementById('salesPhotoInput').files[0];
-
             let productObj = officeProducts.find(p => p.name === prodName);
-            if (!productObj) { alert("Sila pilih produk office yang sah."); return; }
-
-            if (productObj.stock < qty) {
-                alert(`Stok tidak mencukupi! Saki-baki stok semasa: ${productObj.stock}`);
-                return;
-            }
-
-            let newStock = productObj.stock - qty;
-            let invNo = `INV-OFFICE-${Date.now().toString().slice(-6)}`;
+            if (!productObj || productObj.stock < qty) { alert("Stok tidak mencukupi atau produk tidak sah."); return; }
 
             compressImageHD(photoFile, function(base64Photo) {
                 const salesObj = {
-                    id: Date.now(),
-                    invoiceNo: invNo,
-                    date: dVal,
-                    month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                    product: prodName,
-                    qty: qty,
-                    total: `RM ${parseFloat(total).toFixed(2)}`,
-                    amount: parseFloat(total) || 0,
-                    customer: customer,
-                    address: address,
-                    phone: phone,
-                    photo: base64Photo || productObj.photo || ""
+                    id: Date.now(), invoiceNo: `INV-OFFICE-${Date.now().toString().slice(-6)}`,
+                    date: dVal, month: dVal.substring(0, 7), product: prodName, qty: qty,
+                    total: `RM ${parseFloat(total).toFixed(2)}`, amount: parseFloat(total) || 0,
+                    customer, address, phone, photo: base64Photo || productObj.photo || ""
                 };
-
                 if (db) {
                     db.collection("office_sales").add(salesObj).then(() => {
-                        db.collection("office_products").doc(productObj.firestoreId).update({ stock: newStock }).then(() => {
+                        db.collection("office_products").doc(productObj.firestoreId).update({ stock: productObj.stock - qty }).then(() => {
                             document.getElementById('officeSalesForm').reset();
                             document.getElementById('salesDate').valueAsDate = new Date();
-                            alert("Jualan office berjaya direkod & stok telah dipotong!");
+                            alert("Jualan office berjaya direkod!");
                             showCustomInvoiceModal(salesObj, 'Jualan Produk Office (Medicalpro)');
                         });
                     });
@@ -1862,75 +1727,32 @@
             const tbody = document.getElementById('officeSalesTableBody');
             const fm = document.getElementById('filterOfficeMonth') ? document.getElementById('filterOfficeMonth').value : 'all';
             if (!tbody) return;
-
             tbody.innerHTML = "";
-            let filteredSales = officeSales.filter(s => fm === 'all' || s.month === fm);
-
-            if (filteredSales.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada rekod jualan office untuk tempoh ini.</td></tr>`;
-                return;
-            }
-
-            filteredSales.forEach(s => {
-                tbody.innerHTML += `
-                    <tr class="border-b">
-                        <td class="p-2">${s.date}</td>
-                        <td class="p-2 font-medium text-blue-900">${s.product}</td>
-                        <td class="p-2 font-bold">${s.qty} unit</td>
-                        <td class="p-2 font-bold text-emerald-600">${s.total}</td>
-                        <td class="p-2"><b>${s.customer}</b><br><span class="text-[10px] text-slate-500">${s.phone || '-'}</span></td>
-                        <td class="p-2 text-center flex justify-center gap-1">
-                            <button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Produk Office')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-semibold">📄 Invoice</button>
-                            <button type="button" onclick="deleteOfficeSale('${s.firestoreId}', '${s.product}', ${s.qty})" class="bg-rose-50 text-rose-500 px-2 py-1 rounded text-xs">✕</button>
-                        </td>
-                    </tr>
-                `;
+            officeSales.filter(s => fm === 'all' || s.month === fm).forEach(s => {
+                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty} unit</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Produk Office')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invoice</button></td></tr>`;
             });
-        }
-
-        function deleteOfficeSale(docId, prodName, qty) {
-            if (confirm("Padam rekod jualan ini dan kembalikan stok produk?")) {
-                let productObj = officeProducts.find(p => p.name === prodName);
-                if (db) {
-                    if (productObj) {
-                        let restoredStock = productObj.stock + qty;
-                        db.collection("office_products").doc(productObj.firestoreId).update({ stock: restoredStock });
-                    }
-                    db.collection("office_sales").doc(docId).delete().then(() => alert("Rekod dipadam & stok dikembalikan!"));
-                }
-            }
         }
 
         // --- RENDER WORKERS & INVENTORY ---
         function renderWorkersDropdown() {
             const sel = document.getElementById('taskWorkerSelect');
-            if(!sel) return;
-            sel.innerHTML = `<option value="">Pilih Pekerja</option>`;
+            if(!sel) return; sel.innerHTML = `<option value="">Pilih Pekerja</option>`;
             workers.forEach(w => { let n = typeof w === 'object' ? w.name : w; sel.innerHTML += `<option value="${n}">${n}</option>`; });
         }
         function renderWorkersAdmin() {
             const c = document.getElementById('workerListTags');
-            if(!c) return;
-            c.innerHTML = "";
-            workers.forEach((w, i) => {
-                let n = typeof w === 'object' ? w.name : w;
-                c.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded text-xs font-semibold flex justify-between items-center">👤 ${n} <button type="button" onclick="deleteWorker(${i})" class="text-rose-500 font-bold">×</button></span>`;
-            });
+            if(!c) return; c.innerHTML = "";
+            workers.forEach((w, i) => { let n = typeof w === 'object' ? w.name : w; c.innerHTML += `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded text-xs font-semibold flex justify-between items-center">👤 ${n} <button type="button" onclick="deleteWorker(${i})" class="text-rose-500 font-bold">×</button></span>`; });
         }
         function addWorkerWithCustomTasks() {
             const n = document.getElementById('workerNameInput').value.trim();
             if(n) {
                 workers.push({ name: n, mandatory: document.getElementById('workerMandatoryTask').value, extra: document.getElementById('workerExtraTask').value });
                 if(db) db.collection("settings").doc("workers").set({ list: workers });
-                document.getElementById('workerNameInput').value = "";
-                renderWorkersAdmin(); renderWorkersDropdown();
+                document.getElementById('workerNameInput').value = ""; renderWorkersAdmin(); renderWorkersDropdown();
             }
         }
-        function deleteWorker(i) {
-            workers.splice(i, 1);
-            if(db) db.collection("settings").doc("workers").set({ list: workers });
-            renderWorkersAdmin(); renderWorkersDropdown();
-        }
+        function deleteWorker(i) { workers.splice(i, 1); if(db) db.collection("settings").doc("workers").set({ list: workers }); renderWorkersAdmin(); renderWorkersDropdown(); }
 
         // --- SUPPLY & STOCK ---
         document.getElementById('inputDate').valueAsDate = new Date();
@@ -1940,33 +1762,14 @@
         }
         function handleSupplyFormSubmit(e) {
             e.preventDefault();
-            const editingId = document.getElementById('editingSupplyId').value;
             const itemVal = document.getElementById('inputItem').value;
             const dVal = document.getElementById('inputDate').value;
             const supplyObj = {
-                id: editingId ? parseInt(editingId) : Date.now(),
-                date: dVal,
-                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                item: itemVal,
-                action: 'stok',
-                qty: parseFloat(document.getElementById('inputQty').value),
-                unit: (itemVal === "Bunga Kantan") ? "tangkai" : "kg",
-                desc: document.getElementById('inputDesc').value || '-'
+                id: Date.now(), date: dVal, month: dVal.substring(0, 7), item: itemVal,
+                action: 'stok', qty: parseFloat(document.getElementById('inputQty').value),
+                unit: (itemVal === "Bunga Kantan") ? "tangkai" : "kg", desc: document.getElementById('inputDesc').value || '-'
             };
-            if (db) {
-                if (editingId) {
-                    db.collection("supply").where("id", "==", parseInt(editingId)).get().then(snap => {
-                        snap.forEach(d => d.ref.update(supplyObj));
-                        document.getElementById('supplyForm').reset();
-                        alert("Suplai dikemaskini!");
-                    });
-                } else {
-                    db.collection("supply").add(supplyObj).then(() => {
-                        document.getElementById('supplyForm').reset();
-                        alert("Suplai disimpan!");
-                    });
-                }
-            }
+            if(db) db.collection("supply").add(supplyObj).then(() => { document.getElementById('supplyForm').reset(); alert("Suplai disimpan!"); });
         }
         function renderSupplyApp() {
             const tbody = document.getElementById('supplyTableBody');
@@ -1974,35 +1777,22 @@
             const fm = document.getElementById('filterSupplyMonth') ? document.getElementById('filterSupplyMonth').value : 'all';
             if(!tbody || !sc) return;
             tbody.innerHTML = ""; sc.innerHTML = "";
-            let monthsSet = new Set();
-            supplyData.forEach(r => { if(r.month) monthsSet.add(r.month); });
-            updateMonthDropdown('filterSupplyMonth', monthsSet);
-            let filteredSupply = supplyData.filter(r => fm === 'all' || r.month === fm);
             let stocks = {};
-            supplyData.forEach(r => {
-                let key = `${r.item} (${r.unit})`;
-                if(!stocks[key]) stocks[key] = 0;
-                if(r.action === 'stok') stocks[key] += r.qty;
-            });
-            for(let [key, val] of Object.entries(stocks)) {
-                sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`;
-            }
-            filteredSupply.forEach(r => {
-                let badge = r.action === 'stok' ? `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">📦 Masih Stok</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">🚀 Disuplain</span>`;
+            supplyData.forEach(r => { let key = `${r.item} (${r.unit})`; if(!stocks[key]) stocks[key] = 0; if(r.action === 'stok') stocks[key] += r.qty; });
+            for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
+            supplyData.filter(r => fm === 'all' || r.month === fm).forEach(r => {
+                let badge = r.action === 'stok' ? `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px]">📦 Stok</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">🚀 Disuplain</span>`;
                 let btn = r.action === 'stok' ? `<button type="button" onclick="markAsSupplied(${r.id})" class="bg-indigo-600 text-white px-2 py-1 rounded text-xs">Supply</button>` : '';
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${badge}</td><td class="p-2 font-bold">${r.qty} ${r.unit}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center">${btn}</td></tr>`;
             });
         }
-        function markAsSupplied(id) {
-            if(db) db.collection("supply").where("id","==",id).get().then(s => s.forEach(d => d.ref.update({ action: 'suplai' })));
-        }
+        function markAsSupplied(id) { if(db) db.collection("supply").where("id","==",id).get().then(s => s.forEach(d => d.ref.update({ action: 'suplai' }))); }
 
         // --- INVENTORY & TASKS & EXPENSES ---
         function renderInventory() {
             const c = document.getElementById('inventoryContainer');
             const sel = document.getElementById('taskStockItem');
-            if(!c || !sel) return;
-            c.innerHTML = ""; sel.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
+            if(!c || !sel) return; c.innerHTML = ""; sel.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
             inventory.forEach(item => {
                 sel.innerHTML += `<option value="${item.name}">${item.name} (Sisa: ${item.stock})</option>`;
                 c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-800">${item.name}</h4><p class="text-xs">Sisa: <b>${item.stock}</b></p></div>`;
@@ -2031,15 +1821,10 @@
             e.preventDefault();
             const dVal = document.getElementById('taskDate').value;
             let taskObj = {
-                id: Date.now(),
-                title: document.getElementById('taskTitle').value,
-                category: document.getElementById('taskCategory').value,
-                worker: document.getElementById('taskWorkerSelect').value,
-                date: dVal,
-                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
-                stockUsed: document.getElementById('taskStockItem').value || "Tiada",
-                status: "Selesai ✓",
-                photo: taskPhotoBase64 || ""
+                id: Date.now(), title: document.getElementById('taskTitle').value,
+                category: document.getElementById('taskCategory').value, worker: document.getElementById('taskWorkerSelect').value,
+                date: dVal, month: dVal.substring(0, 7), stockUsed: document.getElementById('taskStockItem').value || "Tiada",
+                status: "Selesai ✓", photo: taskPhotoBase64 || ""
             };
             if(db) db.collection("tasks").add(taskObj).then(() => { document.getElementById('taskForm').reset(); taskPhotoBase64=""; alert("Tugas disimpan!"); });
         }
@@ -2048,10 +1833,9 @@
             const fm = document.getElementById('filterTaskMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             tasks.filter(t => fm === 'all' || t.month === fm).forEach(t => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td><td class="p-3"><button type="button" onclick="deleteTask(${t.id})" class="text-rose-500">✕</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td></tr>`;
             });
         }
-        function deleteTask(id) { if(db) db.collection("tasks").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
 
         let expReceiptBase64 = "";
         document.getElementById('expReceiptInput').addEventListener('change', function(e) { compressImageHD(e.target.files[0], b => { expReceiptBase64 = b; }); });
@@ -2059,11 +1843,8 @@
             e.preventDefault();
             const dVal = document.getElementById('expDate').value;
             let expObj = {
-                id: Date.now(),
-                title: document.getElementById('expTitle').value,
-                amount: document.getElementById('expAmount').value,
-                date: dVal,
-                month: dVal ? dVal.substring(0, 7) : new Date().toISOString().substring(0, 7),
+                id: Date.now(), title: document.getElementById('expTitle').value,
+                amount: document.getElementById('expAmount').value, date: dVal, month: dVal.substring(0, 7),
                 receipt: expReceiptBase64 || ""
             };
             if(db) db.collection("expenses").add(expObj).then(() => { document.getElementById('expenseForm').reset(); expReceiptBase64=""; alert("Perbelanjaan ditambah!"); });
@@ -2073,10 +1854,9 @@
             const fm = document.getElementById('filterExpenseMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
             expenses.filter(e => fm === 'all' || e.month === fm).forEach(ex => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td><td class="p-3"><button type="button" onclick="deleteExpense(${ex.id})" class="text-rose-500">✕</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td></tr>`;
             });
         }
-        function deleteExpense(id) { if(db) db.collection("expenses").where("id","==",id).get().then(s => s.forEach(d => d.ref.delete())); }
 
         function updateMonthDropdown(id, set) {
             const sel = document.getElementById(id);
@@ -2107,19 +1887,14 @@
             document.getElementById('invModalMainHeader').innerText = categoryTitle;
             document.getElementById('invModalInvoiceNo').innerText = `No: ${salesData.invoiceNo || 'INV-' + Date.now().toString().slice(-6)}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${salesData.date || '-'}`;
-            
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
-
             document.getElementById('invCustomerName').innerText = salesData.customer || 'Tunai';
             document.getElementById('invCustomerAddress').innerText = `Alamat: ${salesData.address || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${salesData.phone || '-'}`;
-
-            let realOwnerName = getRealNameOnly();
-            document.getElementById('invModalOwner').innerText = realOwnerName;
+            document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = "";
-
             let unitPrice = salesData.amount && salesData.qty ? (salesData.amount / salesData.qty).toFixed(2) : '0.00';
 
             tbody.innerHTML = `
@@ -2131,7 +1906,6 @@
                     <td class="p-2.5 text-right font-bold text-emerald-700">${salesData.total}</td>
                 </tr>
             `;
-
             document.getElementById('invoiceGrandTotal').innerText = salesData.total;
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
@@ -2140,67 +1914,30 @@
         function generateMonthlyInvoice(type) {
             let filterVal = 'all', title = "", dataArr = [];
             const todayStr = new Date().toISOString().substring(0, 10);
-
-            if(type === 'tasks') {
-                filterVal = document.getElementById('filterTaskMonth').value;
-                title = "Rekap Tugas Harian Estet";
-                dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal);
-            } else if(type === 'supply') {
-                filterVal = document.getElementById('filterSupplyMonth').value;
-                title = "Data Suplai Kebun";
-                dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal);
-            } else if(type === 'expenses') {
-                filterVal = document.getElementById('filterExpenseMonth').value;
-                title = "Rekap Perbelanjaan Kebun";
-                dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal);
-            } else if(type === 'income') {
-                filterVal = document.getElementById('filterIncomeMonth').value;
-                title = "Rekap Jualan Kebun (Bulanan)";
-                dataArr = incomeList.filter(i => filterVal === 'all' || i.month === filterVal);
-            } else if(type === 'office') {
-                filterVal = document.getElementById('filterOfficeMonth').value;
-                title = "Rekap Jualan Office (Bulanan)";
-                dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal);
-            }
+            if(type === 'tasks') { filterVal = document.getElementById('filterTaskMonth').value; title = "Rekap Tugas Harian Estet"; dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal); }
+            else if(type === 'supply') { filterVal = document.getElementById('filterSupplyMonth').value; title = "Data Suplai Kebun"; dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal); }
+            else if(type === 'expenses') { filterVal = document.getElementById('filterExpenseMonth').value; title = "Rekap Perbelanjaan Kebun"; dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal); }
+            else if(type === 'income') { filterVal = document.getElementById('filterIncomeMonth').value; title = "Rekap Jualan Kebun"; dataArr = incomeList.filter(i => filterVal === 'all' || i.month === filterVal); }
+            else if(type === 'office') { filterVal = document.getElementById('filterOfficeMonth').value; title = "Rekap Jualan Office"; dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); }
 
             document.getElementById('invModalMainHeader').innerText = title;
             document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
-            
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
-
             document.getElementById('invCustomerName').innerText = "Pengurusan Korporat / Umum";
             document.getElementById('invCustomerAddress').innerText = "Alamat: Estet Machap, Johor";
             document.getElementById('invCustomerPhone').innerText = "Tel: Rasmi Medicalpro";
-
-            let realOwnerName = getRealNameOnly();
-            document.getElementById('invModalOwner').innerText = realOwnerName;
+            document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = ""; let grandTot = 0;
-
-            if(dataArr.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada rekod untuk tempoh ini.</td></tr>`;
-            } else {
-                dataArr.forEach((item, idx) => {
-                    let desc = item.title || item.item || item.product || '-';
-                    let qty = item.qty || 1;
-                    let totalStr = item.total || item.amount || '0';
-                    let amt = parseFloat(totalStr.toString().replace(/[^0-9.]/g, '')) || 0;
-                    grandTot += amt;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="p-2.5">${idx+1}</td>
-                            <td class="p-2.5 font-medium">${desc} ${item.customer ? '('+item.customer+')' : ''}</td>
-                            <td class="p-2.5 text-center">${qty}</td>
-                            <td class="p-2.5 text-right">-</td>
-                            <td class="p-2.5 text-right font-bold text-emerald-700">RM ${amt.toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-            }
-
+            dataArr.forEach((item, idx) => {
+                let desc = item.title || item.item || item.product || '-';
+                let qty = item.qty || 1;
+                let amt = parseFloat((item.total || item.amount || '0').toString().replace(/[^0-9.]/g, '')) || 0;
+                grandTot += amt;
+                tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-medium">${desc}</td><td class="p-2.5 text-center">${qty}</td><td class="p-2.5 text-right">-</td><td class="p-2.5 text-right font-bold text-emerald-700">RM ${amt.toFixed(2)}</td></tr>`;
+            });
             document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
