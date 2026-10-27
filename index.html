@@ -39,7 +39,7 @@
                     <input type="text" id="inputUserRealName" placeholder="Cth: Rojak" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Gelaran</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Gelaran (Untuk Sapaan AI Saja)</label>
                     <select id="inputUserGender" class="w-full border p-2.5 rounded-xl text-sm bg-slate-50 focus:outline-emerald-600">
                         <option value="Datu">Datu (Boss / Pemilik Utama)</option>
                         <option value="Abang">Abang</option>
@@ -522,8 +522,9 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl">
                     <div>
-                        <span class="text-slate-400 block font-semibold">Pegawai Bertanggungjawab:</span>
-                        <strong class="text-slate-800" id="invModalOwner">Abdul Rojak</strong>
+                        <span class="text-slate-400 block font-semibold" id="invModalRoleTitle">Pegawai Bertanggungjawab:</span>
+                        <strong class="text-slate-800 text-sm" id="invModalOwner">Abdul Rojak</strong>
+                        <div class="text-[10px] text-emerald-700 font-bold" id="invModalRoleSubtitle">Pemilik Utama & Pengarah Estet (Datu)</div>
                     </div>
                     <div>
                         <span class="text-slate-400 block font-semibold">Kategori Rekap:</span>
@@ -671,7 +672,7 @@
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
 
         function checkUserProfile() {
-            if (!currentUser || !currentUser.gender) {
+            if (!currentUser || !currentUser.name) {
                 document.getElementById('userProfileModal').classList.remove('hidden');
             } else {
                 initAiGreeting();
@@ -681,7 +682,7 @@
         function saveUserProfile() {
             const name = document.getElementById('inputUserRealName').value.trim();
             const gender = document.getElementById('inputUserGender').value;
-            currentUser = { name: name || (gender === 'Datu' ? 'Datu' : gender), gender };
+            currentUser = { name: name || "Rojak", gender };
             localStorage.setItem('medicalpro_user_profile', JSON.stringify(currentUser));
             document.getElementById('userProfileModal').classList.add('hidden');
             initAiGreeting();
@@ -758,6 +759,11 @@
             let title = currentUser.gender || "Abang";
             let name = currentUser.name || "Rojak";
             return `${title} ${name}`;
+        }
+
+        function getRealNameOnly() {
+            if (!currentUser || !currentUser.name) return "Abdul Rojak";
+            return currentUser.name;
         }
 
         let workers = [];
@@ -1667,12 +1673,21 @@
             document.getElementById('invModalPeriod').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
             document.getElementById('invModalTotalItems').innerText = `${dataArr.length} Item`;
 
+            let realOwnerName = getRealNameOnly();
             let isBoss = currentUser && currentUser.gender === 'Datu';
-            let ownerName = currentUser ? currentUser.name : "Rojak";
-            let roleLabel = isBoss ? `Disahkan Oleh Boss (Pemilik Utama):` : `Disahkan Oleh Perwakilan Rasmi:`;
+
+            // Pembeda rasmi antara Boss/Datu vs Pekerja/Pegawai biasa pada dokumen
+            if (isBoss) {
+                document.getElementById('invModalRoleTitle').innerText = "Pemilik Utama & Pengarah Estet:";
+                document.getElementById('invModalRoleSubtitle').innerText = "Boss / Datu (Pemilik Estet)";
+                document.getElementById('invSignatureRoleLabel').innerText = "Disahkan Oleh Boss (Pemilik Utama):";
+            } else {
+                document.getElementById('invModalRoleTitle').innerText = "Pegawai Bertanggungjawab:";
+                document.getElementById('invModalRoleSubtitle').innerText = currentUser ? `Perwakilan (${currentUser.gender || 'Pegawai'})` : "Pengurusan Estet";
+                document.getElementById('invSignatureRoleLabel').innerText = "Disahkan Oleh Pegawai Bertanggungjawab:";
+            }
             
-            document.getElementById('invModalOwner').innerText = `${ownerName} ${isBoss ? '(Boss / Datu)' : '(' + (currentUser ? currentUser.gender : 'Perwakilan') + ')'}`;
-            document.getElementById('invSignatureRoleLabel').innerText = roleLabel;
+            document.getElementById('invModalOwner').innerText = realOwnerName;
 
             // Khusus untuk menu supply, ubah header menjadi TANPA NOMOR INVOICE, melainkan Tanggal Suplai
             if (type === 'supply') {
