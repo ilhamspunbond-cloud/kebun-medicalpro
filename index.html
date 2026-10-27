@@ -565,7 +565,7 @@
             </section>
 
             <!-- Office Sales & Products Page (Jual Office / Produk Jadi) -->
-            <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
+            <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-blue-900">🏢 Manajemen Penjualan & Stok Office (Produk Jadi)</h3>
@@ -592,7 +592,7 @@
                 </div>
 
                 <!-- Konten Utama Office (Terkunci Sebelum Login) -->
-                <div id="officeMainContent" class="space-y-6 opacity-50 pointer-events-none">
+                <div id="officeMainContent" class="space-y-6">
                     
                     <!-- Sub-section: Tambah Produk Baru Office (Termasuk Khasiat/Kandungan) -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
@@ -1079,7 +1079,6 @@
                 let workerNames = workers.length > 0 ? workers.map(w => typeof w === 'object' ? w.name : w).join(', ') : 'Belum ada pekerja diinput';
                 responseText = `📋 **Rekomendasi Job Desk Pekerja**:\n• Pekerja Bertugas: ${workerNames}\n• ${jobDeskRec}\n• Cuaca Estet: ${currentWeatherData.rainSoon ? 'Ada potensi hujan, utamakan kerja stor.' : 'Cerah dan stabil.'}`;
             } else if (queryType === 'product_query') {
-                // Semak sama ada manualText menyentuh mana-mana produk office & khasiatnya
                 let matchedProduct = officeProducts.find(p => {
                     let pName = (p.name || "").toLowerCase();
                     let pBenefits = (p.benefits || "").toLowerCase();
