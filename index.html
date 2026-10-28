@@ -1548,17 +1548,17 @@
                 snap.forEach(d => inventory.push({ firestoreId: d.id, ...d.data() }));
                 renderInventory(); renderAdminInventoryTable();
             });
-            db.collection("tasks").orderBy("id", "desc").onSnapshot(snap => {
+            db.collection("tasks").onSnapshot(snap => {
                 tasks = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); tasks.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterTaskMonth', m); renderTasks();
             });
-            db.collection("supply").orderBy("id", "desc").onSnapshot(snap => {
+            db.collection("supply").onSnapshot(snap => {
                 supplyData = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); supplyData.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterSupplyMonth', m); renderSupplyApp();
             });
-            db.collection("expenses").orderBy("id", "desc").onSnapshot(snap => {
+            db.collection("expenses").onSnapshot(snap => {
                 expenses = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); expenses.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterExpenseMonth', m); renderExpenses();
@@ -1568,7 +1568,7 @@
                 snap.forEach(d => gardenProducts.push({ firestoreId: d.id, ...d.data() }));
                 renderGardenProducts();
             });
-            db.collection("income").orderBy("id", "desc").onSnapshot(snap => {
+            db.collection("income").onSnapshot(snap => {
                 incomeList = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); incomeList.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterIncomeMonth', m); renderIncomeSales();
@@ -1578,7 +1578,7 @@
                 snap.forEach(d => officeProducts.push({ firestoreId: d.id, ...d.data() }));
                 renderOfficeProducts();
             });
-            db.collection("office_sales").orderBy("id", "desc").onSnapshot(snap => {
+            db.collection("office_sales").onSnapshot(snap => {
                 officeSales = []; let m = new Set();
                 snap.forEach(d => { let x = d.data(); officeSales.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
                 updateMonthDropdown('filterOfficeMonth', m); renderOfficeSales();
@@ -1698,7 +1698,11 @@
             const tbody = document.getElementById('incomeTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            incomeList.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
+            
+            // SORTING: Tanggal Paling Lama (Awal) di Atas, Terbaru di Bawah
+            let sortedIncome = [...incomeList].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedIncome.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Hasil Kebun')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invoice</button></td></tr>`;
             });
         }
@@ -1862,7 +1866,11 @@
             const tbody = document.getElementById('officeSalesTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            let filtered = officeSales.filter(s => filterByDateRange(s.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
+            
+            // SORTING: Tanggal Paling Lama (Awal) di Atas, Terbaru di Bawah
+            let sortedSales = [...officeSales].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            let filtered = sortedSales.filter(s => filterByDateRange(s.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada riwayat jualan offline.</td></tr>`;
                 return;
@@ -1934,7 +1942,10 @@
             supplyData.forEach(r => { let key = `${r.item} (${r.unit})`; if(!stocks[key]) stocks[key] = 0; if(r.action === 'stok') stocks[key] += r.qty; });
             for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
             
-            supplyData.filter(r => filterByDateRange(r.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth')).forEach(r => {
+            // SORTING: Tanggal Paling Lama (Awal) di Atas, Terbaru di Bawah
+            let sortedSupply = [...supplyData].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedSupply.filter(r => filterByDateRange(r.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth')).forEach(r => {
                 let badge = r.action === 'stok' ? `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px]">📦 Stok</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">🚀 Disuplain</span>`;
                 let btn = r.action === 'stok' ? `<button type="button" onclick="markAsSupplied(${r.id})" class="bg-indigo-600 text-white px-2 py-1 rounded text-xs">Supply</button>` : '';
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${badge}</td><td class="p-2 font-bold">${r.qty} ${r.unit}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center">${btn}</td></tr>`;
@@ -1985,7 +1996,11 @@
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return; tbody.innerHTML = "";
-            tasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
+            
+            // SORTING: Tanggal Paling Lama (Awal) di Atas, Terbaru di Bawah
+            let sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedTasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td></tr>`;
             });
         }
@@ -2005,7 +2020,11 @@
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
             if(!tbody) return; tbody.innerHTML = "";
-            expenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
+            
+            // SORTING: Tanggal Paling Lama (Awal) di Atas, Terbaru di Bawah
+            let sortedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedExpenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td></tr>`;
             });
         }
@@ -2073,9 +2092,10 @@
             setTimeout(initSignaturePad, 200);
         }
 
-        // KHUSUS CETAK LAPORAN SUPPLY KEBUN (TANPA HARGA, TANPA GRAND TOTAL, MURNI KILO/TANGKAI)
+        // KHUSUS CETAK LAPORAN SUPPLY KEBUN (URUT TANGGAL PALING LAMA KE TERBARU)
         function generateSupplyReportModal() {
-            let dataArr = supplyData.filter(s => filterByDateRange(s.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth'));
+            let sortedSupply = [...supplyData].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let dataArr = sortedSupply.filter(s => filterByDateRange(s.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth'));
             const todayStr = new Date().toISOString().substring(0, 10);
 
             let startStr = document.getElementById('filterSupplyStart').value;
@@ -2137,25 +2157,25 @@
 
             if(type === 'tasks') { 
                 title = "Rekap Tugas Harian Estet"; 
-                dataArr = tasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth'));
+                dataArr = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date)).filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth'));
                 startStr = document.getElementById('filterTaskStart').value;
                 endStr = document.getElementById('filterTaskEnd').value;
                 monthVal = document.getElementById('filterTaskMonth').value;
             } else if(type === 'expenses') { 
                 title = "Rekap Perbelanjaan Kebun"; 
-                dataArr = expenses.filter(ex => filterByDateRange(ex.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth'));
+                dataArr = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date)).filter(ex => filterByDateRange(ex.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth'));
                 startStr = document.getElementById('filterExpenseStart').value;
                 endStr = document.getElementById('filterExpenseEnd').value;
                 monthVal = document.getElementById('filterExpenseMonth').value;
             } else if(type === 'income') { 
                 title = "Rekap Jualan Kebun"; 
-                dataArr = incomeList.filter(i => filterByDateRange(i.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth'));
+                dataArr = [...incomeList].sort((a, b) => new Date(a.date) - new Date(b.date)).filter(i => filterByDateRange(i.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth'));
                 startStr = document.getElementById('filterIncomeStart').value;
                 endStr = document.getElementById('filterIncomeEnd').value;
                 monthVal = document.getElementById('filterIncomeMonth').value;
             } else if(type === 'office') { 
                 title = "Rekap Produk & Invoice Offline"; 
-                dataArr = officeSales.filter(o => filterByDateRange(o.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
+                dataArr = [...officeSales].sort((a, b) => new Date(a.date) - new Date(b.date)).filter(o => filterByDateRange(o.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
                 startStr = document.getElementById('filterOfficeStart').value;
                 endStr = document.getElementById('filterOfficeEnd').value;
                 monthVal = document.getElementById('filterOfficeMonth').value;
