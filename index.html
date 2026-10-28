@@ -260,9 +260,15 @@
 
             <!-- Task Management Page -->
             <section id="page-tasks" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
                     <h3 id="sectionTaskTitle" class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                            <span class="text-slate-500 font-bold">Dari:</span>
+                            <input type="date" id="filterTaskStart" onchange="renderTasks()" class="bg-white border p-1 rounded">
+                            <span class="text-slate-500 font-bold">Hingga:</span>
+                            <input type="date" id="filterTaskEnd" onchange="renderTasks()" class="bg-white border p-1 rounded">
+                        </div>
                         <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
@@ -320,12 +326,18 @@
 
             <!-- Supply & Stock Management Page -->
             <section id="page-supply" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-slate-900">📦 Manajemen Stok & Suplai Kebun</h3>
                         <p class="text-xs text-slate-500">Catat hasil tuai (masuk stok gudang) atau cetak Laporan Supply Kebun</p>
                     </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                            <span class="text-slate-500 font-bold">Dari:</span>
+                            <input type="date" id="filterSupplyStart" onchange="renderSupplyApp()" class="bg-white border p-1 rounded">
+                            <span class="text-slate-500 font-bold">Hingga:</span>
+                            <input type="date" id="filterSupplyEnd" onchange="renderSupplyApp()" class="bg-white border p-1 rounded">
+                        </div>
                         <select id="filterSupplyMonth" onchange="renderSupplyApp()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
@@ -412,9 +424,15 @@
 
             <!-- Expenses Section Page -->
             <section id="page-expenses" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
                     <h3 class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                            <span class="text-slate-500 font-bold">Dari:</span>
+                            <input type="date" id="filterExpenseStart" onchange="renderExpenses()" class="bg-white border p-1 rounded">
+                            <span class="text-slate-500 font-bold">Hingga:</span>
+                            <input type="date" id="filterExpenseEnd" onchange="renderExpenses()" class="bg-white border p-1 rounded">
+                        </div>
                         <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
@@ -446,12 +464,18 @@
 
             <!-- Income Section Page (Jual Kebun / Produk Estet) -->
             <section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-emerald-900">💵 Manajemen Penjualan & Produk Kebun (Estet)</h3>
                         <p class="text-xs text-slate-500">Urus produk hasil kebun, tambah produk dengan foto, catat jualan dengan data pembeli & cetak invoice rasmi</p>
                     </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                            <span class="text-slate-500 font-bold">Dari:</span>
+                            <input type="date" id="filterIncomeStart" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
+                            <span class="text-slate-500 font-bold">Hingga:</span>
+                            <input type="date" id="filterIncomeEnd" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
+                        </div>
                         <select id="filterIncomeMonth" onchange="renderIncomeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
@@ -603,12 +627,18 @@
 
             <!-- Office Sales & Products Page (Produk & Invoice Offline) -->
             <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                     <div>
                         <h3 class="text-lg font-bold text-blue-900">🏢 Produk & Invoice Offline</h3>
                         <p class="text-xs text-slate-500">Urus produk siap jualan dengan foto, khasiat/kandungan, catat order pelanggan & cetak invoice rasmi office</p>
                     </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                            <span class="text-slate-500 font-bold">Dari:</span>
+                            <input type="date" id="filterOfficeStart" onchange="renderOfficeSales()" class="bg-white border p-1 rounded">
+                            <span class="text-slate-500 font-bold">Hingga:</span>
+                            <input type="date" id="filterOfficeEnd" onchange="renderOfficeSales()" class="bg-white border p-1 rounded">
+                        </div>
                         <select id="filterOfficeMonth" onchange="renderOfficeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
@@ -1650,12 +1680,25 @@
             });
         }
 
+        function filterByDateRange(itemDate, startElId, endElId, monthElId) {
+            let start = document.getElementById(startElId)?.value;
+            let end = document.getElementById(endElId)?.value;
+            let month = document.getElementById(monthElId)?.value;
+
+            if (start && end) {
+                return itemDate >= start && itemDate <= end;
+            }
+            if (month && month !== 'all') {
+                return itemDate.startsWith(month);
+            }
+            return true;
+        }
+
         function renderIncomeSales() {
             const tbody = document.getElementById('incomeTableBody');
-            const fm = document.getElementById('filterIncomeMonth') ? document.getElementById('filterIncomeMonth').value : 'all';
             if (!tbody) return;
             tbody.innerHTML = "";
-            incomeList.filter(i => fm === 'all' || i.month === fm).forEach(s => {
+            incomeList.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Hasil Kebun')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invoice</button></td></tr>`;
             });
         }
@@ -1817,10 +1860,9 @@
 
         function renderOfficeSales() {
             const tbody = document.getElementById('officeSalesTableBody');
-            const fm = document.getElementById('filterOfficeMonth') ? document.getElementById('filterOfficeMonth').value : 'all';
             if (!tbody) return;
             tbody.innerHTML = "";
-            let filtered = officeSales.filter(s => fm === 'all' || s.month === fm);
+            let filtered = officeSales.filter(s => filterByDateRange(s.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada riwayat jualan offline.</td></tr>`;
                 return;
@@ -1886,13 +1928,13 @@
         function renderSupplyApp() {
             const tbody = document.getElementById('supplyTableBody');
             const sc = document.getElementById('stockSummaryContainer');
-            const fm = document.getElementById('filterSupplyMonth') ? document.getElementById('filterSupplyMonth').value : 'all';
             if(!tbody || !sc) return;
             tbody.innerHTML = ""; sc.innerHTML = "";
             let stocks = {};
             supplyData.forEach(r => { let key = `${r.item} (${r.unit})`; if(!stocks[key]) stocks[key] = 0; if(r.action === 'stok') stocks[key] += r.qty; });
             for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
-            supplyData.filter(r => fm === 'all' || r.month === fm).forEach(r => {
+            
+            supplyData.filter(r => filterByDateRange(r.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth')).forEach(r => {
                 let badge = r.action === 'stok' ? `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px]">📦 Stok</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">🚀 Disuplain</span>`;
                 let btn = r.action === 'stok' ? `<button type="button" onclick="markAsSupplied(${r.id})" class="bg-indigo-600 text-white px-2 py-1 rounded text-xs">Supply</button>` : '';
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${r.date}</td><td class="p-2">${r.item}</td><td class="p-2">${badge}</td><td class="p-2 font-bold">${r.qty} ${r.unit}</td><td class="p-2">${r.desc}</td><td class="p-2 text-center">${btn}</td></tr>`;
@@ -1942,9 +1984,8 @@
         }
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
-            const fm = document.getElementById('filterTaskMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
-            tasks.filter(t => fm === 'all' || t.month === fm).forEach(t => {
+            tasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${t.title}</td><td class="p-3">${t.category}</td><td class="p-3">${t.worker}</td><td class="p-3">${t.date}</td><td class="p-3">${t.stockUsed}</td><td class="p-3">${t.status}</td></tr>`;
             });
         }
@@ -1963,9 +2004,8 @@
         }
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
-            const fm = document.getElementById('filterExpenseMonth').value;
             if(!tbody) return; tbody.innerHTML = "";
-            expenses.filter(e => fm === 'all' || e.month === fm).forEach(ex => {
+            expenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td></tr>`;
             });
         }
@@ -2007,7 +2047,6 @@
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
             document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
 
-            // Header tabel normal (dengan harga & jumlah)
             document.getElementById('invoiceTableHeaderRow').innerHTML = `
                 <th class="p-2.5 rounded-l-lg">No</th>
                 <th class="p-2.5">Keterangan / Produk</th>
@@ -2036,12 +2075,15 @@
 
         // KHUSUS CETAK LAPORAN SUPPLY KEBUN (TANPA HARGA, TANPA GRAND TOTAL, MURNI KILO/TANGKAI)
         function generateSupplyReportModal() {
-            let filterVal = document.getElementById('filterSupplyMonth').value;
-            let dataArr = supplyData.filter(s => filterVal === 'all' || s.month === filterVal);
+            let dataArr = supplyData.filter(s => filterByDateRange(s.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth'));
             const todayStr = new Date().toISOString().substring(0, 10);
 
+            let startStr = document.getElementById('filterSupplyStart').value;
+            let endStr = document.getElementById('filterSupplyEnd').value;
+            let periodText = (startStr && endStr) ? `${startStr} hingga ${endStr}` : (document.getElementById('filterSupplyMonth').value !== 'all' ? document.getElementById('filterSupplyMonth').value : 'Semua Tempoh (Global)');
+
             document.getElementById('invModalMainHeader').innerText = "LAPORAN SUPPLY KEBUN";
-            document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
+            document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${periodText}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
             document.getElementById('invRecipientLabel').innerText = "Keterangan Dokumen:";
@@ -2050,10 +2092,8 @@
             document.getElementById('invCustomerPhone').innerText = "Status: Pengiriman Internal Kebun (Bukan Penjualan)";
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
-            // Sembunyikan kotak grand total total karena ini bukan invoice jual
             document.getElementById('invoiceGrandTotalWrapper').style.display = 'none';
 
-            // Ubah header tabel khusus laporan supply (Tanpa Kolom Harga)
             document.getElementById('invoiceTableHeaderRow').innerHTML = `
                 <th class="p-2.5 rounded-l-lg">No</th>
                 <th class="p-2.5">Tanggal</th>
@@ -2085,46 +2125,105 @@
         }
 
         function generateMonthlyInvoice(type) {
-            let filterVal = 'all', title = "", dataArr = [];
+            let title = "", dataArr = [];
             const todayStr = new Date().toISOString().substring(0, 10);
             
-            // Jika dipanggil dari tombol supply, arahkan ke fungsi khusus supply report
             if(type === 'supply') { generateSupplyReportModal(); return; }
 
-            if(type === 'tasks') { filterVal = document.getElementById('filterTaskMonth').value; title = "Rekap Tugas Harian Estet"; dataArr = tasks.filter(t => filterVal === 'all' || t.month === filterVal); }
-            else if(type === 'expenses') { filterVal = document.getElementById('filterExpenseMonth').value; title = "Rekap Perbelanjaan Kebun"; dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal); }
-            else if(type === 'income') { filterVal = document.getElementById('filterIncomeMonth').value; title = "Rekap Jualan Kebun"; dataArr = incomeList.filter(i => filterVal === 'all' || i.month === filterVal); }
-            else if(type === 'office') { filterVal = document.getElementById('filterOfficeMonth').value; title = "Rekap Produk & Invoice Offline"; dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); }
+            const isTaskReport = (type === 'tasks');
+            const isExpenseReport = (type === 'expenses');
+
+            let startStr = "", endStr = "", monthVal = "";
+
+            if(type === 'tasks') { 
+                title = "Rekap Tugas Harian Estet"; 
+                dataArr = tasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth'));
+                startStr = document.getElementById('filterTaskStart').value;
+                endStr = document.getElementById('filterTaskEnd').value;
+                monthVal = document.getElementById('filterTaskMonth').value;
+            } else if(type === 'expenses') { 
+                title = "Rekap Perbelanjaan Kebun"; 
+                dataArr = expenses.filter(ex => filterByDateRange(ex.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth'));
+                startStr = document.getElementById('filterExpenseStart').value;
+                endStr = document.getElementById('filterExpenseEnd').value;
+                monthVal = document.getElementById('filterExpenseMonth').value;
+            } else if(type === 'income') { 
+                title = "Rekap Jualan Kebun"; 
+                dataArr = incomeList.filter(i => filterByDateRange(i.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth'));
+                startStr = document.getElementById('filterIncomeStart').value;
+                endStr = document.getElementById('filterIncomeEnd').value;
+                monthVal = document.getElementById('filterIncomeMonth').value;
+            } else if(type === 'office') { 
+                title = "Rekap Produk & Invoice Offline"; 
+                dataArr = officeSales.filter(o => filterByDateRange(o.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
+                startStr = document.getElementById('filterOfficeStart').value;
+                endStr = document.getElementById('filterOfficeEnd').value;
+                monthVal = document.getElementById('filterOfficeMonth').value;
+            }
+
+            let periodText = (startStr && endStr) ? `${startStr} hingga ${endStr}` : (monthVal !== 'all' ? monthVal : 'Semua Tempoh (Global)');
 
             document.getElementById('invModalMainHeader').innerText = title;
-            document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${filterVal === 'all' ? 'Semua Bulan (Global)' : filterVal}`;
+            document.getElementById('invModalInvoiceNo').innerText = `Tempoh: ${periodText}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
-            document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
-            document.getElementById('invCustomerName').innerText = "Pengurusan Korporat / Umum";
-            document.getElementById('invCustomerAddress').innerText = "Alamat: Estet Machap, Johor";
-            document.getElementById('invCustomerPhone').innerText = "Tel: Rasmi Medicalpro";
+            document.getElementById('invRecipientLabel').innerText = "Keterangan Laporan:";
+            document.getElementById('invCustomerName').innerText = isTaskReport ? "Rekod Aktiviti & Tugasan Harian Pekerja Estet" : (isExpenseReport ? "Rekod Perbelanjaan Operasi Kebun" : "Pengurusan Korporat / Umum");
+            document.getElementById('invCustomerAddress').innerText = "Lokasi: Estet Machap, Johor";
+            document.getElementById('invCustomerPhone').innerText = "Status: Dokumen Rasmi Dalaman Estet";
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
-            document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
-
-            document.getElementById('invoiceTableHeaderRow').innerHTML = `
-                <th class="p-2.5 rounded-l-lg">No</th>
-                <th class="p-2.5">Keterangan / Produk</th>
-                <th class="p-2.5 text-center">Kuantiti</th>
-                <th class="p-2.5 text-right">Harga Seunit</th>
-                <th class="p-2.5 text-right rounded-r-lg">Jumlah (RM)</th>
-            `;
 
             const tbody = document.getElementById('invoiceTableBody');
-            tbody.innerHTML = ""; let grandTot = 0;
-            dataArr.forEach((item, idx) => {
-                let desc = item.title || item.item || item.product || '-';
-                let qty = item.qty || 1;
-                let amt = parseFloat((item.total || item.amount || '0').toString().replace(/[^0-9.]/g, '')) || 0;
-                grandTot += amt;
-                tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-medium">${desc}</td><td class="p-2.5 text-center">${qty}</td><td class="p-2.5 text-right">-</td><td class="p-2.5 text-right font-bold text-emerald-700">RM ${amt.toFixed(2)}</td></tr>`;
-            });
-            document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
+            tbody.innerHTML = "";
+
+            if (isTaskReport) {
+                document.getElementById('invoiceGrandTotalWrapper').style.display = 'none';
+                document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                    <th class="p-2.5 rounded-l-lg">No</th>
+                    <th class="p-2.5">Tugasan</th>
+                    <th class="p-2.5">Kategori</th>
+                    <th class="p-2.5">Pekerja</th>
+                    <th class="p-2.5 text-center">Tarikh</th>
+                    <th class="p-2.5 rounded-r-lg">Status & Stok</th>
+                `;
+
+                if (dataArr.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada data tugas harian untuk tempoh ini.</td></tr>`;
+                } else {
+                    dataArr.forEach((item, idx) => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="p-2.5">${idx + 1}</td>
+                                <td class="p-2.5 font-bold text-slate-800">${item.title || '-'}</td>
+                                <td class="p-2.5">${item.category || '-'}</td>
+                                <td class="p-2.5">${item.worker || '-'}</td>
+                                <td class="p-2.5 text-center font-mono">${item.date || '-'}</td>
+                                <td class="p-2.5 text-emerald-700 font-semibold">${item.status || 'Selesai'} (${item.stockUsed || 'Tiada'})</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
+                document.getElementById('invoiceTableHeaderRow').innerHTML = `
+                    <th class="p-2.5 rounded-l-lg">No</th>
+                    <th class="p-2.5">Keterangan / Produk</th>
+                    <th class="p-2.5 text-center">Kuantiti</th>
+                    <th class="p-2.5 text-right">Harga Seunit</th>
+                    <th class="p-2.5 text-right rounded-r-lg">Jumlah (RM)</th>
+                `;
+
+                let grandTot = 0;
+                dataArr.forEach((item, idx) => {
+                    let desc = item.title || item.item || item.product || '-';
+                    let qty = item.qty || 1;
+                    let amt = parseFloat((item.total || item.amount || '0').toString().replace(/[^0-9.]/g, '')) || 0;
+                    grandTot += amt;
+                    tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-medium">${desc}</td><td class="p-2.5 text-center">${qty}</td><td class="p-2.5 text-right">-</td><td class="p-2.5 text-right font-bold text-emerald-700">RM ${amt.toFixed(2)}</td></tr>`;
+                });
+                document.getElementById('invoiceGrandTotal').innerText = `RM ${grandTot.toFixed(2)}`;
+            }
+
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
         }
