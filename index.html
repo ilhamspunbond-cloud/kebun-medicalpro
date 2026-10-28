@@ -256,7 +256,7 @@
             <button onclick="switchTab('supply')" id="tabBtn-supply" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">📦 <span id="navSupply">Stok & Suplai</span></button>
             <button onclick="switchTab('inventory')" id="tabBtn-inventory" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🧪 <span id="navStock">Bio Baja</span></button>
             <button onclick="switchTab('assets')" id="tabBtn-assets" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🚜 <span id="navAssets">Aset Kebun</span></button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">📝 <span id="navExpenses">Aktivitas Lain</span></button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="bg-white text-emerald-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">📝 <span id="navExpenses">Belanja Kebun</span></button>
             <button onclick="switchTab('office')" id="tabBtn-office" class="bg-white text-blue-700 p-2.5 rounded-xl shadow-sm border text-center font-semibold text-xs">🏢 <span id="navOffice">Catatan Produk</span></button>
         </div>
 
@@ -426,29 +426,29 @@
                 </div>
             </section>
 
-            <!-- Expenses Section Page -->
+            <!-- Expenses / Belanja Kebun Section Page -->
             <section id="page-expenses" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h3 class="text-lg font-bold text-emerald-800">📝 Catat Aktivitas & Catatan Kebun (Bulanan)</h3>
+                    <h3 class="text-lg font-bold text-emerald-800">📝 Catat Belanja & Pengeluaran Kebun (Bulanan)</h3>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <select id="filterExpenseMonth" onchange="renderExpenses()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Report Aktivitas PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('expenses')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Report Belanja PDF</button>
                     </div>
                 </div>
 
                 <form id="expenseForm" onsubmit="handleExpenseFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border">
                     <input type="hidden" id="editingExpenseId" value="">
-                    <input type="text" id="expTitle" placeholder="Keterangan Aktivitas" required class="border p-2 rounded-lg text-sm bg-white">
-                    <input type="text" id="expAmount" placeholder="Jumlah / Vol / Keterangan Kuantiti" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="expTitle" placeholder="Keterangan Belanja / Item" required class="border p-2 rounded-lg text-sm bg-white">
+                    <input type="text" id="expAmount" placeholder="Jumlah Kos / Harga (Cth: RM 150)" required class="border p-2 rounded-lg text-sm bg-white">
                     <input type="date" id="expDate" required class="border p-2 rounded-lg text-sm bg-white">
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Foto Dokumentasi HD</label>
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Bukti Resit / Foto HD</label>
                         <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
                     <div class="sm:col-span-4 flex gap-2">
-                        <button type="submit" id="btnExpenseSubmit" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Aktivitas Kebun</button>
+                        <button type="submit" id="btnExpenseSubmit" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Belanja Kebun</button>
                         <button type="button" id="btnCancelExpenseEdit" onclick="resetExpenseForm()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-800 py-2 px-4 rounded-lg text-xs font-semibold">Batal</button>
                     </div>
                 </form>
@@ -457,9 +457,9 @@
                     <table class="w-full text-left text-sm border-collapse">
                         <thead>
                             <tr class="bg-slate-100 border-b">
-                                <th class="p-3">Foto HD</th>
-                                <th class="p-3">Keterangan Aktivitas</th>
-                                <th class="p-3">Keterangan / Volume</th>
+                                <th class="p-3">Bukti Resit</th>
+                                <th class="p-3">Keterangan Belanja</th>
+                                <th class="p-3">Kos / Jumlah</th>
                                 <th class="p-3">Tarikh</th>
                                 <th class="p-3 text-center">Tindakan</th>
                             </tr>
@@ -469,25 +469,25 @@
                 </div>
             </section>
 
-            <!-- Office Sales & Products Page -->
+            <!-- Office Sales & Products Page (PO Masuk & Catatan Produk) -->
             <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
                     <div>
-                        <h3 class="text-lg font-bold text-blue-900">🏢 Catatan Produk & Operasional Estet</h3>
-                        <p class="text-xs text-slate-500">Urus produk siap dengan foto, khasiat/kandungan, catat hasil pengeluaran & cetak report rasmi</p>
+                        <h3 class="text-lg font-bold text-blue-900">🏢 Admin Jual, PO Masuk & Catatan Produk Estet</h3>
+                        <p class="text-xs text-slate-500">Urus PO Masuk, stok produk siap, harga, khasiat & cetak invoice rasmi</p>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <select id="filterOfficeMonth" onchange="renderOfficeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
                             <option value="all">Semua Bulan (Global)</option>
                         </select>
-                        <button type="button" onclick="generateMonthlyInvoice('office')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Report Produk PDF</button>
+                        <button type="button" onclick="generateMonthlyInvoice('office')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Report PO PDF</button>
                     </div>
                 </div>
 
                 <!-- Panel Login Admin Office -->
                 <div id="officeLoginPanel" class="bg-blue-50 border-2 border-blue-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div>
-                        <h4 class="font-bold text-sm text-blue-900">🔐 Akses Admin Produk & Laporan Estet</h4>
+                        <h4 class="font-bold text-sm text-blue-900">🔐 Akses Admin Jual & PO Masuk Estet</h4>
                         <p class="text-xs text-blue-700" id="officeStatusText">Status: Belum Log Masuk (Masukkan Kata Sandi Admin Utama)</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
@@ -502,14 +502,14 @@
                     <!-- Sub-section: Tambah Produk Baru Office -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
                         <div class="flex justify-between items-center">
-                            <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk / Item Estet Baru</h4>
+                            <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Master Produk / Item Jual Baru</h4>
                             <button type="button" id="btnCancelOfficeEdit" onclick="resetOfficeProductForm()" class="hidden text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-bold">Batal Edit</button>
                         </div>
                         <form id="officeProductForm" onsubmit="handleOfficeProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             <input type="hidden" id="editingOfficeProductId" value="">
                             <input type="text" id="prodName" placeholder="Nama Produk (Cth: Teh Daun Belimbing)" required class="border p-2 rounded-lg text-xs bg-white">
                             <input type="number" id="prodStock" placeholder="Stok Awal / Kuantiti" min="0" required class="border p-2 rounded-lg text-xs bg-white">
-                            <input type="text" id="prodPrice" placeholder="Keterangan Satuan / Batch" required class="border p-2 rounded-lg text-xs bg-white">
+                            <input type="text" id="prodPrice" placeholder="Harga / Satuan (Cth: RM 25 / Kotak)" required class="border p-2 rounded-lg text-xs bg-white">
                             <div>
                                 <input type="file" id="prodPhoto" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                             </div>
@@ -517,71 +517,72 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Khasiat, Manfaat & Kandungan Produk (Dibaca AI Otomatis)</label>
                                 <textarea id="prodBenefits" rows="2" placeholder="Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah." class="w-full border p-2.5 rounded-lg text-xs bg-white"></textarea>
                             </div>
-                            <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Estet Baru</button>
+                            <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Jual Baru</button>
                         </form>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2" id="officeProductSummaryContainer"></div>
                     </div>
 
-                    <!-- Sub-section: Borang Catatan Operasional Produk -->
+                    <!-- Sub-section: Borang PO Masuk / Penjualan Estet -->
                     <form id="officeSalesForm" onsubmit="handleOfficeSalesSubmit(event)" class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-200 space-y-3">
                         <input type="hidden" id="editingOfficeSalesId" value="">
-                        <div id="officeSalesFormTitle" class="text-xs font-bold text-indigo-900 uppercase">🛒 Catat Transaksi / Pengeluaran Produk Estet Baru</div>
+                        <div id="officeSalesFormTitle" class="text-xs font-bold text-indigo-900 uppercase">🛒 Catat PO Masuk / Penjualan Produk Baru</div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
                                 <label class="text-[10px] text-slate-600 block mb-1">Pilih Produk</label>
                                 <select id="salesProductSelect" required class="w-full text-xs p-2 rounded-xl border bg-white" onchange="onOfficeProductSelected()"></select>
                             </div>
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Kuantiti Pengeluaran</label>
+                                <label class="text-[10px] text-slate-600 block mb-1">Kuantiti PO Masuk / Terjual</label>
                                 <input type="number" id="salesQty" placeholder="0" min="1" required class="w-full text-xs p-2 rounded-xl border bg-white" oninput="calculateOfficeTotal()">
                             </div>
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Keterangan / Status Batch</label>
-                                <input type="text" id="salesTotalAmount" placeholder="Cth: Siap Kering / Ready Stock" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                                <label class="text-[10px] text-slate-600 block mb-1">Jumlah Harga / Nilai (Cth: RM 250)</label>
+                                <input type="text" id="salesTotalAmount" placeholder="Cth: RM 250" required class="w-full text-xs p-2 rounded-xl border bg-white">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Penerima / Tujuan (Atas Nama)</label>
-                                <input type="text" id="salesCustomer" placeholder="Cth: Gudang Utama" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                                <label class="text-[10px] text-slate-600 block mb-1">Nama Pembeli / PO Dari (Customer)</label>
+                                <input type="text" id="salesCustomer" placeholder="Cth: Klinik Sihat / Agensi" required class="w-full text-xs p-2 rounded-xl border bg-white">
                             </div>
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Lokasi Tujuan</label>
-                                <input type="text" id="salesAddress" placeholder="Cth: Machap" class="w-full text-xs p-2 rounded-xl border bg-white">
+                                <label class="text-[10px] text-slate-600 block mb-1">Alamat Pengiriman</label>
+                                <input type="text" id="salesAddress" placeholder="Cth: Johor Bahru" class="w-full text-xs p-2 rounded-xl border bg-white">
                             </div>
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Nombor Rujukan / Tel</label>
+                                <label class="text-[10px] text-slate-600 block mb-1">Nombor Telefon / WhatsApp</label>
                                 <input type="text" id="salesPhone" placeholder="Cth: 0198765432" class="w-full text-xs p-2 rounded-xl border bg-white">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Tarikh Pengeluaran</label>
+                                <label class="text-[10px] text-slate-600 block mb-1">Tarikh PO Masuk / Transaksi</label>
                                 <input type="date" id="salesDate" required class="w-full text-xs p-2 rounded-xl border bg-white">
                             </div>
                             <div>
-                                <label class="text-[10px] text-slate-600 block mb-1">Bukti Foto / Dokumentasi (Opsional)</label>
+                                <label class="text-[10px] text-slate-600 block mb-1">Bukti PO / Resit Foto (Opsional)</label>
                                 <input type="file" id="salesPhotoInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" id="btnOfficeSalesSubmit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Catatan & Cetak Report Rasmi</button>
+                            <button type="submit" id="btnOfficeSalesSubmit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan PO & Cetak Invoice Rasmi</button>
                             <button type="button" id="btnCancelOfficeSalesEdit" onclick="resetOfficeSalesForm()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold py-2.5 px-4 rounded-xl">Batal</button>
                         </div>
                     </form>
 
-                    <!-- Sub-section: Riwayat Catatan Produk Office -->
+                    <!-- Sub-section: Riwayat PO Masuk Office -->
                     <div>
-                        <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Pengeluaran Produk & Operasional:</div>
+                        <div class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat PO Masuk & Penjualan Produk:</div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs border-collapse">
                                <thead>
                                     <tr class="bg-slate-100 border-b">
                                         <th class="p-2">Tarikh</th>
+                                        <th class="p-2">No Invoice</th>
                                         <th class="p-2">Produk</th>
                                         <th class="p-2">Kuantiti</th>
-                                        <th class="p-2">Status / Keterangan</th>
-                                        <th class="p-2">Penerima & Tel</th>
+                                        <th class="p-2">Jumlah Harga</th>
+                                        <th class="p-2">Pembeli & Tel</th>
                                         <th class="p-2 text-center">Tindakan</th>
                                     </tr>
                                 </thead>
@@ -597,7 +598,7 @@
 
     </main>
 
-    <!-- MODAL CETAK LAPORAN TUGAS HARIAN PEKERJA & KEBUN PROFESIONAL -->
+    <!-- MODAL CETAK INVOICE / LAPORAN RASMI -->
     <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
         <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
@@ -616,8 +617,8 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <h3 id="invModalMainHeader" class="text-xl font-extrabold text-emerald-800 uppercase tracking-wider">LAPORAN TUGAS KERJA</h3>
-                        <p class="text-xs text-slate-600 font-mono mt-1" id="invModalInvoiceNo">No: REP-20261027-001</p>
+                        <h3 id="invModalMainHeader" class="text-xl font-extrabold text-emerald-800 uppercase tracking-wider">INVOICE RASMI</h3>
+                        <p class="text-xs text-slate-600 font-mono mt-1" id="invModalInvoiceNo">No: INV-20261027-001</p>
                         <p class="text-xs text-slate-500 font-mono" id="invModalDateNum">Tarikh: 2026-10-27</p>
                     </div>
                 </div>
@@ -625,28 +626,28 @@
                 <!-- Maklumat / Keterangan Dokumen -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div>
-                        <span class="text-slate-400 block font-semibold mb-1" id="invRecipientLabel">Keterangan Tugas / Pekerja:</span>
+                        <span class="text-slate-400 block font-semibold mb-1" id="invRecipientLabel">Kepada (Customer / Pembeli):</span>
                         <strong class="text-slate-900 text-sm block" id="invCustomerName">-</strong>
-                        <span class="text-slate-600 block mt-1" id="invCustomerAddress">Lokasi: -</span>
-                        <span class="text-slate-600 block" id="invCustomerPhone">Catatan: -</span>
+                        <span class="text-slate-600 block mt-1" id="invCustomerAddress">Alamat: -</span>
+                        <span class="text-slate-600 block" id="invCustomerPhone">Tel: -</span>
                     </div>
                     <div class="sm:text-right">
-                        <span class="text-slate-400 block font-semibold mb-1">Pegawai / Pengurus Bertanggungjawab:</span>
+                        <span class="text-slate-400 block font-semibold mb-1">Pengurus Estet Bertanggungjawab:</span>
                         <strong class="text-slate-800 text-sm block" id="invModalOwner">Abdul Rojak</strong>
                         <span class="text-[11px] text-emerald-700 font-bold block mt-1" id="invModalRoleSubtitle">Pengurus Estet Medicalpro</span>
                     </div>
                 </div>
 
-                <!-- Jadual Tugas / Item -->
+                <!-- Jadual Invoice / Item -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
                             <tr class="bg-emerald-800 text-white" id="invoiceTableHeaderRow">
                                 <th class="p-2.5 rounded-l-lg">No</th>
-                                <th class="p-2.5">Keterangan Tugas</th>
-                                <th class="p-2.5 text-center">Kategori</th>
-                                <th class="p-2.5 text-right">Pekerja</th>
-                                <th class="p-2.5 text-right rounded-r-lg">Status</th>
+                                <th class="p-2.5">Keterangan Produk</th>
+                                <th class="p-2.5 text-center">Kuantiti</th>
+                                <th class="p-2.5 text-right">Harga Satuan</th>
+                                <th class="p-2.5 text-right rounded-r-lg">Jumlah Harga</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody" class="divide-y divide-slate-100"></tbody>
@@ -656,7 +657,7 @@
                 <!-- Tandatangan & Pengesahan -->
                 <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
                     <div>
-                        <p class="text-[11px] text-slate-500 italic" id="invFooterNote">* Laporan rasmi harian sah direkodkan oleh sistem Medicalpro.</p>
+                        <p class="text-[11px] text-slate-500 italic" id="invFooterNote">* Invois rasmi sah dikeluarkan oleh sistem Medicalpro Agro.</p>
                         <p class="text-xs font-bold text-slate-700 mt-1" id="invSignatureRoleLabel">Disahkan Oleh:</p>
                     </div>
                     <div class="text-center">
@@ -673,7 +674,7 @@
 
             <div class="flex justify-end gap-3 pt-2 border-t no-print">
                 <button type="button" onclick="closeInvoiceModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-semibold">Tutup ✕</button>
-                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak Report</button>
+                <button type="button" onclick="downloadInvoicePdfOrText()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow">📄 Muat Turun PDF / Cetak Invoice</button>
             </div>
 
         </div>
@@ -1480,13 +1481,13 @@
             });
         }
 
-        // --- MODULE: PRODUK & OPERASIONAL OFFLINE ---
+        // --- MODULE: ADMIN JUAL & PO MASUK (OFFICE SALES) ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
                 document.getElementById('officeStatusText').innerText = "Status: Berjaya Log Masuk (Admin)";
                 document.getElementById('officeMainContent').classList.remove('opacity-50', 'pointer-events-none');
-                alert("Akses Catatan Produk & Operasional Estet dibuka!");
+                alert("Akses Admin Jual & PO Masuk dibuka!");
             } else { alert("Kata sandi salah!"); }
         }
 
@@ -1525,9 +1526,9 @@
                         let updateData = { name, stock, price, benefits };
                         if (base64Photo) updateData.photo = base64Photo;
                         else if (existing && existing.photo) updateData.photo = existing.photo;
-                        db.collection("office_products").doc(editingId).update(updateData).then(() => { alert("Produk Estet dikemaskini!"); resetOfficeProductForm(); });
+                        db.collection("office_products").doc(editingId).update(updateData).then(() => { alert("Produk berjaya dikemaskini!"); resetOfficeProductForm(); });
                     } else {
-                        db.collection("office_products").add({ id: Date.now(), name, stock, price, benefits, photo: base64Photo || "" }).then(() => { alert("Produk Estet ditambah!"); resetOfficeProductForm(); });
+                        db.collection("office_products").add({ id: Date.now(), name, stock, price, benefits, photo: base64Photo || "" }).then(() => { alert("Produk ditambah!"); resetOfficeProductForm(); });
                     }
                 }
             });
@@ -1537,7 +1538,7 @@
             const sc = document.getElementById('officeProductSummaryContainer');
             const sel = document.getElementById('salesProductSelect');
             if (!sc || !sel) return;
-            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Estet --</option>`;
+            sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Jual --</option>`;
             officeProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
                 sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${p.name}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | ${p.price || ''}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${p.benefits || '-'}</div></div>`;
@@ -1545,8 +1546,13 @@
             });
         }
 
-        function onOfficeProductSelected() { calculateOfficeTotal(); }
-        function calculateOfficeTotal() {}
+        function onOfficeProductSelected() {
+            const sel = document.getElementById('salesProductSelect');
+            const opt = sel.options[sel.selectedIndex];
+            let priceStr = opt.getAttribute('data-price') || "";
+            if (priceStr) document.getElementById('salesTotalAmount').value = priceStr;
+        }
+
         document.getElementById('salesDate').valueAsDate = new Date();
 
         function handleOfficeSalesSubmit(e) {
@@ -1555,7 +1561,7 @@
             const prodName = document.getElementById('salesProductSelect').value;
             const qty = parseInt(document.getElementById('salesQty').value) || 0;
             const total = document.getElementById('salesTotalAmount').value;
-            const customer = document.getElementById('salesCustomer').value || 'Gudang';
+            const customer = document.getElementById('salesCustomer').value || 'Customer';
             const address = document.getElementById('salesAddress').value || '-';
             const phone = document.getElementById('salesPhone').value || '-';
             const dVal = document.getElementById('salesDate').value;
@@ -1566,7 +1572,7 @@
             compressImageHD(photoFile, function(base64Photo) {
                 const salesObj = {
                     id: editingSalesId ? undefined : Date.now(),
-                    invoiceNo: `REP-OFFICE-${Date.now().toString().slice(-6)}`,
+                    invoiceNo: `PO-${Date.now().toString().slice(-6)}`,
                     date: dVal, month: dVal.substring(0, 7), product: prodName, qty: qty,
                     total: total, amount: total,
                     customer, address, phone, photo: base64Photo || productObj.photo || ""
@@ -1576,14 +1582,14 @@
                     if (editingSalesId) {
                         db.collection("office_sales").doc(editingSalesId).update(salesObj).then(() => {
                             resetOfficeSalesForm();
-                            alert("Riwayat catatan operasional berjaya dikemaskini!");
+                            alert("PO Masuk berjaya dikemaskini!");
                         });
                     } else {
                         db.collection("office_sales").add(salesObj).then(() => {
                             db.collection("office_products").doc(productObj.firestoreId).update({ stock: productObj.stock - qty }).then(() => {
                                 resetOfficeSalesForm();
-                                alert("Catatan operasional berjaya direkod!");
-                                showCustomInvoiceModal(salesObj, 'Laporan Pengeluaran Produk Estet');
+                                alert("PO Masuk berjaya direkod & stok dikemaskini!");
+                                showCustomInvoiceModal(salesObj, 'INVOICE PO RASMI');
                             });
                         });
                     }
@@ -1602,8 +1608,8 @@
             document.getElementById('salesAddress').value = s.address || "";
             document.getElementById('salesPhone').value = s.phone || "";
             document.getElementById('salesDate').value = s.date || "";
-            document.getElementById('officeSalesFormTitle').innerText = "✏️ Edit Catatan Operasional";
-            document.getElementById('btnOfficeSalesSubmit').innerText = "Kemaskini Catatan";
+            document.getElementById('officeSalesFormTitle').innerText = "✏️ Edit PO Masuk";
+            document.getElementById('btnOfficeSalesSubmit').innerText = "Kemaskini PO Masuk";
             document.getElementById('btnCancelOfficeSalesEdit').classList.remove('hidden');
             window.scrollTo({ top: document.getElementById('officeSalesForm').offsetTop - 100, behavior: 'smooth' });
         }
@@ -1612,16 +1618,16 @@
             document.getElementById('officeSalesForm').reset();
             document.getElementById('editingOfficeSalesId').value = "";
             document.getElementById('salesDate').valueAsDate = new Date();
-            document.getElementById('officeSalesFormTitle').innerText = "🛒 Catat Transaksi / Pengeluaran Produk Estet Baru";
-            document.getElementById('btnOfficeSalesSubmit').innerText = "Simpan Catatan & Cetak Report Rasmi";
+            document.getElementById('officeSalesFormTitle').innerText = "🛒 Catat PO Masuk / Penjualan Produk Baru";
+            document.getElementById('btnOfficeSalesSubmit').innerText = "Simpan PO & Cetak Invoice Rasmi";
             document.getElementById('btnCancelOfficeSalesEdit').classList.add('hidden');
         }
 
         function deleteOfficeSale(firestoreId) {
-            if (confirm("Yakin ingin memadamkan catatan operasional ini secara kekal?")) {
+            if (confirm("Yakin ingin memadamkan PO Masuk ini secara kekal?")) {
                 if (db) {
                     db.collection("office_sales").doc(firestoreId).delete().then(() => {
-                        alert("Catatan berjaya dipadam!");
+                        alert("PO Masuk berjaya dipadam!");
                     }).catch(err => alert("Gagal memadam: " + err.message));
                 }
             }
@@ -1633,9 +1639,9 @@
             if (!tbody) return;
             tbody.innerHTML = "";
             let filtered = officeSales.filter(s => fm === 'all' || s.month === fm);
-            filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+            filtered.sort((a, b) => new Date(a.date) - new Date(b.date)); // Otomatis urut tanggal
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada riwayat catatan operasional.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">Belum ada riwayat PO masuk atau penjualan.</td></tr>`;
                 return;
             }
             filtered.forEach((s, index) => {
@@ -1643,12 +1649,13 @@
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-2">${s.date}</td>
+                        <td class="p-2 font-mono font-bold text-indigo-700">${s.invoiceNo || 'PO-001'}</td>
                         <td class="p-2 font-medium">${s.product}</td>
                         <td class="p-2">${s.qty} unit</td>
                         <td class="p-2 font-bold text-emerald-600">${s.total}</td>
                         <td class="p-2">${s.customer}<br><span class="text-[10px] text-slate-500">${s.phone || '-'}</span></td>
                         <td class="p-2 text-center space-x-1">
-                            <button type="button" onclick='showCustomInvoiceModal(window.officeSale_${index}, "Laporan Produk & Operasional Estet")' class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold">📄 Report</button>
+                            <button type="button" onclick='showCustomInvoiceModal(window.officeSale_${index}, "INVOICE PO RASMI")' class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold">📄 Invoice</button>
                             <button type="button" onclick="editOfficeSale('${s.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️ Edit</button>
                             <button type="button" onclick="deleteOfficeSale('${s.firestoreId}')" class="bg-rose-50 text-rose-700 px-2 py-1 rounded text-xs font-bold">🗑️ Padam</button>
                         </td>
@@ -1746,7 +1753,7 @@
             for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
             
             let filteredSupply = supplyData.filter(r => fm === 'all' || r.month === fm);
-            filteredSupply.sort((a, b) => new Date(a.date) - new Date(b.date));
+            filteredSupply.sort((a, b) => new Date(a.date) - new Date(b.date)); // Otomatis urut tanggal
 
             filteredSupply.forEach(r => {
                 let badge = r.action === 'stok' ? `<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px]">📦 Stok</span>` : `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px]">🚀 Disuplain</span>`;
@@ -1780,7 +1787,7 @@
             }
         }
 
-        // --- INVENTORY & TASKS & EXPENSES ---
+        // --- INVENTORY & TASKS & EXPENSES (BELANJA KEBUN) ---
         function renderInventory() {
             const c = document.getElementById('inventoryContainer');
             const sel = document.getElementById('taskStockItem');
@@ -1868,7 +1875,7 @@
             if(!tbody) return; tbody.innerHTML = "";
             
             let filteredTasks = tasks.filter(t => fm === 'all' || t.month === fm);
-            filteredTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+            filteredTasks.sort((a, b) => new Date(a.date) - new Date(b.date)); // Otomatis urut tanggal
 
             filteredTasks.forEach(t => {
                 tbody.innerHTML += `
@@ -1912,12 +1919,12 @@
                 if (editingId) {
                     db.collection("expenses").where("id", "==", parseInt(editingId)).get().then(snap => {
                         snap.forEach(d => d.ref.update(expObj));
-                        resetExpenseForm(); alert("Aktivitas berjaya dikemaskini!");
+                        resetExpenseForm(); alert("Belanja kebun berjaya dikemaskini!");
                     });
                 } else {
                     expObj.receipt = expReceiptBase64 || "";
                     db.collection("expenses").add(expObj).then(() => {
-                        resetExpenseForm(); alert("Aktivitas ditambah!");
+                        resetExpenseForm(); alert("Belanja kebun ditambah!");
                     });
                 }
             }
@@ -1927,7 +1934,7 @@
             document.getElementById('expenseForm').reset();
             document.getElementById('editingExpenseId').value = "";
             expReceiptBase64 = "";
-            document.getElementById('btnExpenseSubmit').innerText = "Tambah Aktivitas Kebun";
+            document.getElementById('btnExpenseSubmit').innerText = "Tambah Belanja Kebun";
             document.getElementById('btnCancelExpenseEdit').classList.add('hidden');
         }
 
@@ -1938,7 +1945,7 @@
             document.getElementById('expTitle').value = ex.title || "";
             document.getElementById('expAmount').value = ex.amount || "";
             document.getElementById('expDate').value = ex.date || "";
-            document.getElementById('btnExpenseSubmit').innerText = "Kemaskini Aktivitas";
+            document.getElementById('btnExpenseSubmit').innerText = "Kemaskini Belanja";
             document.getElementById('btnCancelExpenseEdit').classList.remove('hidden');
             window.scrollTo({ top: document.getElementById('expenseForm').offsetTop - 100, behavior: 'smooth' });
         }
@@ -1966,7 +1973,7 @@
             });
         }
         function deleteExpense(id) {
-            if (confirm("Padam rekod aktivitas ini?")) {
+            if (confirm("Padam rekod belanja kebun ini?")) {
                 if(db) db.collection("expenses").where("id", "==", id).get().then(s => s.forEach(d => d.ref.delete()));
             }
         }
@@ -1980,7 +1987,7 @@
             sel.value = cv;
         }
 
-        // --- SIGNATURE & LAPORAN SUPPLY / TUGAS PROFESIONAL ---
+        // --- SIGNATURE & LAPORAN / INVOICE PO PROFESIONAL ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -1998,21 +2005,21 @@
 
         function showCustomInvoiceModal(salesData, categoryTitle) {
             document.getElementById('invModalMainHeader').innerText = categoryTitle;
-            document.getElementById('invModalInvoiceNo').innerText = `No: ${salesData.invoiceNo || 'REP-' + Date.now().toString().slice(-6)}`;
+            document.getElementById('invModalInvoiceNo').innerText = `No: ${salesData.invoiceNo || 'PO-' + Date.now().toString().slice(-6)}`;
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${salesData.date || '-'}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
-            document.getElementById('invRecipientLabel').innerText = "Keterangan Penerima / Tujuan:";
-            document.getElementById('invCustomerName').innerText = salesData.customer || 'Gudang';
-            document.getElementById('invCustomerAddress').innerText = `Lokasi: ${salesData.address || '-'}`;
+            document.getElementById('invRecipientLabel').innerText = "Kepada (Customer / Pembeli):";
+            document.getElementById('invCustomerName').innerText = salesData.customer || 'Customer';
+            document.getElementById('invCustomerAddress').innerText = `Alamat: ${salesData.address || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${salesData.phone || '-'}`;
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
             document.getElementById('invoiceTableHeaderRow').innerHTML = `
                 <th class="p-2.5 rounded-l-lg">No</th>
-                <th class="p-2.5">Keterangan / Produk</th>
+                <th class="p-2.5">Keterangan Produk</th>
                 <th class="p-2.5 text-center">Kuantiti</th>
                 <th class="p-2.5 text-right">Status / Batch</th>
-                <th class="p-2.5 text-right rounded-r-lg">Keterangan</th>
+                <th class="p-2.5 text-right rounded-r-lg">Jumlah Harga</th>
             `;
 
             const tbody = document.getElementById('invoiceTableBody');
@@ -2023,8 +2030,8 @@
                     <td class="p-2.5">1</td>
                     <td class="p-2.5 font-bold text-slate-800">${salesData.product}</td>
                     <td class="p-2.5 text-center">${salesData.qty} unit</td>
-                    <td class="p-2.5 text-right font-medium text-emerald-700">${salesData.total}</td>
-                    <td class="p-2.5 text-right">-</td>
+                    <td class="p-2.5 text-right font-medium text-emerald-700">Ready Stock</td>
+                    <td class="p-2.5 text-right font-bold text-slate-900">${salesData.total}</td>
                 </tr>
             `;
             document.getElementById('invoiceModal').classList.remove('hidden');
@@ -2073,6 +2080,7 @@
                 });
             }
 
+            document.getElementById('invoiceModal').classList.add('hidden');
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
         }
@@ -2090,12 +2098,12 @@
             }
             else if(type === 'expenses') { 
                 filterVal = document.getElementById('filterExpenseMonth').value; 
-                title = "Rekap Aktivitas Kebun"; 
+                title = "Rekap Belanja & Pengeluaran Kebun"; 
                 dataArr = expenses.filter(ex => filterVal === 'all' || ex.month === filterVal); 
             }
             else if(type === 'office') { 
                 filterVal = document.getElementById('filterOfficeMonth').value; 
-                title = "Rekap Produk & Operasional Estet"; 
+                title = "Rekap PO Masuk & Penjualan Estet"; 
                 dataArr = officeSales.filter(o => filterVal === 'all' || o.month === filterVal); 
             }
 
@@ -2113,20 +2121,20 @@
 
             document.getElementById('invoiceTableHeaderRow').innerHTML = `
                 <th class="p-2.5 rounded-l-lg">No</th>
-                <th class="p-2.5">Keterangan / Tugas</th>
-                <th class="p-2.5 text-center">Kategori / Pekerja</th>
+                <th class="p-2.5">Keterangan / Item</th>
+                <th class="p-2.5 text-center">Kategori / Pembali</th>
                 <th class="p-2.5 text-right">Tarikh</th>
-                <th class="p-2.5 text-right rounded-r-lg">Status</th>
+                <th class="p-2.5 text-right rounded-r-lg">Jumlah / Status</th>
             `;
 
             const tbody = document.getElementById('invoiceTableBody');
             tbody.innerHTML = "";
             dataArr.forEach((item, idx) => {
                 let desc = item.title || item.item || item.product || '-';
-                let catOrWorker = item.worker || item.category || '-';
+                let catOrCust = item.worker || item.category || item.customer || '-';
                 let dt = item.date || '-';
-                let status = item.status || item.amount || 'Selesai ✓';
-                tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-medium">${desc}</td><td class="p-2.5 text-center">${catOrWorker}</td><td class="p-2.5 text-right font-mono">${dt}</td><td class="p-2.5 text-right font-bold text-emerald-700">${status}</td></tr>`;
+                let valOrStatus = item.status || item.amount || item.total || 'Selesai ✓';
+                tbody.innerHTML += `<tr><td class="p-2.5">${idx+1}</td><td class="p-2.5 font-medium">${desc}</td><td class="p-2.5 text-center">${catOrCust}</td><td class="p-2.5 text-right font-mono">${dt}</td><td class="p-2.5 text-right font-bold text-emerald-700">${valOrStatus}</td></tr>`;
             });
             document.getElementById('invoiceModal').classList.remove('hidden');
             setTimeout(initSignaturePad, 200);
