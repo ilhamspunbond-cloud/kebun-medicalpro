@@ -21,10 +21,11 @@
             #printableInvoiceArea { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
             .no-print { display: none !important; }
         }
-        /* Memastikan tombol play walkie-talkie bisa disentuh dengan sempurna di HP */
+        /* Memastikan pemutar audio responsif sempurna di Android, iPhone, dan Komputer */
         audio {
             pointer-events: auto !important;
             cursor: pointer !important;
+            -webkit-appearance: none;
         }
     </style>
 </head>
@@ -994,7 +995,6 @@
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
         let currentLang = localStorage.getItem('medicalpro_lang') || 'ms';
 
-        // --- KAMUS TERJEMAHAN 5 BAHASA FULL 100% ---
         const translations = {
             ms: {
                 pageTitle: "Ladang Belimbing Buluh Medicalpro",
@@ -2922,8 +2922,14 @@
         let audioChunks = [];
         let recordedAudioBase64 = null;
         let isRecording = false;
+        let activeAudioStream = null;
 
         function switchBossMode(mode) {
+            stopAllAiAudio();
+            if (mode === 'text' && isRecording) {
+                stopMicrophoneStream();
+            }
+            
             bossMode = mode;
             const textForm = document.getElementById('bossOrderForm');
             const voiceContainer = document.getElementById('bossVoiceContainer');
@@ -2941,6 +2947,17 @@
                 btnVoice.className = "px-3 py-1.5 bg-amber-600 text-white rounded-xl text-xs font-bold transition";
                 btnText.className = "px-3 py-1.5 bg-slate-800 text-amber-300 rounded-xl text-xs font-bold transition";
             }
+        }
+
+        function stopMicrophoneStream() {
+            if (activeAudioStream) {
+                activeAudioStream.getTracks().forEach(track => track.stop());
+                activeAudioStream = null;
+            }
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                try { mediaRecorder.stop(); } catch(e) {}
+            }
+            isRecording = false;
         }
 
         function sendBossTextOrder(e) {
@@ -2965,10 +2982,14 @@
             stopAllAiAudio();
             if (!isRecording) {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
+                    activeAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(activeAudioStream);
                     audioChunks = [];
-                    mediaRecorder.ondataavailable = event => { if (event.data.size > 0) audioChunks.push(event.data); };
+                    
+                    mediaRecorder.ondataavailable = event => { 
+                        if (event.data.size > 0) audioChunks.push(event.data); 
+                    };
+                    
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         const reader = new FileReader();
@@ -2980,15 +3001,19 @@
                             audioPlayback.classList.remove('hidden');
                             document.getElementById('btnSendVoice').classList.remove('hidden');
                         };
+                        stopMicrophoneStream();
                     };
+
                     mediaRecorder.start();
                     isRecording = true;
                     document.getElementById('recordBtnText').innerText = "Berhenti Rakam";
                     document.getElementById('recordingStatus').innerText = "🎙️ Sedang merakam suara...";
-                } catch (err) { alert("Tidak dapat mengakses mikrofon."); }
+                } catch (err) { 
+                    alert("Tidak dapat mengakses mikrofon. Sila pastikan kebenaran izin mic diberikan."); 
+                    stopMicrophoneStream();
+                }
             } else {
-                mediaRecorder.stop();
-                isRecording = false;
+                stopMicrophoneStream();
                 document.getElementById('recordBtnText').innerText = "Mula Rakam Semula";
                 document.getElementById('recordingStatus').innerText = "Rakaman selesai. Sila klik Hantar.";
             }
@@ -2996,6 +3021,7 @@
 
         function sendBossVoiceOrder() {
             if (!recordedAudioBase64) return;
+            stopMicrophoneStream();
             const senderName = getFullTitleName();
             if (db) {
                 db.collection("boss_orders").add({
@@ -3024,18 +3050,20 @@
             db.collection("boss_orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
-                if (snapshot.empty) { container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">Belum ada arahan.</div>`; return; }
+                if (snapshot.empty) { 
+                    container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">Belum ada arahan.</div>`; 
+                    return; 
+                }
                 container.innerHTML = "";
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const id = doc.id;
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
                     
-                    // PERBAIKAN UTAMA DI SINI: Menambahkan z-index dan pointer-events agar tombol play bisa dipencet
                     let contentHtml = data.type === "text" 
                         ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` 
-                        : `<div class="mt-2 bg-slate-950 p-3 rounded-xl border border-amber-500/40 relative z-20">
-                               <audio controls preload="auto" src="${data.content}" class="w-full h-10 relative z-30 pointer-events-auto" onplay="stopAllAiAudio()"></audio>
+                        : `<div class="mt-2 bg-slate-950 p-3 rounded-xl border border-amber-500/40 relative z-30 pointer-events-auto">
+                               <audio controls preload="metadata" src="${data.content}" class="w-full h-10 relative z-40 pointer-events-auto" onplay="stopAllAiAudio()"></audio>
                            </div>`;
 
                     container.innerHTML += `
