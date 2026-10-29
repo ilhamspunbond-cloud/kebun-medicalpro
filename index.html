@@ -233,7 +233,8 @@
                     <span id="recordingStatus" class="text-xs font-semibold text-slate-400">Tekan butang untuk rakam suara walkie-talkie.</span>
                 </div>
                 <!-- DIPERBAIKI: Tambah preload="auto" agar HP langsung mengenali durasi audio -->
-                <audio id="audioPlayback" controls preload="auto" class="hidden w-full sm:w-48 h-9"></audio>
+                <audio id="audioPlayback" controls preload="auto" playsinline class="hidden w-full sm:w-48 h-9"></audio>
+
                 <button type="button" id="btnSendVoice" onclick="sendBossVoiceOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow hidden transition w-full sm:w-auto">
                     🚀 Hantar Walkie-Talkie
                 </button>
@@ -3063,11 +3064,26 @@
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
                     
                     let contentHtml = data.type === "text" 
-                        ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` 
-                        : `<div class="mt-2 bg-slate-950 p-3 rounded-xl border border-amber-500/40 relative z-30 pointer-events-auto">
-                               <!-- DIPERBAIKI: Tambah preload="metadata" pada riwayat cloud agar HP memuat data audio dengan lancar -->
-                               <audio controls preload="metadata" src="${data.content}" class="w-full h-10 relative z-40 pointer-events-auto" onplay="stopAllAiAudio()"></audio>
-                           </div>`;
+    ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` 
+    : `<div class="mt-2 bg-slate-950 p-3 rounded-xl border border-amber-500/40 relative z-30 pointer-events-auto">
+           <!-- DIPERBAIKI: Tambah preload="metadata" dan playsinline pada riwayat cloud agar HP memuat data audio dengan lancar -->
+           <audio controls preload="metadata" playsinline src="${data.content}" class="w-full h-10 relative z-40 pointer-events-auto" onplay="stopAllAiAudio()"></audio>
+       </div>`;
+                    // Fungsi Helper untuk Mendapatkan Ikon/Emoji Berdasarkan Gelaran
+function getTitleEmoji(gender) {
+    switch (gender) {
+        case 'Dato': return '👑';
+        case 'Tuan': return '🎩';
+        case 'Puan': return '👒';
+        case 'Abang': return '🧢';
+        case 'Akak': return '🧕';
+        case 'Pakcik': return '👴';
+        case 'Makcik': return '👵';
+        default: return '👤';
+    }
+}
+
+
 
                     container.innerHTML += `
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
@@ -4129,6 +4145,38 @@
             updateLiveClockAndWeather();
             loadBossOrdersRealtime();
         });
+  // Fungsi Helper untuk Mendapatkan Ikon/Emoji Berdasarkan Gelaran
+function getTitleEmoji(gender) {
+    switch (gender) {
+        case 'Dato': return '👑';
+        case 'Tuan': return '🎩';
+        case 'Puan': return '👒';
+        case 'Abang': return '🧢';
+        case 'Akak': return '🧕';
+        case 'Pakcik': return '👴';
+        case 'Makcik': return '👵';
+        default: return '👤';
+    }
+}
+
+// Khusus untuk TAMPILAN DI LAYAR (Lengkap dengan ikon/emoji)
+function getDisplayTitleName() {
+    if (!currentUser) return "👑 Dato Abdul Rojak";
+    let title = currentUser.gender || "Dato";
+    let name = currentUser.name || "Abdul Rojak";
+    let emoji = getTitleEmoji(title);
+    return `${emoji} ${title} ${name}`;
+}
+
+// Khusus untuk SUARA AI / SPEECH (Hanya teks biasa tanpa emoji)
+function getFullTitleName() {
+    if (!currentUser) return "Dato Abdul Rojak";
+    let title = currentUser.gender || "Dato";
+    let name = currentUser.name || "Abdul Rojak";
+    return `${title} ${name}`;
+}
+
+        
     </script>
 </body>
 </html>
