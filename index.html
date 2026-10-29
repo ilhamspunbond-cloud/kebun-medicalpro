@@ -21,7 +21,6 @@
             #printableInvoiceArea { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
             .no-print { display: none !important; }
         }
-        /* Memastikan pemutar audio responsif sempurna di Android, iPhone, dan Komputer */
         audio {
             pointer-events: auto !important;
             cursor: pointer !important;
@@ -229,7 +228,7 @@
                 <div class="flex-1 flex gap-2">
                     <input type="text" id="bossInputMessage" placeholder="Taip perbincangan atau arahan untuk ke ladang..." class="flex-1 border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-900 text-white focus:outline-amber-500">
                     <label class="bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 border border-slate-700 whitespace-nowrap">
-                        📷 <span class="hidden sm:inline">Gambar</span>
+                        📷 <span class="hidden sm:inline" id="lblChatImg">Gambar</span>
                         <input type="file" id="chatImageInput" accept="image/*" class="hidden" onchange="previewChatImage()">
                     </label>
                 </div>
@@ -1019,6 +1018,7 @@
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
                 lblBossPortalTitle: "💬 Perbincangan atau Perintah tentang Ladang Belimbing Buluh Medical Pro",
+                lblChatImg: "Gambar",
                 bossPlaceholder: "Taip perbincangan atau arahan untuk ke ladang...",
                 btnSendOrder: "Kirim Chat",
                 lblHistoryTitle: "Ruang Perbincangan & Pesan Chat (Permanen):",
@@ -1230,6 +1230,7 @@
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
                 lblBossPortalTitle: "💬 Perbincangan atau Perintah tentang Ladang Belimbing Buluh Medical Pro",
+                lblChatImg: "Gambar",
                 bossPlaceholder: "Ketik perbincangan atau perintah ke kebun...",
                 btnSendOrder: "Kirim Chat",
                 lblHistoryTitle: "Ruang Perbincangan & Pesan Chat (Permanen):",
@@ -1441,6 +1442,7 @@
                 lblWind: "风速",
                 lblAiDecision: "🤖 AI 根据天气与土壤做出的决策：",
                 lblBossPortalTitle: "💬 槟榔果树农场 (Medical Pro) 相关讨论与指令",
+                lblChatImg: "图片",
                 bossPlaceholder: "输入农场讨论或指令...",
                 btnSendOrder: "发送聊天",
                 lblHistoryTitle: "讨论与聊天记录 (永久):",
@@ -1652,6 +1654,7 @@
                 lblWind: "हवा",
                 lblAiDecision: "🤖 मौसम और मिट्टी के आधार पर AI का निर्णय:",
                 lblBossPortalTitle: "💬 बेलimbing बुलुह मेडिकल प्रो फार्म के बारे में चर्चा या आदेश",
+                lblChatImg: "छवि",
                 bossPlaceholder: "फार्म के लिए चर्चा या आदेश टाइप करें...",
                 btnSendOrder: "चैट भेजें",
                 lblHistoryTitle: "चर्चा और चैट संदेश (स्थायी):",
@@ -1863,6 +1866,7 @@
                 lblWind: "Wind",
                 lblAiDecision: "🤖 AI Decision Based on Weather & Soil:",
                 lblBossPortalTitle: "💬 Discussion or Orders regarding Belimbing Buluh Medical Pro Farm",
+                lblChatImg: "Image",
                 bossPlaceholder: "Type farm discussion or directive...",
                 btnSendOrder: "Send Chat",
                 lblHistoryTitle: "Discussion & Chat Messages (Permanent):",
@@ -2055,8 +2059,21 @@
             "Tiada": { ms: "Tiada", id: "Tidak ada", zh: "无", hi: "कोई नहीं", en: "None" }
         };
 
-        function translateWorkerText(text) {
+        const dynamicTranslateMap = {
+            "Selesai ✓": { ms: "Selesai ✓", id: "Selesai ✓", zh: "已完成 ✓", hi: "पूर्ण ✓", en: "Completed ✓" },
+            "Belum ada perbincangan atau pesan chat.": { ms: "Belum ada perbincangan atau pesan chat.", id: "Belum ada perbincangan atau pesan chat.", zh: "暂无讨论或聊天消息。", hi: "कोई चर्चा या चैट संदेश नहीं है।", en: "No discussions or chat messages yet." },
+            "Memuat perbincangan ladang...": { ms: "Memuat perbincangan ladang...", id: "Memuat perbincangan ladang...", zh: "正在加载农场讨论...", hi: "फार्म चर्चा लोड हो रही है...", en: "Loading farm discussions..." },
+            "Semua Bulan (Global)": { ms: "Semua Bulan (Global)", id: "Semua Bulan (Global)", zh: "所有月份 (全局)", hi: "सभी महीने (ग्लोबल)", en: "All Months (Global)" },
+            "Bulan": { ms: "Bulan", id: "Bulan", zh: "月份", hi: "महीना", en: "Month" },
+            "Tunai": { ms: "Tunai", id: "Tunai", zh: "现金", hi: "नकद", en: "Cash" },
+            "Walk-in": { ms: "Walk-in", id: "Walk-in", zh: "现场购买", hi: "वॉक-इन", en: "Walk-in" }
+        };
+
+        function translateDynamicText(text) {
             if (!text) return text;
+            if (dynamicTranslateMap[text] && dynamicTranslateMap[text][currentLang]) {
+                return dynamicTranslateMap[text][currentLang];
+            }
             if (workerTextDict[text] && workerTextDict[text][currentLang]) {
                 return workerTextDict[text][currentLang];
             }
@@ -2073,6 +2090,7 @@
             renderIncomeSales();
             renderOfficeSales();
             renderAdminCustomerOrders();
+            loadBossOrdersRealtime();
         }
 
         function applyLanguage() {
@@ -2119,6 +2137,7 @@
                 lblWind: t.lblWind,
                 lblAiDecision: t.lblAiDecision,
                 lblBossPortalTitle: t.lblBossPortalTitle,
+                lblChatImg: t.lblChatImg,
                 btnSendOrder: t.btnSendOrder,
                 lblHistoryTitle: t.lblHistoryTitle,
                 navTasks: t.navTasks,
@@ -2837,7 +2856,7 @@
                         } else if (rainSoon) {
                             aiRecommendationText = `⚠️ <b>Perhatian ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
                         } else if (temp > 33) {
-                            aiRecommendationText = `☀️ Suhu agak terিক (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
+                            aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
                         } else {
                             aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Sesi kerja aktif berjalan. Keadaan ideal untuk aktiviti ladang.`;
                         }
@@ -2934,7 +2953,7 @@
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
                 if (snapshot.empty) { 
-                    container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">Belum ada perbincangan atau pesan chat.</div>`; 
+                    container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">${translateDynamicText("Belum ada perbincangan atau pesan chat.")}</div>`; 
                     return; 
                 }
                 container.innerHTML = "";
@@ -3088,8 +3107,9 @@
             sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Ladang --</option>`;
             gardenProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-10 h-10 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-xl">🌱</span>`;
-                sc.innerHTML += `<div class="bg-white border p-2.5 rounded-xl text-center">${imgTag}<div class="text-[11px] font-bold text-emerald-900">${p.name}</div><div class="text-xs text-slate-600">Stok: <b>${p.stock}</b></div></div>`;
-                sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
+                let translatedProdName = translateDynamicText(p.name);
+                sc.innerHTML += `<div class="bg-white border p-2.5 rounded-xl text-center">${imgTag}<div class="text-[11px] font-bold text-emerald-900">${translatedProdName}</div><div class="text-xs text-slate-600">Stok: <b>${p.stock}</b></div></div>`;
+                sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${translatedProdName} (Stok: ${p.stock} | RM${p.price})</option>`;
             });
         }
 
@@ -3161,7 +3181,7 @@
             let sortedIncome = [...incomeList].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedIncome.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${s.product}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Terus Dari Ladang')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invois</button></td></tr>`;
+                tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${translateDynamicText(s.product)}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Terus Dari Ladang')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invois</button></td></tr>`;
             });
         }
 
@@ -3222,8 +3242,10 @@
             sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Luar Talian --</option>`;
             officeProducts.forEach(p => {
                 let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
-                sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${p.name}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | RM ${parseFloat(p.price).toFixed(2)}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${p.benefits || '-'}</div></div>`;
-                sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${p.name} (Stok: ${p.stock} | RM${p.price})</option>`;
+                let translatedProdName = translateDynamicText(p.name);
+                let translatedBenefits = translateDynamicText(p.benefits);
+                sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${translatedProdName}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | RM ${parseFloat(p.price).toFixed(2)}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${translatedBenefits || '-'}</div></div>`;
+                sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${translatedProdName} (Stok: ${p.stock} | RM${p.price})</option>`;
             });
         }
 
@@ -3335,7 +3357,7 @@
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-2">${s.date}</td>
-                        <td class="p-2 font-medium">${s.product}</td>
+                        <td class="p-2 font-medium">${translateDynamicText(s.product)}</td>
                         <td class="p-2">${s.qty} unit</td>
                         <td class="p-2 font-bold text-emerald-600">${s.total}</td>
                         <td class="p-2">${s.customer}<br><span class="text-[10px] text-slate-500">${s.phone || '-'}</span></td>
@@ -3439,7 +3461,7 @@
             tbody.innerHTML = ""; sc.innerHTML = "";
             let stocks = {};
             supplyData.forEach(r => { let key = `${r.item} (${r.unit})`; if(!stocks[key]) stocks[key] = 0; if(r.action === 'stok') stocks[key] += r.qty; });
-            for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
+            for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${translateDynamicText(key)}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
             
             let sortedSupply = [...supplyData].sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -3449,10 +3471,10 @@
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-2">${r.date}</td>
-                        <td class="p-2">${r.item}</td>
+                        <td class="p-2">${translateDynamicText(r.item)}</td>
                         <td class="p-2">${badge}</td>
                         <td class="p-2 font-bold">${r.qty} ${r.unit}</td>
-                        <td class="p-2">${r.desc}</td>
+                        <td class="p-2">${translateDynamicText(r.desc)}</td>
                         <td class="p-2 text-center space-x-1">
                             ${btn}
                             <button type="button" onclick="editSupplyItem('${r.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️</button>
@@ -3469,14 +3491,16 @@
             const sel = document.getElementById('taskStockItem');
             if(!c || !sel) return; c.innerHTML = ""; sel.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
             inventory.forEach(item => {
-                sel.innerHTML += `<option value="${item.name}">${item.name} (Baki: ${item.stock})</option>`;
-                c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-800">${item.name}</h4><p class="text-xs">Baki: <b>${item.stock}</b></p></div>`;
+                let translatedName = translateDynamicText(item.name);
+                let translatedAdvice = translateDynamicText(item.advice);
+                sel.innerHTML += `<option value="${item.name}">${translatedName} (Baki: ${item.stock})</option>`;
+                c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-800">${translatedName}</h4><p class="text-xs">Baki: <b>${item.stock}</b></p><p class="text-[11px] text-slate-600 mt-1">${translatedAdvice}</p></div>`;
             });
         }
         function renderAdminInventoryTable() {
             const tbody = document.getElementById('adminInventoryTableBody');
             if(!tbody) return; tbody.innerHTML = "";
-            inventory.forEach((item, i) => { tbody.innerHTML += `<tr class="border-b"><td class="p-2">${item.name}</td><td class="p-2">${item.stock}</td><td class="p-2"><button type="button" onclick="deleteInv(${i})" class="text-rose-500">Padam</button></td></tr>`; });
+            inventory.forEach((item, i) => { tbody.innerHTML += `<tr class="border-b"><td class="p-2">${translateDynamicText(item.name)}</td><td class="p-2">${item.stock}</td><td class="p-2"><button type="button" onclick="deleteInv(${i})" class="text-rose-500">Padam</button></td></tr>`; });
         }
         function handleInventoryFormSubmit(e) {
             e.preventDefault();
@@ -3558,8 +3582,10 @@
             let sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedTasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
-                let translatedTitle = translateWorkerText(t.title);
-                let translatedCat = translateWorkerText(t.category);
+                let translatedTitle = translateDynamicText(t.title);
+                let translatedCat = translateDynamicText(t.category);
+                let translatedStatus = translateDynamicText(t.status);
+                let translatedStock = translateDynamicText(t.stockUsed);
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
@@ -3567,8 +3593,8 @@
                         <td class="p-3">${translatedCat}</td>
                         <td class="p-3">${t.worker}</td>
                         <td class="p-3">${t.date}</td>
-                        <td class="p-3">${t.stockUsed}</td>
-                        <td class="p-3 text-emerald-700 font-medium">${t.status}</td>
+                        <td class="p-3">${translatedStock}</td>
+                        <td class="p-3 text-emerald-700 font-medium">${translatedStatus}</td>
                         <td class="p-3 text-center space-x-1">
                             <button type="button" onclick="editTask('${t.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️ Edit</button>
                             <button type="button" onclick="deleteTask('${t.firestoreId}')" class="bg-rose-50 text-rose-700 px-2 py-1 rounded text-xs font-bold">🗑️ Padam</button>
@@ -3646,7 +3672,7 @@
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
-                        <td class="p-3 font-semibold">${ex.title}</td>
+                        <td class="p-3 font-semibold">${translateDynamicText(ex.title)}</td>
                         <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
                         <td class="p-3">${ex.date}</td>
                         <td class="p-3 text-center space-x-1">
@@ -3662,8 +3688,8 @@
             const sel = document.getElementById(id);
             if(!sel) return;
             let cv = sel.value;
-            sel.innerHTML = `<option value="all">Semua Bulan (Global)</option>`;
-            Array.from(set).sort().reverse().forEach(m => sel.innerHTML += `<option value="${m}">Bulan: ${m}</option>`);
+            sel.innerHTML = `<option value="all">${translateDynamicText("Semua Bulan (Global)")}</option>`;
+            Array.from(set).sort().reverse().forEach(m => sel.innerHTML += `<option value="${m}">${translateDynamicText("Bulan")}: ${m}</option>`);
             sel.value = cv;
         }
 
@@ -3688,8 +3714,8 @@
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${salesData.date || '-'}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
             document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
-            document.getElementById('invCustomerName').innerText = salesData.customer || 'Tunai';
-            document.getElementById('invCustomerAddress').innerText = `Alamat: ${salesData.address || '-'}`;
+            document.getElementById('invCustomerName').innerText = translateDynamicText(salesData.customer) || 'Tunai';
+            document.getElementById('invCustomerAddress').innerText = `Alamat: ${translateDynamicText(salesData.address) || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${salesData.phone || '-'}`;
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
             document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
@@ -3709,7 +3735,7 @@
             tbody.innerHTML = `
                 <tr>
                     <td class="p-2.5">1</td>
-                    <td class="p-2.5 font-bold text-slate-800">${salesData.product}</td>
+                    <td class="p-2.5 font-bold text-slate-800">${translateDynamicText(salesData.product)}</td>
                     <td class="p-2.5 text-center">${salesData.qty}</td>
                     <td class="p-2.5 text-right">RM ${unitPrice}</td>
                     <td class="p-2.5 text-right font-bold text-emerald-700">${salesData.total}</td>
@@ -3759,9 +3785,9 @@
                         <tr>
                             <td class="p-2.5">${idx + 1}</td>
                             <td class="p-2.5 font-mono">${item.date || '-'}</td>
-                            <td class="p-2.5 font-bold text-slate-800">${item.item || '-'}</td>
+                            <td class="p-2.5 font-bold text-slate-800">${translateDynamicText(item.item) || '-'}</td>
                             <td class="p-2.5 text-center font-bold text-emerald-700">${item.qty || 0} ${item.unit || 'kg'}</td>
-                            <td class="p-2.5 text-slate-600">${item.desc || '-'}</td>
+                            <td class="p-2.5 text-slate-600">${translateDynamicText(item.desc) || '-'}</td>
                         </tr>
                     `;
                 });
@@ -3841,11 +3867,11 @@
                         tbody.innerHTML += `
                             <tr>
                                 <td class="p-2.5">${idx + 1}</td>
-                                <td class="p-2.5 font-bold text-slate-800">${item.title || '-'}</td>
-                                <td class="p-2.5">${item.category || '-'}</td>
+                                <td class="p-2.5 font-bold text-slate-800">${translateDynamicText(item.title) || '-'}</td>
+                                <td class="p-2.5">${translateDynamicText(item.category) || '-'}</td>
                                 <td class="p-2.5">${item.worker || '-'}</td>
                                 <td class="p-2.5 text-center font-mono">${item.date || '-'}</td>
-                                <td class="p-2.5 text-emerald-700 font-semibold">${item.status || 'Selesai'} (${item.stockUsed || 'Tiada'})</td>
+                                <td class="p-2.5 text-emerald-700 font-semibold">${translateDynamicText(item.status) || 'Selesai'} (${translateDynamicText(item.stockUsed) || 'Tiada'})</td>
                             </tr>
                         `;
                     });
@@ -3862,7 +3888,7 @@
 
                 let grandTot = 0;
                 dataArr.forEach((item, idx) => {
-                    let desc = item.title || item.item || item.product || '-';
+                    let desc = translateDynamicText(item.title || item.item || item.product || '-');
                     let qty = item.qty || 1;
                     let amt = parseFloat((item.total || item.amount || '0').toString().replace(/[^0-9.]/g, '')) || 0;
                     grandTot += amt;
@@ -3898,16 +3924,16 @@
                 return;
             }
             customerOrdersList.forEach((o, index) => {
-                let itemsText = (o.items || []).map(i => `${i.name} (${i.qty} unit)`).join(', ');
+                let itemsText = (o.items || []).map(i => `${translateDynamicText(i.name)} (${i.qty} unit)`).join(', ');
                 window[`orderData_${index}`] = o;
 
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-2 font-mono font-bold">${o.invoiceNo || 'INV-PO-' + o.id}</td>
                         <td class="p-2">${o.date || '-'}</td>
-                        <td class="p-2 font-semibold">${o.customerName || 'Pelanggan'}<br><span class="text-[10px] text-slate-500">${o.customerPhone || '-'}</span></td>
+                        <td class="p-2 font-semibold">${translateDynamicText(o.customerName) || 'Pelanggan'}<br><span class="text-[10px] text-slate-500">${o.customerPhone || '-'}</span></td>
                         <td class="p-2 text-xs">${itemsText}</td>
-                        <td class="p-2 text-xs">Kurir: ${o.shipping || '-'}<br>Bayar: ${o.payment || '-'}</td>
+                        <td class="p-2 text-xs">Kurir: ${o.shipping || '-'}<br>Bayar: ${translateDynamicText(o.payment) || '-'}</td>
                         <td class="p-2">
                             <input type="text" id="resi_${o.firestoreId}" value="${o.trackingNo || ''}" placeholder="No Rujukan..." class="border p-1 rounded text-xs w-28 mb-1">
                             <button type="button" onclick="saveTrackingResi('${o.firestoreId}')" class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px]">Simpan</button>
@@ -3952,8 +3978,8 @@
             document.getElementById('invModalDateNum').innerText = `Tarikh: ${orderObj.date || '-'}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
             document.getElementById('invRecipientLabel').innerText = "Kepada (Pelanggan / Pembeli):";
-            document.getElementById('invCustomerName').innerText = orderObj.customerName || 'Pelanggan Umum';
-            document.getElementById('invCustomerAddress').innerText = `Alamat: ${orderObj.customerAddress || '-'}`;
+            document.getElementById('invCustomerName').innerText = translateDynamicText(orderObj.customerName) || 'Pelanggan Umum';
+            document.getElementById('invCustomerAddress').innerText = `Alamat: ${translateDynamicText(orderObj.customerAddress) || '-'}`;
             document.getElementById('invCustomerPhone').innerText = `Tel: ${orderObj.customerPhone || '-'}`;
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
             document.getElementById('invoiceGrandTotalWrapper').style.display = 'block';
@@ -3977,7 +4003,7 @@
                     tbody.innerHTML += `
                         <tr>
                             <td class="p-2.5">${idx + 1}</td>
-                            <td class="p-2.5 font-bold text-slate-800">${item.name || 'Produk'}</td>
+                            <td class="p-2.5 font-bold text-slate-800">${translateDynamicText(item.name) || 'Produk'}</td>
                             <td class="p-2.5 text-center">${item.qty || 1}</td>
                             <td class="p-2.5 text-right">RM ${(parseFloat(item.price) || 0).toFixed(2)}</td>
                             <td class="p-2.5 text-right font-bold text-emerald-700">RM ${itemTotal.toFixed(2)}</td>
@@ -4009,7 +4035,6 @@
             loadBossOrdersRealtime();
         });
 
-        // Fungsi Helper untuk Mendapatkan Ikon/Emoji Berdasarkan Gelaran
         function getTitleEmoji(gender) {
             switch (gender) {
                 case 'Dato': return '👑';
