@@ -2886,14 +2886,24 @@
                         let condText = rainSoon ? "Hujan Rintik" : (isNight ? "Malam Tenang" : "Berawan Separa");
                         let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
 
-                        let aiRecommendationText = "";
-                        if (rainSoon) {
-                            aiRecommendationText = `⚠️ <b>Perhatian Dato ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
-                        } else if (temp > 33) {
-                            aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
-                        } else {
-                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Keadaan sangat ideal untuk kerja pembajaan bio baja rutin atau penuai daun teh belimbing.`;
-                        }
+
+                    let aiRecommendationText = "";
+
+// Logika Waktu Berdasarkan Jam Malaysia (currentHourInt)
+if (currentHourInt >= 17 || currentHourInt < 7) {
+    // Di atas jam 5 sore (17.00) sampai sebelum jam 7 pagi
+    aiRecommendationText = `🌙 <b>Waktu Rehat Pekerja:</b> Sudah lewat pukul 5 petang. Disarankan menghentikan aktiviti ladang dan membenarkan pekerja berehat/tidur malam hingga jam 7:00–8:00 pagi esok.`;
+} else if (currentHourInt >= 12 && currentHourInt < 14) {
+    // Jam 12 siang sampai jam 2 siang (istirahat 2 jam)
+    aiRecommendationText = `☀️ <b>Waktu Rehat Tengah Hari:</b> Pukul ${currentHourInt}:00. Sesi rehat tengah hari selama 2 jam (12:00 - 14:00). Pekerja dihentikan sementara dari kerja berat.`;
+} else if (rainSoon) {
+    aiRecommendationText = `⚠️ <b>Perhatian ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
+} else if (temp > 33) {
+    aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
+} else {
+    aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Sesi kerja aktif berjalan. Keadaan ideal untuk aktiviti ladang.`;
+}
+           
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
