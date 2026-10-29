@@ -140,7 +140,7 @@
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI atau hantar pautan panduan (Cth: https://... cara baja)..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI atau hantar pautan panduan..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
                 <button type="submit" id="btnAiSend" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Kirim & Simpan</button>
             </form>
         </section>
@@ -171,9 +171,7 @@
 
             <div class="pt-2">
                 <div id="lblHourlyForecast" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ramalan Mengikut Jam</div>
-                <div id="hourlyForecastContainer" class="flex overflow-x-auto gap-3 pb-2 scrollbar-thin scrollbar-thumb-slate-700 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80">
-                    <!-- Diisi otomatis oleh JavaScript -->
-                </div>
+                <div id="hourlyForecastContainer" class="flex overflow-x-auto gap-3 pb-2 scrollbar-thin scrollbar-thumb-slate-700 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80"></div>
             </div>
 
             <div class="relative h-20 rounded-2xl bg-gradient-to-t from-slate-950 via-slate-900 to-indigo-950 border border-slate-800 flex items-center justify-between px-5 overflow-hidden shadow-inner">
@@ -207,7 +205,7 @@
             </div>
         </section>
 
-        <!-- Portal Arahan & Walkie-Talkie Dato (Permanen & Sinkron Semua Telefon) -->
+        <!-- Portal Arahan & Walkie-Talkie Dato -->
         <section class="bg-amber-950/40 border border-amber-600/40 p-5 rounded-3xl shadow-lg space-y-4 mb-6 text-slate-100">
             <h3 id="lblBossPortalTitle" class="font-bold text-amber-400 flex items-center gap-2 text-base">⚠️ Portal Arahan & Walkie-Talkie Dato</h3>
             
@@ -479,7 +477,7 @@
                 </div>
             </section>
 
-            <!-- Income Section Page (Jualan Terus Dari Ladang / Produk Estet) -->
+            <!-- Income Section Page (Jualan Terus Dari Ladang) -->
             <section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                     <div>
@@ -515,7 +513,6 @@
                 <!-- Kandungan Utama Jualan Ladang (Terkunci Sebelum Log Masuk) -->
                 <div id="incomeMainContent" class="space-y-6 opacity-50 pointer-events-none">
                     
-                    <!-- Sub-section: Tambah Produk Ladang Baharu -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
                         <h4 id="lblAddGardenProd" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah / Kemaskini Produk Ladang & Foto</h4>
                         <form id="gardenProductForm" onsubmit="handleGardenProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -527,11 +524,9 @@
                             </div>
                             <button type="submit" id="btnSaveGardenProd" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Kemaskini Produk Ladang</button>
                         </form>
-                        <!-- Senarai Produk Ladang & Stok Aktif -->
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2" id="gardenProductSummaryContainer"></div>
                     </div>
 
-                    <!-- Sub-section: Borang Jualan Ladang (POS & Data Pelanggan) -->
                     <form id="gardenSalesForm" onsubmit="handleGardenSalesSubmit(event)" class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-200 space-y-3">
                         <input type="hidden" id="editingGardenSalesId" value="">
                         <div id="lblGardenSalesTitle" class="text-xs font-bold text-emerald-900 uppercase">🛒 Catat Transaksi Jualan Ladang Baharu (Pesanan Pelanggan)</div>
@@ -576,7 +571,6 @@
                         <button type="submit" id="btnGardenSalesSubmit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Jualan & Cetak Invois Rasmi</button>
                     </form>
 
-                    <!-- Sub-section: Riwayat Jualan Ladang -->
                     <div>
                         <div id="lblGardenHistoryTitle" class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Jualan Ladang & Pelanggan:</div>
                         <div class="overflow-x-auto">
@@ -599,7 +593,7 @@
                 </div>
             </section>
 
-            <!-- TAB KELOLA PO MASUK PELANGGAN (DIPROTEKSI KATA LALUAN) -->
+            <!-- TAB KELOLA PO MASUK PELANGGAN -->
             <section id="page-customer_orders" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
                     <div>
@@ -608,7 +602,6 @@
                     </div>
                 </div>
 
-                <!-- Panel Log Masuk Khusus PO Masuk -->
                 <div id="poLoginPanel" class="bg-indigo-50 border-2 border-indigo-300 p-6 rounded-2xl text-center space-y-3 max-w-md mx-auto my-6">
                     <span class="text-3xl">🔐</span>
                     <h4 id="lblPoLoginTitle" class="font-bold text-sm text-indigo-950">Akses Dilindungi Kata Laluan Pentadbir</h4>
@@ -619,7 +612,6 @@
                     </div>
                 </div>
 
-                <!-- Kandungan Jadual PO (Terkunci Sebelum Kata Laluan Betul) -->
                 <div id="poMainContent" class="space-y-4 opacity-50 pointer-events-none">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
@@ -642,7 +634,7 @@
                 </div>
             </section>
 
-            <!-- Office Sales & Products Page (Produk & Invois Luar Talian) -->
+            <!-- Office Sales & Products Page -->
             <section id="page-office" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
                     <div>
@@ -663,7 +655,6 @@
                     </div>
                 </div>
 
-                <!-- Panel Log Masuk Pentadbir Pejabat -->
                 <div id="officeLoginPanel" class="bg-blue-50 border-2 border-blue-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
                     <div>
                         <h4 id="lblOfficeLoginTitle" class="font-bold text-sm text-blue-900">🔐 Akses Pentadbir Produk & Invois Luar Talian</h4>
@@ -675,10 +666,8 @@
                     </div>
                 </div>
 
-                <!-- Kandungan Utama Pejabat (Terkunci Sebelum Log Masuk) -->
                 <div id="officeMainContent" class="space-y-6 opacity-50 pointer-events-none">
                     
-                    <!-- Sub-section: Tambah Produk Baharu Pejabat (Termasuk Khasiat/Kandungan) -->
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
                         <div class="flex justify-between items-center">
                             <h4 id="officeFormTitleLabel" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah Produk Luar Talian Baharu</h4>
@@ -698,11 +687,9 @@
                             </div>
                             <button type="submit" id="btnOfficeProdSubmit" class="sm:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Tambah Produk Luar Talian Baharu</button>
                         </form>
-                        <!-- Senarai Produk & Stok Aktif -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2" id="officeProductSummaryContainer"></div>
                     </div>
 
-                    <!-- Sub-section: Borang Jualan Pejabat (POS & Data Pelanggan) -->
                     <form id="officeSalesForm" onsubmit="handleOfficeSalesSubmit(event)" class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-200 space-y-3">
                         <input type="hidden" id="editingOfficeSalesId" value="">
                         <div id="officeSalesFormTitle" class="text-xs font-bold text-indigo-900 uppercase">🛒 Catat Transaksi Jualan Luar Talian Baharu (Pesanan Pelanggan)</div>
@@ -750,7 +737,6 @@
                         </div>
                     </form>
 
-                    <!-- Sub-section: Riwayat Jualan Pejabat -->
                     <div>
                         <div id="lblOfficeHistoryTitle" class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Jualan Luar Talian & Pelanggan:</div>
                         <div class="overflow-x-auto">
@@ -777,13 +763,12 @@
 
     </main>
 
-    <!-- MODAL CETAK INVOICE / LAPORAN LADANG PROFESIONAL -->
+    <!-- MODAL CETAK INVOICE -->
     <div id="invoiceModal" class="fixed inset-0 bg-slate-900/80 hidden overflow-y-auto p-4 z-50">
         <div class="bg-white max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 shadow-2xl my-6 space-y-6">
             
             <div id="printableInvoiceArea" class="space-y-6 bg-white p-6 rounded-2xl border border-slate-200">
                 
-                <!-- Header Dokumen Korporat dengan Logo & Alamat Pejabat Dinamik -->
                 <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-4">
                     <div class="flex items-center gap-3">
                         <div id="invModalLogo" class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-xl overflow-hidden border-2 border-yellow-500 shadow-sm">
@@ -791,7 +776,6 @@
                         </div>
                         <div>
                             <h2 class="text-lg font-black text-blue-900 uppercase">MEDICALPRO AGRO MANAGEMENT</h2>
-                            <!-- Alamat Pejabat Dinamik dari Panel Pentadbir -->
                             <p id="invOfficeAddressDisplay" class="text-xs text-slate-600 mt-0.5">Machap, Johor, Malaysia | No. MyGAP: 24.0151</p>
                             <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Official Agricultural & Herbal Products Supplier</p>
                         </div>
@@ -803,7 +787,6 @@
                     </div>
                 </div>
 
-                <!-- Maklumat / Keterangan Dokumen -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div>
                         <span class="text-slate-400 block font-semibold mb-1" id="invRecipientLabel">Kepada (Pelanggan / Pembeli):</span>
@@ -818,7 +801,6 @@
                     </div>
                 </div>
 
-                <!-- Jadual Produk / Item -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
@@ -834,7 +816,6 @@
                     </table>
                 </div>
 
-                <!-- Jumlah Keseluruhan (Disembunyikan Secara Automatik untuk Laporan Bekalan) -->
                 <div class="flex justify-end pt-2" id="invoiceGrandTotalWrapper">
                     <div class="bg-emerald-50 border border-emerald-200 px-6 py-3 rounded-xl text-right min-w-[240px]">
                         <span id="lblGrandTotal" class="text-xs font-bold text-emerald-800 block uppercase mb-0.5">Jumlah Keseluruhan (Grand Total):</span>
@@ -842,7 +823,6 @@
                     </div>
                 </div>
 
-                <!-- Tandatangan & Pengesahan -->
                 <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
                     <div>
                         <p id="lblInvFooter" class="text-[11px] text-slate-500 italic">* Dokumen rasmi digital sah dikeluarkan oleh sistem Medicalpro.</p>
@@ -888,14 +868,12 @@
                 <button type="button" onclick="closeAdminDashboard()" id="btnCloseAdminDash" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
             </div>
 
-            <!-- Tetapan Alamat Rasmi Pejabat -->
             <div class="bg-blue-50 p-4 rounded-xl border border-blue-300 space-y-3">
                 <h4 id="lblSetAddrTitle" class="font-bold text-sm text-blue-900">📍 Tetapan Alamat Rasmi Pejabat / Syarikat (Untuk Invois)</h4>
                 <textarea id="settingOfficeAddressInput" rows="2" class="w-full border p-2.5 rounded-lg text-xs bg-white" placeholder="Cth: Machap, Johor, Malaysia | No. MyGAP: 24.0151"></textarea>
                 <button type="button" onclick="saveOfficeAddressSetting()" id="btnSaveAddr" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Simpan Alamat Pejabat</button>
             </div>
 
-            <!-- Tetapan Nombor WhatsApp Pentadbir (Untuk Pilihan Pelanggan) -->
             <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-300 space-y-3">
                 <h4 id="lblWaTitle" class="font-bold text-sm text-emerald-900">💬 Pengurusan Senarai Pentadbir WhatsApp (Pilihan Pelanggan)</h4>
                 <p id="lblWaSub" class="text-xs text-slate-600">Tambah nama pentadbir dan nombor WhatsApp supaya pelanggan boleh pilih siapa yang akan terima PO.</p>
@@ -975,7 +953,7 @@
         let currentUser = JSON.parse(localStorage.getItem('medicalpro_user_profile')) || null;
         let currentLang = localStorage.getItem('medicalpro_lang') || 'ms';
 
-        // --- SISTEM TERJEMAHAN 5 BAHASA ---
+        // --- KAMUS TERJEMAHAN 5 BAHASA FULL 100% ---
         const translations = {
             ms: {
                 pageTitle: "Ladang Belimbing Buluh Medicalpro",
@@ -998,13 +976,12 @@
                 btnAiSummary: "📊 Rumusan & Data Sistem",
                 btnAiBaja: "🧪 Jadual Pembajaan (2 Minggu)",
                 btnAiMem: "🧠 Kosa Kata & Riwayat Global",
-                aiPlaceholder: "Tanya AI atau hantar pautan panduan (Cth: https://... cara baja)...",
+                aiPlaceholder: "Tanya AI atau hantar pautan panduan...",
                 btnAiSend: "Kirim & Simpan",
                 lblWeatherCurrent: "Semasa",
                 lblHourlyForecast: "Ramalan Mengikut Jam",
                 lblIllustrationTitle: "Estet Machap",
                 lblIllustrationText: "Suasana estet di ladang.",
-                lblLiveApi: "Live API Active",
                 lblPrecip: "Kerpasan",
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
@@ -1017,7 +994,6 @@
                 recordingStatus: "Tekan butang untuk rakam suara walkie-talkie.",
                 btnSendVoice: "🚀 Hantar Walkie-Talkie",
                 lblHistoryTitle: "Riwayat Arahan & Walkie-Talkie (Permanen):",
-                lblSyncActive: "Penyegerakan Cloud Aktif ☁️",
                 navTasks: "Tugas Harian",
                 navSupply: "Stok & Bekalan",
                 navStock: "Bio Baja",
@@ -1088,7 +1064,7 @@
                 staffPassPlaceholder: "Kata Laluan Staf",
                 btnStaffLogin: "Log Masuk",
                 lblAddGardenProd: "➕ Tambah / Kemaskini Produk Ladang & Foto",
-                gProdNamePlaceholder: "Nama Produk (Cth: Belimbing Buluh)",
+                gProdNamePlaceholder: "Nama Produk",
                 gProdStockPlaceholder: "Stok Kuantiti",
                 gProdPricePlaceholder: "Harga Seunit (RM)",
                 btnSaveGardenProd: "Simpan / Kemaskini Produk Ladang",
@@ -1127,16 +1103,15 @@
                 lblOfficeSub: "Urus produk siap jualan dengan foto, khasiat/kandungan, catat pesanan pelanggan & cetak invois rasmi pejabat",
                 btnPrintOfficePdf: "🖨️ Cetak Rumusan Pejabat PDF",
                 lblOfficeLoginTitle: "🔐 Akses Pentadbir Produk & Invois Luar Talian",
-                officeStatusText: "Status: Belum Log Masuk (Masukkan Kata Laluan Pentadbir Utama)",
+                officeStatusText: "Status: Belum Log Masuk",
                 officePassPlaceholder: "Kata Laluan Pentadbir",
                 btnOfficeLogin: "Log Masuk",
                 officeFormTitleLabel: "➕ Tambah Produk Luar Talian Baharu",
                 btnCancelOfficeEdit: "Batal Edit",
-                prodNamePlaceholder: "Nama Produk (Cth: Teh Daun Belimbing)",
+                prodNamePlaceholder: "Nama Produk",
                 prodStockPlaceholder: "Stok Awal",
                 prodPricePlaceholder: "Harga Seunit (RM)",
                 lblProdBenefits: "Khasiat, Manfaat & Kandungan Produk (Dibaca AI Secara Automatik)",
-                prodBenefitsPlaceholder: "Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah.",
                 btnOfficeProdSubmit: "Simpan / Tambah Produk Luar Talian Baharu",
                 officeSalesFormTitle: "🛒 Catat Transaksi Jualan Luar Talian Baharu (Pesanan Pelanggan)",
                 lblSelectOfficeProd: "Pilih Produk",
@@ -1156,8 +1131,6 @@
                 thOffTotal: "Jumlah (RM)",
                 thOffBuyer: "Pembeli & Tel",
                 thOffAction: "Tindakan",
-                invHeaderTitle: "MEDICALPRO AGRO MANAGEMENT",
-                invHeaderSub: "Official Agricultural & Herbal Products Supplier",
                 invModalMainHeader: "INVOIS JUALAN",
                 invRecipientLabel: "Kepada (Pelanggan / Pembeli):",
                 invMgrLabel: "Pegawai / Pengurus Bertanggungjawab:",
@@ -1177,8 +1150,8 @@
                 btnSaveAddr: "Simpan Alamat Pejabat",
                 lblWaTitle: "💬 Pengurusan Senarai Pentadbir WhatsApp (Pilihan Pelanggan)",
                 lblWaSub: "Tambah nama pentadbir dan nombor WhatsApp supaya pelanggan boleh pilih siapa yang akan terima PO.",
-                adminWhatsappNamePlaceholder: "Nama Pentadbir (Cth: Siti)",
-                adminWhatsappPhonePlaceholder: "No. WhatsApp (Cth: 60123456789)",
+                adminWhatsappNamePlaceholder: "Nama Pentadbir",
+                adminWhatsappPhonePlaceholder: "No. WhatsApp",
                 btnAddWa: "Tambah Pentadbir WhatsApp",
                 lblLogoTitle: "🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua Telefon)",
                 btnSaveLogo: "Simpan Logo",
@@ -1219,13 +1192,12 @@
                 btnAiSummary: "📊 Rekap & Data Sistem",
                 btnAiBaja: "🧪 Jadwal Pemupukan (2 Minggu)",
                 btnAiMem: "🧠 Kosakata & Riwayat Global",
-                aiPlaceholder: "Tanya AI atau kirim tautan panduan (Cth: https://... cara baja)...",
+                aiPlaceholder: "Tanya AI atau kirim tautan panduan...",
                 btnAiSend: "Kirim & Simpan",
                 lblWeatherCurrent: "Saat Ini",
                 lblHourlyForecast: "Prakiraan Per Jam",
                 lblIllustrationTitle: "Estet Machap",
                 lblIllustrationText: "Suasana estet di kebun.",
-                lblLiveApi: "Live API Active",
                 lblPrecip: "Curah Hujan",
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
@@ -1238,7 +1210,6 @@
                 recordingStatus: "Tekan tombol untuk rekam suara walkie-talkie.",
                 btnSendVoice: "🚀 Kirim Walkie-Talkie",
                 lblHistoryTitle: "Riwayat Perintah & Walkie-Talkie (Permanen):",
-                lblSyncActive: "Sinkronisasi Cloud Aktif ☁️",
                 navTasks: "Tugas Harian",
                 navSupply: "Stok & Suplai",
                 navStock: "Bio Baja",
@@ -1309,7 +1280,7 @@
                 staffPassPlaceholder: "Kata Sandi Staf",
                 btnStaffLogin: "Masuk",
                 lblAddGardenProd: "➕ Tambah / Kemaskini Produk Kebun & Foto",
-                gProdNamePlaceholder: "Nama Produk (Cth: Belimbing Buluh)",
+                gProdNamePlaceholder: "Nama Produk",
                 gProdStockPlaceholder: "Stok Kuantiti",
                 gProdPricePlaceholder: "Harga Seunit (RM)",
                 btnSaveGardenProd: "Simpan / Kemaskini Produk Kebun",
@@ -1340,7 +1311,7 @@
                 thPoDate: "Tanggal",
                 thPoCustomer: "Pelanggan",
                 thPoItems: "Rincian Pesanan",
-                thPoShipping: "Kurir & Pembayaran",
+                thPoShipping: "Kurier & Pembayaran",
                 thPoStatus: "Status & Resi",
                 thPoAction: "Tindakan",
                 tdPoWait: "Sila masukkan kata sandi di atas untuk memuat pesanan masuk...",
@@ -1348,16 +1319,15 @@
                 lblOfficeSub: "Urus produk siap jualan dengan foto, khasiat/kandungan, catat order pelanggan & cetak invoice rasmi office",
                 btnPrintOfficePdf: "🖨️ Cetak Rekap Office PDF",
                 lblOfficeLoginTitle: "🔐 Akses Admin Produk & Invoice Offline",
-                officeStatusText: "Status: Belum Log Masuk (Masukkan Kata Sandi Admin Utama)",
+                officeStatusText: "Status: Belum Log Masuk",
                 officePassPlaceholder: "Kata Sandi Admin",
                 btnOfficeLogin: "Masuk",
                 officeFormTitleLabel: "➕ Tambah Produk Offline Baru",
                 btnCancelOfficeEdit: "Batal Edit",
-                prodNamePlaceholder: "Nama Produk (Cth: Teh Daun Belimbing)",
+                prodNamePlaceholder: "Nama Produk",
                 prodStockPlaceholder: "Stok Awal",
                 prodPricePlaceholder: "Harga Seunit (RM)",
                 lblProdBenefits: "Khasiat, Manfaat & Kandungan Produk (Dibaca AI Otomatis)",
-                prodBenefitsPlaceholder: "Cth: Kaya antioksidan, menurunkan tekanan darah, menyegarkan badan dan melancarkan peredaran darah.",
                 btnOfficeProdSubmit: "Simpan / Tambah Produk Offline Baru",
                 officeSalesFormTitle: "🛒 Catat Transaksi Jualan Offline Baru (Order Pelanggan)",
                 lblSelectOfficeProd: "Pilih Produk",
@@ -1377,8 +1347,6 @@
                 thOffTotal: "Jumlah (RM)",
                 thOffBuyer: "Pembeli & Tel",
                 thOffAction: "Tindakan",
-                invHeaderTitle: "MEDICALPRO AGRO MANAGEMENT",
-                invHeaderSub: "Official Agricultural & Herbal Products Supplier",
                 invModalMainHeader: "INVOIS JUALAN",
                 invRecipientLabel: "Kepada (Pelanggan / Pembeli):",
                 invMgrLabel: "Pegawai / Pengurus Bertanggungjawab:",
@@ -1398,8 +1366,8 @@
                 btnSaveAddr: "Simpan Alamat Office",
                 lblWaTitle: "💬 Pengurusan Senarai Admin WhatsApp (Pilihan Customer)",
                 lblWaSub: "Tambah nama admin dan nombor WhatsApp supaya customer boleh pilih siapa yang boleh terima PO.",
-                adminWhatsappNamePlaceholder: "Nama Admin (Cth: Siti)",
-                adminWhatsappPhonePlaceholder: "No. WhatsApp (Cth: 60123456789)",
+                adminWhatsappNamePlaceholder: "Nama Admin",
+                adminWhatsappPhonePlaceholder: "No. WhatsApp",
                 btnAddWa: "Tambah Admin WhatsApp",
                 lblLogoTitle: "🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua HP)",
                 btnSaveLogo: "Simpan Logo",
@@ -1440,13 +1408,12 @@
                 btnAiSummary: "📊 汇总与系统数据",
                 btnAiBaja: "🧪 施肥时间表 (两周)",
                 btnAiMem: "🧠 词汇与全局历史",
-                aiPlaceholder: "向AI提问或发送指南链接 (例: https://... 施肥方法)...",
+                aiPlaceholder: "向AI提问或发送指南链接...",
                 btnAiSend: "发送并保存",
                 lblWeatherCurrent: "当前",
                 lblHourlyForecast: "每小时预报",
                 lblIllustrationTitle: "马什卡农庄",
                 lblIllustrationText: "农场庄园环境。",
-                lblLiveApi: "实时API已激活",
                 lblPrecip: "降水量",
                 lblWind: "风速",
                 lblAiDecision: "🤖 AI 根据天气与土壤做出的决策：",
@@ -1459,7 +1426,6 @@
                 recordingStatus: "按住按钮录制对讲机语音。",
                 btnSendVoice: "🚀 发送对讲机",
                 lblHistoryTitle: "指令与对讲机历史 (永久):",
-                lblSyncActive: "云端同步已激活 ☁️",
                 navTasks: "日常任务",
                 navSupply: "库存与供应",
                 navStock: "生物肥",
@@ -1530,7 +1496,7 @@
                 staffPassPlaceholder: "员工密码",
                 btnStaffLogin: "登录",
                 lblAddGardenProd: "➕ 添加 / 更新农场产品与照片",
-                gProdNamePlaceholder: "产品名称 (例: 槟榔果)",
+                gProdNamePlaceholder: "产品名称",
                 gProdStockPlaceholder: "库存数量",
                 gProdPricePlaceholder: "单价 (RM)",
                 btnSaveGardenProd: "保存 / 更新农场产品",
@@ -1569,16 +1535,15 @@
                 lblOfficeSub: "管理现货产品及照片、功效/成分、记录客户订单并打印正式办公室发票",
                 btnPrintOfficePdf: "🖨️ 打印办公室汇总 PDF",
                 lblOfficeLoginTitle: "🔐 线下产品与发票管理员权限",
-                officeStatusText: "状态: 未登录 (请输入主管理员密码)",
+                officeStatusText: "状态: 未登录",
                 officePassPlaceholder: "管理员密码",
                 btnOfficeLogin: "登录",
                 officeFormTitleLabel: "➕ 添加新线下产品",
                 btnCancelOfficeEdit: "取消编辑",
-                prodNamePlaceholder: "产品名称 (例: 槟榔叶茶)",
+                prodNamePlaceholder: "产品名称",
                 prodStockPlaceholder: "初始库存",
                 prodPricePlaceholder: "单价 (RM)",
                 lblProdBenefits: "功效、好处与成分 (AI自动读取)",
-                prodBenefitsPlaceholder: "例: 富含抗氧化剂、降低血压、提神醒脑并促进血液循环。",
                 btnOfficeProdSubmit: "保存 / 添加新线下产品",
                 officeSalesFormTitle: "🛒 记录新线下销售交易 (客户订单)",
                 lblSelectOfficeProd: "选择产品",
@@ -1598,8 +1563,6 @@
                 thOffTotal: "总额 (RM)",
                 thOffBuyer: "买家与电话",
                 thOffAction: "操作",
-                invHeaderTitle: "MEDICALPRO AGRO MANAGEMENT",
-                invHeaderSub: "Official Agricultural & Herbal Products Supplier",
                 invModalMainHeader: "销售发票",
                 invRecipientLabel: "收件人 (客户 / 买家):",
                 invMgrLabel: "负责官员 / 经理:",
@@ -1619,8 +1582,8 @@
                 btnSaveAddr: "保存办公室地址",
                 lblWaTitle: "💬 WhatsApp 管理员列表管理 (客户选项)",
                 lblWaSub: "添加管理员姓名和 WhatsApp 号码，以便客户选择谁来接收 PO。",
-                adminWhatsappNamePlaceholder: "管理员姓名 (例: Siti)",
-                adminWhatsappPhonePlaceholder: "WhatsApp号 (例: 60123456789)",
+                adminWhatsappNamePlaceholder: "管理员姓名",
+                adminWhatsappPhonePlaceholder: "WhatsApp号",
                 btnAddWa: "添加 WhatsApp 管理员",
                 lblLogoTitle: "🖼️ 更换系统 Logo (永久且同步所有设备)",
                 btnSaveLogo: "保存 Logo",
@@ -1661,17 +1624,16 @@
                 btnAiSummary: "📊 सारांश और सिस्टम डेटा",
                 btnAiBaja: "🧪 उर्वरक अनुसूची (2 सप्ताह)",
                 btnAiMem: "🧠 शब्दावली और ग्लोबल इतिहास",
-                aiPlaceholder: "AI से पूछें या गाइड लिंक भेजें (उदा: https://... खाद का तरीका)...",
+                aiPlaceholder: "AI से पूछें या गाइड लिंक भेजें...",
                 btnAiSend: "भेजें और सहेजें",
                 lblWeatherCurrent: "वर्तमान",
                 lblHourlyForecast: "प्रति घंटा पूर्वानुमान",
                 lblIllustrationTitle: "मचाप एस्टेट",
                 lblIllustrationText: "फार्म में एस्टेट का माहौल।",
-                lblLiveApi: "लाइव API सक्रिय",
                 lblPrecip: "वर्षा",
                 lblWind: "हवा",
                 lblAiDecision: "🤖 मौसम और मिट्टी के आधार पर AI का निर्णय:",
-                lblBossPortalTitle: "⚠️ दातो निर्देश और वॉकी-टॉक पोर्टल",
+                lblBossPortalTitle: "⚠️ दातो निर्देश और वॉकी-टॉकी पोर्टल",
                 btnModeText: "टेक्स्ट संदेश",
                 btnModeVoice: "🎙️ वॉयस रिकॉर्डिंग (वॉकी-टॉकी)",
                 bossPlaceholder: "कर्मचारियों के लिए नया निर्देश टाइप करें...",
@@ -1680,7 +1642,6 @@
                 recordingStatus: "वॉकी-टॉकी आवाज रिकॉर्ड करने के लिए बटन दबाएं।",
                 btnSendVoice: "🚀 वॉकी-टॉकी भेजें",
                 lblHistoryTitle: "निर्देश और वॉकी-टॉकी इतिहास (स्थायी):",
-                lblSyncActive: "क्लाउड सिंक्रनाइज़ेशन सक्रिय ☁️",
                 navTasks: "दैनिक कार्य",
                 navSupply: "स्टॉक और आपूर्ति",
                 navStock: "बायो खाद",
@@ -1751,7 +1712,7 @@
                 staffPassPlaceholder: "स्टाफ पासवर्ड",
                 btnStaffLogin: "लॉग इन",
                 lblAddGardenProd: "➕ फार्म उत्पाद और फोटो जोड़ें / अपडेट करें",
-                gProdNamePlaceholder: "उत्पाद का नाम (उदा: बेलimbing बुलुह)",
+                gProdNamePlaceholder: "उत्पाद का नाम",
                 gProdStockPlaceholder: "स्टॉक मात्रा",
                 gProdPricePlaceholder: "प्रति इकाई मूल्य (RM)",
                 btnSaveGardenProd: "फार्म उत्पाद सहेजें / अपडेट करें",
@@ -1790,16 +1751,15 @@
                 lblOfficeSub: "तैयार उत्पादों को फोटो, लाभ/सामग्री के साथ प्रबंधित करें, ग्राहक आदेश दर्ज करें और आधिकारिक कार्यालय चालान प्रिंट करें",
                 btnPrintOfficePdf: "🖨️ कार्यालय सारांश PDF प्रिंट करें",
                 lblOfficeLoginTitle: "🔐 ऑफ़लाइन उत्पाद और चालान व्यवस्थापक एक्सेस",
-                officeStatusText: "स्थिति: लॉग इन नहीं (मुख्य व्यवस्थापक पासवर्ड दर्ज करें)",
+                officeStatusText: "स्थिति: लॉग इन नहीं",
                 officePassPlaceholder: "व्यवस्थापक पासवर्ड",
                 btnOfficeLogin: "लॉग इन",
                 officeFormTitleLabel: "➕ नया ऑफ़लाइन उत्पाद जोड़ें",
                 btnCancelOfficeEdit: "संपादित करना रद्द करें",
-                prodNamePlaceholder: "उत्पाद का नाम (उदा: बेलimbing पत्ती चाय)",
+                prodNamePlaceholder: "उत्पाद का नाम",
                 prodStockPlaceholder: "प्रारंभिक स्टॉक",
                 prodPricePlaceholder: "प्रति इकाई मूल्य (RM)",
                 lblProdBenefits: "उत्पाद के लाभ, गुण और सामग्री (AI द्वारा स्वचालित रूप से पढ़ा जाता है)",
-                prodBenefitsPlaceholder: "उदा: एंटीऑक्सीडेंट से भरपूर, रक्तचाप कम करता है, शरीर को ताज़ा करता है और रक्त परिसंचरण में सुधार करता है।",
                 btnOfficeProdSubmit: "नया ऑफ़लाइन उत्पाद सहेजें / जोड़ें",
                 officeSalesFormTitle: "🛒 नया ऑफ़लाइन बिक्री लेनदेन दर्ज करें (ग्राहक आदेश)",
                 lblSelectOfficeProd: "उत्पाद चुनें",
@@ -1819,8 +1779,6 @@
                 thOffTotal: "कुल (RM)",
                 thOffBuyer: "खरीदार और फोन",
                 thOffAction: "कार्रवाई",
-                invHeaderTitle: "MEDICALPRO AGRO MANAGEMENT",
-                invHeaderSub: "Official Agricultural & Herbal Products Supplier",
                 invModalMainHeader: "बिक्री चालान",
                 invRecipientLabel: "को (ग्राहक / खरीदार):",
                 invMgrLabel: "जिम्मेदार अधिकारी / प्रबंधक:",
@@ -1840,8 +1798,8 @@
                 btnSaveAddr: "कार्यालय का पता सहेजें",
                 lblWaTitle: "💬 व्हाट्सएप एडमिनिस्ट्रेटर सूची प्रबंधन (ग्राहक विकल्प)",
                 lblWaSub: "एडमिन का नाम और व्हाट्सएप नंबर जोड़ें ताकि ग्राहक चुन सकें कि PO किसे प्राप्त होगा।",
-                adminWhatsappNamePlaceholder: "एडमिन का नाम (उदा: सिटी)",
-                adminWhatsappPhonePlaceholder: "व्हाट्सएप नंबर (उदा: 60123456789)",
+                adminWhatsappNamePlaceholder: "एडमिन का नाम",
+                adminWhatsappPhonePlaceholder: "व्हाट्सएप नंबर",
                 btnAddWa: "व्हाट्सएप एडमिन जोड़ें",
                 lblLogoTitle: "🖼️ सिस्टम लोगो बदलें (स्थायी और सभी फोन पर सिंक)",
                 btnSaveLogo: "लोगो सहेजें",
@@ -1882,13 +1840,12 @@
                 btnAiSummary: "📊 Summary & System Data",
                 btnAiBaja: "🧪 Fertilization Schedule (2 Weeks)",
                 btnAiMem: "🧠 Vocabulary & Global History",
-                aiPlaceholder: "Ask AI or send a guide link (e.g., https://... fertilization method)...",
+                aiPlaceholder: "Ask AI or send a guide link...",
                 btnAiSend: "Send & Save",
                 lblWeatherCurrent: "Current",
                 lblHourlyForecast: "Hourly Forecast",
                 lblIllustrationTitle: "Machap Estate",
                 lblIllustrationText: "Estate atmosphere on the farm.",
-                lblLiveApi: "Live API Active",
                 lblPrecip: "Precipitation",
                 lblWind: "Wind",
                 lblAiDecision: "🤖 AI Decision Based on Weather & Soil:",
@@ -1901,7 +1858,6 @@
                 recordingStatus: "Press button to record walkie-talkie voice.",
                 btnSendVoice: "🚀 Send Walkie-Talkie",
                 lblHistoryTitle: "Directive & Walkie-Talkie History (Permanent):",
-                lblSyncActive: "Cloud Sync Active ☁️",
                 navTasks: "Daily Tasks",
                 navSupply: "Stock & Supply",
                 navStock: "Bio Fertilizer",
@@ -1972,7 +1928,7 @@
                 staffPassPlaceholder: "Staff Password",
                 btnStaffLogin: "Log In",
                 lblAddGardenProd: "➕ Add / Update Farm Products & Photos",
-                gProdNamePlaceholder: "Product Name (e.g. Belimbing Buluh)",
+                gProdNamePlaceholder: "Product Name",
                 gProdStockPlaceholder: "Stock Quantity",
                 gProdPricePlaceholder: "Unit Price (RM)",
                 btnSaveGardenProd: "Save / Update Farm Product",
@@ -2011,16 +1967,15 @@
                 lblOfficeSub: "Manage ready-to-sell products with photos, benefits/ingredients, record customer orders & print official office invoices",
                 btnPrintOfficePdf: "🖨️ Print Office Summary PDF",
                 lblOfficeLoginTitle: "🔐 Offline Products & Invoices Admin Access",
-                officeStatusText: "Status: Not Logged In (Enter Main Admin Password)",
+                officeStatusText: "Status: Not Logged In",
                 officePassPlaceholder: "Admin Password",
                 btnOfficeLogin: "Log In",
                 officeFormTitleLabel: "➕ Add New Offline Product",
                 btnCancelOfficeEdit: "Cancel Edit",
-                prodNamePlaceholder: "Product Name (e.g. Belimbing Leaf Tea)",
+                prodNamePlaceholder: "Product Name",
                 prodStockPlaceholder: "Initial Stock",
                 prodPricePlaceholder: "Unit Price (RM)",
                 lblProdBenefits: "Benefits, Advantages & Ingredients (Read Automatically by AI)",
-                prodBenefitsPlaceholder: "e.g. Rich in antioxidants, lowers blood pressure, refreshes the body and improves blood circulation.",
                 btnOfficeProdSubmit: "Save / Add New Offline Product",
                 officeSalesFormTitle: "🛒 Record New Offline Sales Transaction (Customer Order)",
                 lblSelectOfficeProd: "Select Product",
@@ -2040,8 +1995,6 @@
                 thOffTotal: "Total (RM)",
                 thOffBuyer: "Buyer & Phone",
                 thOffAction: "Action",
-                invHeaderTitle: "MEDICALPRO AGRO MANAGEMENT",
-                invHeaderSub: "Official Agricultural & Herbal Products Supplier",
                 invModalMainHeader: "SALES INVOICE",
                 invRecipientLabel: "To (Customer / Buyer):",
                 invMgrLabel: "Responsible Officer / Manager:",
@@ -2061,8 +2014,8 @@
                 btnSaveAddr: "Save Office Address",
                 lblWaTitle: "💬 WhatsApp Administrator List Management (Customer Option)",
                 lblWaSub: "Add admin names and WhatsApp numbers so customers can choose who receives the PO.",
-                adminWhatsappNamePlaceholder: "Admin Name (e.g. Siti)",
-                adminWhatsappPhonePlaceholder: "WhatsApp No. (e.g. 60123456789)",
+                adminWhatsappNamePlaceholder: "Admin Name",
+                adminWhatsappPhonePlaceholder: "WhatsApp No.",
                 btnAddWa: "Add WhatsApp Admin",
                 lblLogoTitle: "🖼️ Replace System Logo (Permanent & Synced Across All Phones)",
                 btnSaveLogo: "Save Logo",
@@ -2084,16 +2037,40 @@
             }
         };
 
+        // Kamus penerjemah kata kunci teks pekerja (misal: "Tabur baja", "Potong rumput") ke 5 bahasa
+        const workerTextDict = {
+            "Tabur baja": { ms: "Tabur baja", id: "Tabur pupuk", zh: "施肥", hi: "उर्वरक फैलाना", en: "Spread fertilizer" },
+            "Potong rumput": { ms: "Potong rumput", id: "Potong rumput", zh: "割草", hi: "घास काटना", en: "Cut grass" },
+            "Simbah pokok": { ms: "Simbah pokok", id: "Siram tanaman", zh: "浇树", hi: "पौधों को पानी देना", en: "Water plants" },
+            "Kemas kebun": { ms: "Kemas kebun", id: "Bersihkan kebun", zh: "清理农场", hi: "फार्म की सफाई", en: "Clean farm" },
+            "Rawatan pokok ladang atas (1,2,3,4)": { ms: "Rawatan pokok ladang atas (1,2,3,4)", id: "Perawatan pohon kebun atas (1,2,3,4)", zh: "上层果树护理 (1,2,3,4)", hi: "ऊपरी खेत के पेड़ों की देखभाल (1,2,3,4)", en: "Upper farm tree treatment (1,2,3,4)" },
+            "Rawatan pokok ladang bawah (1,2,3,4)": { ms: "Rawatan pokok ladang bawah (1,2,3,4)", id: "Perawatan pohon kebun bawah (1,2,3,4)", zh: "下层果树护理 (1,2,3,4)", hi: "निचले खेत के पेड़ों की देखभाल (1,2,3,4)", en: "Lower farm tree treatment (1,2,3,4)" },
+            "Tiada": { ms: "Tiada", id: "Tidak ada", zh: "无", hi: "कोई नहीं", en: "None" }
+        };
+
+        function translateWorkerText(text) {
+            if (!text) return text;
+            if (workerTextDict[text] && workerTextDict[text][currentLang]) {
+                return workerTextDict[text][currentLang];
+            }
+            return text;
+        }
+
         function changeLang(lang) {
             currentLang = lang;
             localStorage.setItem('medicalpro_lang', lang);
             applyLanguage();
+            initAiGreeting(); // Perbarui sapaan AI sesuai bahasa baru
+            renderTasks();
+            renderSupplyApp();
+            renderIncomeSales();
+            renderOfficeSales();
+            renderAdminCustomerOrders();
         }
 
         function applyLanguage() {
             const t = translations[currentLang] || translations['ms'];
             
-            // Highlight active lang button
             ['ms', 'id', 'zh', 'hi', 'en'].forEach(l => {
                 const btn = document.getElementById('btnLang' + l.toUpperCase());
                 if(btn) {
@@ -2105,7 +2082,6 @@
                 }
             });
 
-            // Set simple text elements
             const map = {
                 pageTitle: t.pageTitle,
                 mWelcomeTitle: t.mWelcomeTitle,
@@ -2303,43 +2279,28 @@
                 if(el) el.innerText = val;
             }
 
-            // Placeholders
             if(document.getElementById('inputUserRealName')) document.getElementById('inputUserRealName').placeholder = t.taskTitlePlaceholder;
             if(document.getElementById('aiManualInput')) document.getElementById('aiManualInput').placeholder = t.aiPlaceholder;
             if(document.getElementById('bossInputMessage')) document.getElementById('bossInputMessage').placeholder = t.bossPlaceholder;
             if(document.getElementById('taskTitle')) document.getElementById('taskTitle').placeholder = t.taskTitlePlaceholder;
             if(document.getElementById('taskCategory')) document.getElementById('taskCategory').placeholder = t.taskCatPlaceholder;
-            if(document.getElementById('inputQty')) document.getElementById('inputQty').placeholder = t.taskTitlePlaceholder;
-            if(document.getElementById('inputDesc')) document.getElementById('inputDesc').placeholder = t.taskTitlePlaceholder;
             if(document.getElementById('expTitle')) document.getElementById('expTitle').placeholder = t.expTitlePlaceholder;
             if(document.getElementById('expAmount')) document.getElementById('expAmount').placeholder = t.expAmountPlaceholder;
             if(document.getElementById('staffPassInput')) document.getElementById('staffPassInput').placeholder = t.staffPassPlaceholder;
             if(document.getElementById('gProdName')) document.getElementById('gProdName').placeholder = t.gProdNamePlaceholder;
             if(document.getElementById('gProdStock')) document.getElementById('gProdStock').placeholder = t.gProdStockPlaceholder;
             if(document.getElementById('gProdPrice')) document.getElementById('gProdPrice').placeholder = t.gProdPricePlaceholder;
-            if(document.getElementById('gSalesCustomer')) document.getElementById('gSalesCustomer').placeholder = t.gProdNamePlaceholder;
-            if(document.getElementById('gSalesAddress')) document.getElementById('gSalesAddress').placeholder = t.gProdNamePlaceholder;
-            if(document.getElementById('gSalesPhone')) document.getElementById('gSalesPhone').placeholder = t.gProdNamePlaceholder;
             if(document.getElementById('poPassInput')) document.getElementById('poPassInput').placeholder = t.poPassPlaceholder;
             if(document.getElementById('officePassInput')) document.getElementById('officePassInput').placeholder = t.officePassPlaceholder;
             if(document.getElementById('prodName')) document.getElementById('prodName').placeholder = t.prodNamePlaceholder;
             if(document.getElementById('prodStock')) document.getElementById('prodStock').placeholder = t.prodStockPlaceholder;
             if(document.getElementById('prodPrice')) document.getElementById('prodPrice').placeholder = t.prodPricePlaceholder;
-            if(document.getElementById('prodBenefits')) document.getElementById('prodBenefits').placeholder = t.prodBenefitsPlaceholder;
-            if(document.getElementById('salesCustomer')) document.getElementById('salesCustomer').placeholder = t.gProdNamePlaceholder;
-            if(document.getElementById('salesAddress')) document.getElementById('salesAddress').placeholder = t.gProdNamePlaceholder;
-            if(document.getElementById('salesPhone')) document.getElementById('salesPhone').placeholder = t.gProdNamePlaceholder;
             if(document.getElementById('adminPasswordInput')) document.getElementById('adminPasswordInput').placeholder = t.adminPasswordPlaceholder;
-            if(document.getElementById('settingOfficeAddressInput')) document.getElementById('settingOfficeAddressInput').placeholder = t.gProdNamePlaceholder;
             if(document.getElementById('adminWhatsappName')) document.getElementById('adminWhatsappName').placeholder = t.adminWhatsappNamePlaceholder;
             if(document.getElementById('adminWhatsappPhone')) document.getElementById('adminWhatsappPhone').placeholder = t.adminWhatsappPhonePlaceholder;
-            if(document.getElementById('settingAiName')) document.getElementById('settingAiName').placeholder = t.lblAiName;
             if(document.getElementById('workerNameInput')) document.getElementById('workerNameInput').placeholder = t.workerNameInputPlaceholder;
-            if(document.getElementById('workerMandatoryTask')) document.getElementById('workerMandatoryTask').placeholder = t.workerMandatoryTaskPlaceholder;
-            if(document.getElementById('workerExtraTask')) document.getElementById('workerExtraTask').placeholder = t.workerExtraTaskPlaceholder;
             if(document.getElementById('invName')) document.getElementById('invName').placeholder = t.invNamePlaceholder;
             if(document.getElementById('invStock')) document.getElementById('invStock').placeholder = t.invStockPlaceholder;
-            if(document.getElementById('invAdvice')) document.getElementById('invAdvice').placeholder = t.invAdvicePlaceholder;
         }
 
         function checkUserProfile() {
@@ -2365,7 +2326,7 @@
         let adminWhatsappList = [];
         let lastSpokenText = "";
         let currentWeatherData = { rainSoon: false };
-        let globalAiMemory = []; // Memori global percakapan dari Cloud
+        let globalAiMemory = [];
 
         function applyGlobalLogo() {
             if (globalLogoUrl) {
@@ -2524,7 +2485,6 @@
         let officeSales = [];
         let customerOrdersList = [];
 
-        // --- SISTEM AI MANDIRI: FLEKSIBEL SESUAI BAHASA PILIHAN ---
         function saveConversationToCloud(userText, aiReply) {
             if (db) {
                 db.collection("ai_global_memory").add({
@@ -2536,6 +2496,7 @@
             }
         }
 
+        // --- SISTEM AI FLEKSIBEL SESUAI BAHASA PILIHAN FULL 100% ---
         function generateFriendlyAiResponse(queryType = 'welcome', manualText = '') {
             const fullName = getFullTitleName();
 
@@ -2551,10 +2512,10 @@
             
             let pemupukanAdvice = "";
             if (daysSinceBaja >= 14) {
-                pemupukanAdvice = `🌱 **Cadangan Pembajaan**: Sudah ${daysSinceBaja} hari sejak pembajaan terakhir. Berdasarkan aturan rutin (selang 2 minggu), **hari ini sangat disarankan melakukan pembajaan bio baja**.`;
+                pemupukanAdvice = `🌱 Cadangan Pembajaan: Sudah ${daysSinceBaja} hari sejak pembajaan terakhir. Hari ini sangat disarankan melakukan pembajaan bio baja.`;
             } else {
                 let sisaHari = 14 - daysSinceBaja;
-                pemupukanAdvice = `🌱 **Cadangan Pembajaan**: Pembajaan terakhir baru ${daysSinceBaja} hari lalu. Jadual pembajaan berikutnya sekitar **${sisaHari} hari lagi** (selang 2 minggu).`;
+                pemupukanAdvice = `🌱 Cadangan Pembajaan: Pembajaan terakhir baru ${daysSinceBaja} hari lalu. Jadual pembajaan berikutnya sekitar ${sisaHari} hari lagi.`;
             }
 
             let totalEx = expenses.reduce((s, e) => s + parseFloat(e.amount.replace(/[^0-9.]/g, '') || 0), 0);
@@ -2563,47 +2524,61 @@
 
             let responseText = "";
             if (queryType === 'rekap') {
-                responseText = `📊 **Rumusan Sistem & Kewangan Estet**:\n• Jumlah Pekerja: ${workers.length} orang\n• Jumlah Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Ladang: RM ${totalInc.toFixed(2)}\n• Jualan Produk & Invois Luar Talian: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
+                responseText = `📊 Rumusan Sistem & Kewangan Estet:\n• Jumlah Pekerja: ${workers.length} orang\n• Jumlah Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Ladang: RM ${totalInc.toFixed(2)}\n• Jualan Produk & Invois Luar Talian: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
             } else if (queryType === 'baja') {
-                responseText = `🧪 **Analisis & Jadual Pembajaan (Kitaran 2 Minggu)**:\n${bajaWarning}\n${pemupukanAdvice}`;
+                responseText = `🧪 Analisis & Jadual Pembajaan (Kitaran 2 Minggu):\n${bajaWarning}\n${pemupukanAdvice}`;
             } else if (queryType === 'memori') {
                 let recentMemoryCount = globalAiMemory.length;
-                let sampleMemories = globalAiMemory.slice(0, 3).map(m => `"${m.userText}"`).join(' | ');
-                responseText = `🧠 **Memori Global & Kosa Kata Mandiri**:\n• Jumlah Perbualan Disimpan dari Semua Telefon: ${recentMemoryCount} interaksi.\n• Topik/Pautan Terbaru: ${sampleMemories || 'Belum ada perbualan tambahan'}.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
-            } else if (queryType === 'product_query' || manualText) {
-                let isLink = manualText.includes('http://') || manualText.includes('https://') || manualText.includes('www.');
-                
-                let matchedProduct = officeProducts.find(p => {
-                    let pName = (p.name || "").toLowerCase();
-                    let pBenefits = (p.benefits || "").toLowerCase();
-                    let terms = manualText.split(' ');
-                    return terms.some(term => term.length > 2 && (pName.includes(term) || pBenefits.includes(term)));
-                });
-
-                let matchedMemory = globalAiMemory.find(m => m.userText && m.userText.toLowerCase().includes(manualText));
-
-                if (isLink) {
-                    responseText = `🔗 **Pautan & Rujukan Berjaya Disimpan!** Terima kasih ${fullName}. Pautan dan panduan ini telah direkod ke memori global cloud sehingga seluruh peranti dan pekerja dapat mengakses rujukan ini. ${pemupukanAdvice}`;
-                } else if (matchedProduct) {
-                    responseText = `🌿 **Info Produk ${matchedProduct.name}**:\n• Harga: RM ${parseFloat(matchedProduct.price).toFixed(2)}\n• Stok: ${matchedProduct.stock} unit\n• **Khasiat**: ${matchedProduct.benefits || 'Membantu kesihatan tubuh badan secara semula jadi.'}`;
-                } else if (matchedMemory) {
-                    responseText = `💡 **Berdasarkan Memori Perbualan Terdahulu**:\nTopik "${manualText}" merujuk pada catatan sebelumnya: "${matchedMemory.aiReply}".`;
-                } else {
-                    responseText = `Catatan dan kosa kata baharu berjaya disimpan, ${fullName}! ${pemupukanAdvice} Ada hal lain seputar tugas, stok baja, atau jualan yang ingin diuruskan?`;
-                }
+                responseText = `🧠 Memori Global & Kosa Kata Mandiri:\n• Jumlah Perbualan Disimpan: ${recentMemoryCount} interaksi.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
             } else {
-                responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat perbualan dan rujukan pautan dari peranti lain diselaraskan dengan baik.`;
+                responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik.`;
             }
 
-            // Adaptasi Bahasa Respons AI jika bahasa Cina, Hindi, Inggeris atau Indonesia dipilih
+            // Menerjemahkan respons AI secara penuh ke bahasa yang dipilih
             if (currentLang === 'id') {
-                responseText = responseText.replace(/Estet/g, 'Estet').replace(/Pembajaan/g, 'Pemupukan').replace(/Jualan/g, 'Penjualan').replace(/Pekerja/g, 'Pekerja').replace(/Perbelanjaan/g, 'Pengeluaran').replace(/Bekalan/g, 'Suplai');
+                responseText = responseText
+                    .replace(/Rumusan Sistem & Kewangan Estet/g, 'Rekap Sistem & Keuangan Estet')
+                    .replace(/Jumlah Pekerja/g, 'Jumlah Pekerja')
+                    .replace(/Jumlah Perbelanjaan/g, 'Total Pengeluaran')
+                    .replace(/Jualan Hasil Ladang/g, 'Penjualan Hasil Kebun')
+                    .replace(/Jualan Produk & Invois Luar Talian/g, 'Penjualan Produk & Invoice Offline')
+                    .replace(/Perhatian/g, 'Perhatian')
+                    .replace(/Stok baja berikut hampir habis/g, 'Stok pupuk berikut hampir habis')
+                    .replace(/Stok bio baja dalam keadaan selamat dan mencukupi/g, 'Stok bio pupuk dalam keadaan aman dan mencukupi')
+                    .replace(/Analisis & Jadual Pembajaan/g, 'Analisis & Jadwal Pemupukan')
+                    .replace(/Cadangan Pembajaan/g, 'Saran Pemupukan')
+                    .replace(/Sudah/g, 'Sudah')
+                    .replace(/hari sejak pembajaan terakhir/g, 'hari sejak pemupukan terakhir')
+                    .replace(/hari lalu/g, 'hari lalu')
+                    .replace(/Jadual pembajaan berikutnya sekitar/g, 'Jadwal pemupukan berikutnya sekitar')
+                    .replace(/hari lagi/g, 'hari lagi')
+                    .replace(/Selamat datang kembali/g, 'Selamat datang kembali')
+                    .replace(/Asisten mandiri Medicalpro siap membantu/g, 'Asisten mandiri Medicalpro siap membantu')
+                    .replace(/Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik/g, 'Semua riwayat obrolan dan referensi tautan diselaraskan dengan baik');
             } else if (currentLang === 'en') {
-                responseText = responseText.replace(/Selamat datang kembali/g, 'Welcome back').replace(/Rumusan Sistem & Kewangan Estet/g, 'Estate System & Financial Summary').replace(/Jumlah Pekerja/g, 'Total Workers').replace(/Jumlah Perbelanjaan/g, 'Total Expenses').replace(/Jualan Hasil Ladang/g, 'Direct Farm Sales');
+                responseText = responseText
+                    .replace(/Rumusan Sistem & Kewangan Estet/g, 'Estate System & Financial Summary')
+                    .replace(/Jumlah Pekerja/g, 'Total Workers')
+                    .replace(/Jumlah Perbelanjaan/g, 'Total Expenses')
+                    .replace(/Jualan Hasil Ladang/g, 'Direct Farm Sales')
+                    .replace(/Jualan Produk & Invois Luar Talian/g, 'Offline Products & Invoices Sales')
+                    .replace(/Perhatian/g, 'Attention')
+                    .replace(/Stok baja berikut hampir habis/g, 'The following fertilizer stock is running low')
+                    .replace(/Stok bio baja dalam keadaan selamat dan mencukupi/g, 'Bio fertilizer stock is safe and sufficient')
+                    .replace(/Analisis & Jadual Pembajaan/g, 'Fertilization Analysis & Schedule')
+                    .replace(/Cadangan Pembajaan/g, 'Fertilization Recommendation')
+                    .replace(/Sudah/g, 'It has been')
+                    .replace(/hari sejak pembajaan terakhir/g, 'days since last fertilization')
+                    .replace(/hari lalu/g, 'days ago')
+                    .replace(/Jadual pembajaan berikutnya sekitar/g, 'Next fertilization schedule in about')
+                    .replace(/hari lagi/g, 'days')
+                    .replace(/Selamat datang kembali/g, 'Welcome back')
+                    .replace(/Asisten mandiri Medicalpro siap membantu/g, 'Medicalpro autonomous assistant is ready to help')
+                    .replace(/Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik/g, 'All chat history and link references are properly synced');
             } else if (currentLang === 'zh') {
-                responseText = `欢迎回来，${fullName}! 🌿 Medicalpro 智能助手随时为您服务。所有历史记录与云端同步正常。`;
+                responseText = `欢迎回来，${fullName}! 🌿 Medicalpro 智能助手随时为您服务。系统数据正常，所有云端记忆已同步。`;
             } else if (currentLang === 'hi') {
-                responseText = `वापसी पर स्वागत है, ${fullName}! 🌿 मेडिकलप्रो स्मार्ट सहायक आपकी सहायता के लिए तैयार है।`;
+                responseText = `वापसी पर स्वागत है, ${fullName}! 🌿 मेडिकलप्रो स्मार्ट सहायक आपकी सहायता के लिए तैयार है। सभी डेटा और मेमोरी सिंक हो चुके हैं।`;
             }
 
             if (manualText) {
@@ -2692,7 +2667,6 @@
             }
         }
 
-        // --- CUACA REAL-TIME & KEPUTUSAN AI ---
         function updateLiveClockAndWeather() {
             const now = new Date();
             const options = { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -2780,7 +2754,6 @@
                 }).catch(err => {});
         }
 
-        // --- WALKIE-TALKIE & PORTAL DATO (CLOUD) ---
         let bossMode = 'text';
         let mediaRecorder;
         let audioChunks = [];
@@ -2943,7 +2916,6 @@
         };
         let closeAdminDashboard = () => document.getElementById('adminDashboardModal').classList.add('hidden');
 
-        // --- FIRESTORE REAL-TIME SYNC ---
         if (db) {
             db.collection("settings").doc("workers").get().then(doc => {
                 if (doc.exists && doc.data().list) { workers = doc.data().list; renderWorkersDropdown(); }
@@ -2995,7 +2967,6 @@
             });
         }
 
-        // --- MODULE 1: JUALAN TERUS DARI LADANG ---
         function verifyStaffLogin() {
             const p = document.getElementById('staffPassInput').value;
             if (p === secretAdminCode || p === "kasir123") {
@@ -3103,8 +3074,6 @@
             const tbody = document.getElementById('incomeTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            
-            // SORTING: Tarikh Paling Lama (Awal) di Atas, Terbaru di Bawah
             let sortedIncome = [...incomeList].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedIncome.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
@@ -3112,7 +3081,6 @@
             });
         }
 
-        // --- MODULE 2: PRODUK & INVOIS LUAR TALIAN ---
         function verifyOfficeLogin() {
             const p = document.getElementById('officePassInput').value;
             if (p === secretAdminCode) {
@@ -3271,8 +3239,6 @@
             const tbody = document.getElementById('officeSalesTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            
-            // SORTING: Tarikh Paling Lama (Awal) di Atas, Terbaru di Bawah
             let sortedSales = [...officeSales].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             let filtered = sortedSales.filter(s => filterByDateRange(s.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
@@ -3299,7 +3265,6 @@
             });
         }
 
-        // --- RENDER WORKERS & INVENTORY ---
         function renderWorkersDropdown() {
             const sel = document.getElementById('taskWorkerSelect');
             if(!sel) return; sel.innerHTML = `<option value="">Pilih Pekerja</option>`;
@@ -3320,7 +3285,6 @@
         }
         function deleteWorker(i) { workers.splice(i, 1); if(db) db.collection("settings").doc("workers").set({ list: workers }); renderWorkersAdmin(); renderWorkersDropdown(); }
 
-        // --- SUPPLY & STOCK (Bunga Kantan = tangkai, lainnya = kg, tanpa ringgit) ---
         document.getElementById('inputDate').valueAsDate = new Date();
         function onSupplyItemChange() {
             const item = document.getElementById('inputItem').value;
@@ -3393,7 +3357,6 @@
             supplyData.forEach(r => { let key = `${r.item} (${r.unit})`; if(!stocks[key]) stocks[key] = 0; if(r.action === 'stok') stocks[key] += r.qty; });
             for(let [key, val] of Object.entries(stocks)) { sc.innerHTML += `<div class="bg-slate-50 border p-2 rounded text-center"><div class="text-[10px] text-slate-500">${key}</div><div class="text-sm font-bold text-blue-600">${val}</div></div>`; }
             
-            // SORTING: Tarikh Paling Lama (Awal) di Atas, Terbaru di Bawah
             let sortedSupply = [...supplyData].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedSupply.filter(r => filterByDateRange(r.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth')).forEach(r => {
@@ -3417,7 +3380,6 @@
         }
         function markAsSupplied(firestoreId) { if(db) db.collection("supply").doc(firestoreId).update({ action: 'suplai' }); }
 
-        // --- INVENTORY & TASKS & EXPENSES ---
         function renderInventory() {
             const c = document.getElementById('inventoryContainer');
             const sel = document.getElementById('taskStockItem');
@@ -3505,19 +3467,21 @@
             }
         }
 
+        // RENDER TUGAS HARIAN DENGAN TERJEMAHAN OTOMATIS KE 5 BAHASA
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return; tbody.innerHTML = "";
             
-            // SORTING: Tarikh Paling Lama (Awal) di Atas, Terbaru di Bawah
             let sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedTasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
+                let translatedTitle = translateWorkerText(t.title);
+                let translatedCat = translateWorkerText(t.category);
                 tbody.innerHTML += `
                     <tr class="border-b">
                         <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
-                        <td class="p-3 font-semibold">${t.title}</td>
-                        <td class="p-3">${t.category}</td>
+                        <td class="p-3 font-semibold">${translatedTitle}</td>
+                        <td class="p-3">${translatedCat}</td>
                         <td class="p-3">${t.worker}</td>
                         <td class="p-3">${t.date}</td>
                         <td class="p-3">${t.stockUsed}</td>
@@ -3593,7 +3557,6 @@
             const tbody = document.getElementById('expenseTableBody');
             if(!tbody) return; tbody.innerHTML = "";
             
-            // SORTING: Tarikh Paling Lama (Awal) di Atas, Terbaru di Bawah
             let sortedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedExpenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
@@ -3621,7 +3584,6 @@
             sel.value = cv;
         }
 
-        // --- SIGNATURE & LAPORAN BEKALAN / INVOIS PROFESIONAL ---
         let signaturePad = null;
         function initSignaturePad() {
             const canvas = document.getElementById('signatureCanvas');
@@ -3675,7 +3637,6 @@
             setTimeout(initSignaturePad, 200);
         }
 
-        // KHUSUS CETAK LAPORAN BEKALAN LADANG (URUT TARIKH PALING LAMA KE TERBARU)
         function generateSupplyReportModal() {
             let sortedSupply = [...supplyData].sort((a, b) => new Date(a.date) - new Date(b.date));
             let dataArr = sortedSupply.filter(s => filterByDateRange(s.date, 'filterSupplyStart', 'filterSupplyEnd', 'filterSupplyMonth'));
@@ -3834,7 +3795,6 @@
         function closeInvoiceModal() { document.getElementById('invoiceModal').classList.add('hidden'); }
         function downloadInvoicePdfOrText() { window.print(); }
 
-        // --- CUSTOMER ORDERS (PO MASUK) DENGAN PROTEKSI KATA LALUAN ---
         function verifyPoLogin() {
             const pass = document.getElementById('poPassInput').value;
             if (pass === secretAdminCode) {
