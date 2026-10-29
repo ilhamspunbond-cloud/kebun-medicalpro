@@ -1937,7 +1937,6 @@
             const dVal = document.getElementById('inputDate').value;
             const unitVal = (itemVal === "Bunga Kantan") ? "tangkai" : "kg";
             const supplyObj = {
-                id: editingId ? undefined : Date.now(),
                 date: dVal, month: dVal.substring(0, 7), item: itemVal,
                 action: 'stok', qty: parseFloat(document.getElementById('inputQty').value),
                 unit: unitVal, desc: document.getElementById('inputDesc').value || '-'
@@ -1949,7 +1948,7 @@
                         alert("Suplai berjaya dikemaskini!");
                     });
                 } else {
-                    db.collection("supply").add(supplyObj).then(() => {
+                    db.collection("supply").add({ ...supplyObj, id: Date.now() }).then(() => {
                         document.getElementById('supplyForm').reset();
                         document.getElementById('inputDate').valueAsDate = new Date();
                         alert("Suplai disimpan!");
@@ -2057,7 +2056,6 @@
             const editingId = document.getElementById('editingTaskId').value;
             const dVal = document.getElementById('taskDate').value;
             let taskObj = {
-                id: editingId ? undefined : Date.now(),
                 title: document.getElementById('taskTitle').value,
                 category: document.getElementById('taskCategory').value,
                 worker: document.getElementById('taskWorkerSelect').value,
@@ -2074,7 +2072,7 @@
                         alert("Laporan tugas berjaya dikemaskini!");
                     });
                 } else {
-                    db.collection("tasks").add(taskObj).then(() => {
+                    db.collection("tasks").add({ ...taskObj, id: Date.now() }).then(() => {
                         resetTaskForm();
                         alert("Tugas disimpan!");
                     });
@@ -2145,7 +2143,6 @@
             const editingId = document.getElementById('editingExpenseId').value;
             const dVal = document.getElementById('expDate').value;
             let expObj = {
-                id: editingId ? undefined : Date.now(),
                 title: document.getElementById('expTitle').value,
                 amount: document.getElementById('expAmount').value,
                 date: dVal, month: dVal.substring(0, 7)
@@ -2159,7 +2156,7 @@
                         alert("Perbelanjaan berjaya dikemaskini!");
                     });
                 } else {
-                    db.collection("expenses").add(expObj).then(() => {
+                    db.collection("expenses").add({ ...expObj, id: Date.now() }).then(() => {
                         resetExpenseForm();
                         alert("Perbelanjaan ditambah!");
                     });
