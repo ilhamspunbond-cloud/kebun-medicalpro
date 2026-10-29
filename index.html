@@ -21,6 +21,11 @@
             #printableInvoiceArea { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
             .no-print { display: none !important; }
         }
+        /* Memastikan tombol play walkie-talkie bisa disentuh dengan sempurna di HP */
+        audio {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans pb-24">
@@ -2342,13 +2347,10 @@
         let aiTrainingRules = [];
         let aiUnresolvedLogs = [];
 
-        // --- FUNGSI STOP SEMUA AUDIO & WALKIE-TALKIE (DINAMIS ANTI TUMPANG TINDIH) ---
         function stopAllAiAudio() {
-            // 1. Berhentikan suara ucapan AI (SpeechSynthesis)
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
-            // 2. Berhentikan semua elemen audio tag (termasuk pemutar walkie-talkie aktif)
             document.querySelectorAll('audio').forEach(audioEl => {
                 audioEl.pause();
                 audioEl.currentTime = 0;
@@ -2562,21 +2564,6 @@
             }
         }
 
-        // --- FUNGSI HAPUS TAMPILAN ADMIN SAJA (DATA TETAP AMAN DI CLOUD) ---
-        function clearAiMemoryLogs() {
-            if (confirm("Adakah anda ingin membersihkan paparan riwayat pertanyaan baru di panel ini? (Data kekal aman di cloud database)")) {
-                // Di sini hanya mengosongkan log lokal atau memadamkan dari koleksi unresolved logs admin tanpa merosakkan memori global AI
-                if (db) {
-                    db.collection("ai_unresolved_logs").get().then(snapshot => {
-                        let batch = db.batch();
-                        snapshot.forEach(doc => batch.delete(doc.ref));
-                        batch.commit().then(() => alert("Paparan riwayat pertanyaan baru berjaya dibersihkan dari panel!"));
-                    });
-                }
-            }
-        }
-
-        // --- SISTEM SUARA AI KUNCI KE PRIA (MALE VOICE) DENGAN FALLBACK ---
         function speakText(text) {
             lastSpokenText = text;
             if ('speechSynthesis' in window) {
@@ -2593,12 +2580,8 @@
                 utterance.rate = 1.0;
 
                 let voices = window.speechSynthesis.getVoices();
-                let selectedVoice = null;
+                let selectedVoice = voices.find(v => (v.lang.includes(langCode.substring(0, 2)) || v.lang.includes(currentLang)) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('lelaki')));
 
-                // Cari suara pria (male) berdasarkan bahasa
-                selectedVoice = voices.find(v => (v.lang.includes(langCode.substring(0, 2)) || v.lang.includes(currentLang)) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('lelaki')));
-
-                // Jika suara pria spesifik tidak ada, cari suara umum berhuruf bahasa tersebut
                 if (!selectedVoice) {
                     selectedVoice = voices.find(v => v.lang.includes(langCode.substring(0, 2)) || v.lang.includes(currentLang));
                 }
@@ -2654,7 +2637,6 @@
             }
         }
 
-        // --- GENERATE AI RESPONSE DENGAN PELATIHAN KOSA KATA & 5 BAHASA FULL ---
         function generateFriendlyAiResponse(queryType = 'welcome', manualText = '') {
             const fullName = getFullTitleName();
 
@@ -2707,7 +2689,6 @@
                 }
             }
 
-            // Penerjemahan penuh otomatis ke 5 bahasa
             if (currentLang === 'id') {
                 responseText = responseText
                     .replace(/Rumusan Sistem & Kewangan Ladang/g, 'Rekap Sistem & Keuangan Ladang')
@@ -2780,7 +2761,7 @@
 
         function handleAiManualQuery(e) {
             e.preventDefault();
-            stopAllAiAudio(); // Berhenti suara AI otomatis saat mengetik/kirim chat
+            stopAllAiAudio();
             const val = document.getElementById('aiManualInput').value.trim().toLowerCase();
             if (val) {
                 let queryType = 'product_query';
@@ -2797,7 +2778,7 @@
         }
 
         function startVoiceChat() {
-            stopAllAiAudio(); // Berhenti suara AI saat mulai rekaman suara AI
+            stopAllAiAudio();
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) { alert("Pelayar tidak menyokong suara."); return; }
             const recognition = new SpeechRecognition();
@@ -2886,24 +2867,18 @@
                         let condText = rainSoon ? "Hujan Rintik" : (isNight ? "Malam Tenang" : "Berawan Separa");
                         let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
 
-
-                    let aiRecommendationText = "";
-
-// Logika Waktu Berdasarkan Jam Malaysia (currentHourInt)
-if (currentHourInt >= 17 || currentHourInt < 7) {
-    // Di atas jam 5 sore (17.00) sampai sebelum jam 7 pagi
-    aiRecommendationText = `🌙 <b>Waktu Rehat Pekerja:</b> Sudah lewat pukul 5 petang. Disarankan menghentikan aktiviti ladang dan membenarkan pekerja berehat/tidur malam hingga jam 7:00–8:00 pagi esok.`;
-} else if (currentHourInt >= 12 && currentHourInt < 14) {
-    // Jam 12 siang sampai jam 2 siang (istirahat 2 jam)
-    aiRecommendationText = `☀️ <b>Waktu Rehat Tengah Hari:</b> Pukul ${currentHourInt}:00. Sesi rehat tengah hari selama 2 jam (12:00 - 14:00). Pekerja dihentikan sementara dari kerja berat.`;
-} else if (rainSoon) {
-    aiRecommendationText = `⚠️ <b>Perhatian ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
-} else if (temp > 33) {
-    aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
-} else {
-    aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Sesi kerja aktif berjalan. Keadaan ideal untuk aktiviti ladang.`;
-}
-           
+                        let aiRecommendationText = "";
+                        if (currentHourInt >= 17 || currentHourInt < 7) {
+                            aiRecommendationText = `🌙 <b>Waktu Rehat Pekerja:</b> Sudah lewat pukul 5 petang. Disarankan menghentikan aktiviti ladang dan membenarkan pekerja berehat/tidur malam hingga jam 7:00–8:00 pagi esok.`;
+                        } else if (currentHourInt >= 12 && currentHourInt < 14) {
+                            aiRecommendationText = `☀️ <b>Waktu Rehat Tengah Hari:</b> Pukul ${currentHourInt}:00. Sesi rehat tengah hari selama 2 jam (12:00 - 14:00). Pekerja dihentikan sementara dari kerja berat.`;
+                        } else if (rainSoon) {
+                            aiRecommendationText = `⚠️ <b>Perhatian ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
+                        } else if (temp > 33) {
+                            aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
+                        } else {
+                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Sesi kerja aktif berjalan. Keadaan ideal untuk aktiviti ladang.`;
+                        }
 
                         if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
                         if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
@@ -2970,7 +2945,7 @@ if (currentHourInt >= 17 || currentHourInt < 7) {
 
         function sendBossTextOrder(e) {
             e.preventDefault();
-            stopAllAiAudio(); // Stop suara AI saat kirim arahan teks
+            stopAllAiAudio();
             const input = document.getElementById('bossInputMessage');
             const text = input.value.trim();
             if (!text) return;
@@ -2987,7 +2962,7 @@ if (currentHourInt >= 17 || currentHourInt < 7) {
         }
 
         async function toggleVoiceRecording() {
-            stopAllAiAudio(); // Berhenti suara AI otomatis saat mulai rekam walkie-talkie
+            stopAllAiAudio();
             if (!isRecording) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -3055,7 +3030,14 @@ if (currentHourInt >= 17 || currentHourInt < 7) {
                     const data = doc.data();
                     const id = doc.id;
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
-                    let contentHtml = data.type === "text" ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` : `<div class="mt-2"><audio controls src="${data.content}" class="w-full h-8" onplay="stopAllAiAudio()"></audio></div>`;
+                    
+                    // PERBAIKAN UTAMA DI SINI: Menambahkan z-index dan pointer-events agar tombol play bisa dipencet
+                    let contentHtml = data.type === "text" 
+                        ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` 
+                        : `<div class="mt-2 bg-slate-950 p-3 rounded-xl border border-amber-500/40 relative z-20">
+                               <audio controls preload="auto" src="${data.content}" class="w-full h-10 relative z-30 pointer-events-auto" onplay="stopAllAiAudio()"></audio>
+                           </div>`;
+
                     container.innerHTML += `
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
                             <div class="flex justify-between items-center text-xs">
