@@ -112,7 +112,7 @@
                             <h3 id="lblAiName" class="font-black text-base text-yellow-300">Asisten Ladang AI</h3>
                             <span id="lblMemActive" class="bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">🧠 Memori Global Aktif</span>
                         </div>
-                        <p id="aiGreetingSubtitle" class="text-xs text-indigo-200">Asisten mandiri & pintar estet Medicalpro</p>
+                        <p id="aiGreetingSubtitle" class="text-xs text-indigo-200">Asisten mandiri & pintar ladang Medicalpro</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -179,8 +179,8 @@
                 <div class="z-10 flex items-center gap-3">
                     <span id="illustrationEmoji" class="text-3xl">🏡</span>
                     <div>
-                        <div id="illustrationTitle" class="text-xs font-bold text-indigo-200">Estet Machap</div>
-                        <div id="weatherIllustrationText" class="text-[11px] text-slate-400">Suasana estet di ladang.</div>
+                        <div id="illustrationTitle" class="text-xs font-bold text-indigo-200">Ladang Machap</div>
+                        <div id="weatherIllustrationText" class="text-[11px] text-slate-400">Suasana di ladang.</div>
                     </div>
                 </div>
                 <div class="z-10 text-right font-mono text-[10px] text-emerald-400 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-800">
@@ -797,7 +797,7 @@
                     <div class="sm:text-right">
                         <span class="text-slate-400 block font-semibold mb-1" id="invMgrLabel">Pegawai / Pengurus Bertanggungjawab:</span>
                         <strong class="text-slate-800 text-sm block" id="invModalOwner">Abdul Rojak</strong>
-                        <span class="text-[11px] text-emerald-700 font-bold block mt-1" id="invModalRoleSubtitle">Pengurus Estet Medicalpro</span>
+                        <span class="text-[11px] text-emerald-700 font-bold block mt-1" id="invModalRoleSubtitle">Pengurus Ladang Medicalpro</span>
                     </div>
                 </div>
 
@@ -866,6 +866,42 @@
             <div class="flex justify-between items-center border-b pb-4">
                 <h2 id="lblAdminDashTitle" class="text-xl font-bold text-emerald-800">⚙️ Panel Tetapan Pentadbir</h2>
                 <button type="button" onclick="closeAdminDashboard()" id="btnCloseAdminDash" class="text-rose-600 font-bold px-3 py-1 bg-rose-50 rounded-lg text-sm">Tutup ✕</button>
+            </div>
+
+            <!-- PANEL LATIHAN INGATAN & KOSA KATA AI -->
+            <div class="bg-purple-50 p-4 rounded-xl border border-purple-300 space-y-4">
+                <h4 class="font-bold text-sm text-purple-900">🧠 Panel Pelatihan Kosa Kata & Jawapan AI (Admin Training)</h4>
+                <p class="text-xs text-slate-600">Admin dapat melatih AI dengan menambahkan sapaan, kata kunci respons khusus, serta mengelola atau membersihkan pertanyaan baru.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-purple-900 mb-1">1. Kata Tambahan 1 (Awalan Sapaan)</label>
+                        <input type="text" id="aiTrainPrefix" placeholder="Cth: Selamat datang kembali," class="w-full border p-2 rounded-lg text-xs bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-purple-900 mb-1">2. Kata Kunci (Keyword Trigger)</label>
+                        <input type="text" id="aiTrainKeyword" placeholder="Cth: cuaca, hasil, darurat" class="w-full border p-2 rounded-lg text-xs bg-white">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-purple-900 mb-1">3. Kata Tambahan 2 (Isi Jawaban Khusus untuk Kata Kunci)</label>
+                    <textarea id="aiTrainAnswer" rows="2" placeholder="Cth: Keadaan ladang terpantau sangat baik dan siap dipanen." class="w-full border p-2 rounded-lg text-xs bg-white"></textarea>
+                </div>
+                <button type="button" onclick="saveAiTrainingRule()" class="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-lg text-xs font-bold">Simpan Aturan Pelatihan AI 🚀</button>
+
+                <!-- Daftar Aturan & Riwayat Pertanyaan Baru -->
+                <div class="pt-3 border-t border-purple-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-purple-900">Daftar Aturan Kosa Kata Aktif:</span>
+                        <button type="button" onclick="clearAiMemoryLogs()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-[11px] font-bold">🧹 Bersihkan Memori / Riwayat Pertanyaan Baru</button>
+                    </div>
+                    <div id="aiTrainingRulesContainer" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+
+                    <div class="mt-2">
+                        <span class="text-xs font-bold text-rose-800">📋 Riwayat Pertanyaan Pengguna (Belum Dikenal AI):</span>
+                        <div id="aiUnresolvedLogsContainer" class="space-y-1 mt-1 max-h-32 overflow-y-auto bg-white p-2 rounded-lg border border-rose-200"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-blue-50 p-4 rounded-xl border border-blue-300 space-y-3">
@@ -970,7 +1006,7 @@
                 lblAudioBtn: "Aktifkan Audio Sistem",
                 lblAiName: "Asisten Ladang AI",
                 lblMemActive: "🧠 Memori Global Aktif",
-                aiSubtitle: "Asisten mandiri & pintar estet Medicalpro",
+                aiSubtitle: "Asisten mandiri & pintar ladang Medicalpro",
                 btnVoiceChat: "🎙️ Cakap AI",
                 btnRepeat: "🔊 Ulang",
                 btnAiSummary: "📊 Rumusan & Data Sistem",
@@ -980,8 +1016,8 @@
                 btnAiSend: "Kirim & Simpan",
                 lblWeatherCurrent: "Semasa",
                 lblHourlyForecast: "Ramalan Mengikut Jam",
-                lblIllustrationTitle: "Estet Machap",
-                lblIllustrationText: "Suasana estet di ladang.",
+                lblIllustrationTitle: "Ladang Machap",
+                lblIllustrationText: "Suasana di ladang.",
                 lblPrecip: "Kerpasan",
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
@@ -1184,9 +1220,9 @@
                 btnAdminPanel: "🔐 Panel Admin Utama",
                 lblAudioBanner: "🚨 Mode Audio AI & Obrolan Suara: Silakan klik tombol di samping untuk mengaktifkan suara sistem.",
                 lblAudioBtn: "Aktifkan Audio Sistem",
-                lblAiName: "Asisten Kebun AI",
+                lblAiName: "Asisten Ladang AI",
                 lblMemActive: "🧠 Memori Global Aktif",
-                aiSubtitle: "Asisten mandiri & pintar estet Medicalpro",
+                aiSubtitle: "Asisten mandiri & pintar ladang Medicalpro",
                 btnVoiceChat: "🎙️ Bicara AI",
                 btnRepeat: "🔊 Ulangi",
                 btnAiSummary: "📊 Rekap & Data Sistem",
@@ -1196,8 +1232,8 @@
                 btnAiSend: "Kirim & Simpan",
                 lblWeatherCurrent: "Saat Ini",
                 lblHourlyForecast: "Prakiraan Per Jam",
-                lblIllustrationTitle: "Estet Machap",
-                lblIllustrationText: "Suasana estet di kebun.",
+                lblIllustrationTitle: "Ladang Machap",
+                lblIllustrationText: "Suasana di ladang.",
                 lblPrecip: "Curah Hujan",
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
@@ -1213,7 +1249,7 @@
                 navTasks: "Tugas Harian",
                 navSupply: "Stok & Suplai",
                 navStock: "Bio Baja",
-                navAssets: "Aset Kebun",
+                navAssets: "Aset Ladang",
                 navExpenses: "Pengeluaran",
                 navIncome: "Jualan Terus Dari Ladang",
                 navOffice: "Produk & Invoice Offline",
@@ -1240,14 +1276,14 @@
                 thTaskStock: "Info Stok",
                 thTaskStatus: "Status",
                 thTaskAction: "Tindakan",
-                lblSupplyMgmtTitle: "📦 Manajemen Stok & Suplai Kebun",
-                lblSupplyMgmtSub: "Catat hasil panen (masuk stok gudang) atau cetak Laporan Suplai Kebun",
+                lblSupplyMgmtTitle: "📦 Manajemen Stok & Suplai Ladang",
+                lblSupplyMgmtSub: "Catat hasil panen (masuk stok gudang) atau cetak Laporan Suplai Ladang",
                 btnPrintSupplyPdf: "🖨️ Cetak Laporan Suplai PDF",
                 supplyFormTitle: "➕ Input Hasil Panen Baru (Masuk Stok)",
                 lblHarvestDate: "Tanggal Panen",
-                lblHarvestItem: "Jenis Hasil Kebun",
+                lblHarvestItem: "Jenis Hasil Ladang",
                 lblHarvestQty: "Jumlah & Satuan (Otomatis)",
-                lblHarvestDesc: "Keterangan / Blok Kebun",
+                lblHarvestDesc: "Keterangan / Blok Ladang",
                 btnSupplySubmit: "Simpan ke Stok Gudang",
                 btnCancelSupplyEdit: "Batal",
                 lblStockSummaryTitle: "📊 Ringkasan Sisa Stok Gudang:",
@@ -1259,8 +1295,8 @@
                 thSupplyDesc: "Keterangan",
                 thSupplyAction: "Tindakan",
                 lblBioBajaTitle: "🧪 Stok Bio Baja & Nutrisi Organik",
-                lblAssetTitle: "🚜 Aset & Peralatan Kebun",
-                expenseFormTitle: "💰 Pengeluaran Kebun (Bulanan)",
+                lblAssetTitle: "🚜 Aset & Peralatan Ladang",
+                expenseFormTitle: "💰 Pengeluaran Ladang (Bulanan)",
                 btnPrintExpPdf: "🖨️ Cetak Rekap PDF",
                 expTitlePlaceholder: "Keterangan Pengeluaran",
                 expAmountPlaceholder: "Jumlah Kos (RM)",
@@ -1274,18 +1310,18 @@
                 thExpAction: "Tindakan",
                 lblIncomeTitle: "💵 Jualan Terus Dari Ladang",
                 lblIncomeSub: "Urus produk hasil ladang, tambah produk dengan foto, catat jualan dengan data pembeli & cetak invois rasmi",
-                btnPrintIncomePdf: "🖨️ Cetak Rekap Kebun PDF",
-                lblStaffLoginTitle: "🔐 Akses Input Jualan Kebun (Staf)",
+                btnPrintIncomePdf: "🖨️ Cetak Rekap Ladang PDF",
+                lblStaffLoginTitle: "🔐 Akses Input Jualan Ladang (Staf)",
                 staffStatusText: "Status: Belum Log Masuk",
                 staffPassPlaceholder: "Kata Sandi Staf",
                 btnStaffLogin: "Masuk",
-                lblAddGardenProd: "➕ Tambah / Kemaskini Produk Kebun & Foto",
+                lblAddGardenProd: "➕ Tambah / Kemaskini Produk Ladang & Foto",
                 gProdNamePlaceholder: "Nama Produk",
                 gProdStockPlaceholder: "Stok Kuantiti",
                 gProdPricePlaceholder: "Harga Seunit (RM)",
-                btnSaveGardenProd: "Simpan / Kemaskini Produk Kebun",
-                lblGardenSalesTitle: "🛒 Catat Transaksi Jualan Kebun Baru (Order Pelanggan)",
-                lblSelectGardenProd: "Pilih Produk Kebun",
+                btnSaveGardenProd: "Simpan / Kemaskini Produk Ladang",
+                lblGardenSalesTitle: "🛒 Catat Transaksi Jualan Ladang Baru (Order Pelanggan)",
+                lblSelectGardenProd: "Pilih Produk Ladang",
                 lblGardenQty: "Kuantiti Jualan",
                 lblGardenTotalAmt: "Jumlah Harga (RM)",
                 lblGardenBuyer: "Nama Pembeli (Atas Nama)",
@@ -1294,7 +1330,7 @@
                 lblGardenSalesDate: "Tanggal Jualan",
                 lblGardenSalesPhoto: "Bukti Foto / Resit (Opsional)",
                 btnGardenSalesSubmit: "Simpan Jualan & Cetak Invois Rasmi",
-                lblGardenHistoryTitle: "📋 Riwayat Jualan Kebun & Pelanggan:",
+                lblGardenHistoryTitle: "📋 Riwayat Jualan Ladang & Pelanggan:",
                 thIncDate: "Tanggal",
                 thIncProd: "Produk",
                 thIncQty: "Kuantiti",
@@ -1371,7 +1407,7 @@
                 btnAddWa: "Tambah Admin WhatsApp",
                 lblLogoTitle: "🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua HP)",
                 btnSaveLogo: "Simpan Logo",
-                lblAiSetTitle: "👩‍💻 Pengurusan AI Asisten Kebun",
+                lblAiSetTitle: "👩‍💻 Pengurusan AI Asisten Ladang",
                 btnSaveAi: "Simpan Tetapan AI",
                 lblWorkerSetTitle: "Pengurusan Pekerja & Job Desk Kustom",
                 workerNameInputPlaceholder: "Nama Pekerja",
@@ -1402,7 +1438,7 @@
                 lblAudioBtn: "激活系统音频",
                 lblAiName: "农场AI助手",
                 lblMemActive: "🧠 全局记忆已激活",
-                aiSubtitle: "Medicalpro 农庄自主智能助手",
+                aiSubtitle: "Medicalpro 农场自主智能助手",
                 btnVoiceChat: "🎙️ 与AI对话",
                 btnRepeat: "🔊 重复",
                 btnAiSummary: "📊 汇总与系统数据",
@@ -1412,8 +1448,8 @@
                 btnAiSend: "发送并保存",
                 lblWeatherCurrent: "当前",
                 lblHourlyForecast: "每小时预报",
-                lblIllustrationTitle: "马什卡农庄",
-                lblIllustrationText: "农场庄园环境。",
+                lblIllustrationTitle: "马什卡农场",
+                lblIllustrationText: "农场环境。",
                 lblPrecip: "降水量",
                 lblWind: "风速",
                 lblAiDecision: "🤖 AI 根据天气与土壤做出的决策：",
@@ -1618,7 +1654,7 @@
                 lblAudioBtn: "सिस्टम ऑडियो सक्रिय करें",
                 lblAiName: "फार्म AI सहायक",
                 lblMemActive: "🧠 ग्लोबल मेमोरी सक्रिय",
-                aiSubtitle: "मेडिकलप्रो एस्टेट स्वायत्त और स्मार्ट सहायक",
+                aiSubtitle: "मेडिकलप्रो फार्म स्वायत्त और स्मार्ट सहायक",
                 btnVoiceChat: "🎙️ AI से बात करें",
                 btnRepeat: "🔊 दोहराएं",
                 btnAiSummary: "📊 सारांश और सिस्टम डेटा",
@@ -1628,8 +1664,8 @@
                 btnAiSend: "भेजें और सहेजें",
                 lblWeatherCurrent: "वर्तमान",
                 lblHourlyForecast: "प्रति घंटा पूर्वानुमान",
-                lblIllustrationTitle: "मचाप एस्टेट",
-                lblIllustrationText: "फार्म में एस्टेट का माहौल।",
+                lblIllustrationTitle: "मचाप फार्म",
+                lblIllustrationText: "फार्म का माहौल।",
                 lblPrecip: "वर्षा",
                 lblWind: "हवा",
                 lblAiDecision: "🤖 मौसम और मिट्टी के आधार पर AI का निर्णय:",
@@ -1834,7 +1870,7 @@
                 lblAudioBtn: "Activate System Audio",
                 lblAiName: "Farm AI Assistant",
                 lblMemActive: "🧠 Global Memory Active",
-                aiSubtitle: "Medicalpro estate autonomous & smart assistant",
+                aiSubtitle: "Medicalpro farm autonomous & smart assistant",
                 btnVoiceChat: "🎙️ Talk to AI",
                 btnRepeat: "🔊 Repeat",
                 btnAiSummary: "📊 Summary & System Data",
@@ -1844,8 +1880,8 @@
                 btnAiSend: "Send & Save",
                 lblWeatherCurrent: "Current",
                 lblHourlyForecast: "Hourly Forecast",
-                lblIllustrationTitle: "Machap Estate",
-                lblIllustrationText: "Estate atmosphere on the farm.",
+                lblIllustrationTitle: "Machap Farm",
+                lblIllustrationText: "Farm atmosphere.",
                 lblPrecip: "Precipitation",
                 lblWind: "Wind",
                 lblAiDecision: "🤖 AI Decision Based on Weather & Soil:",
@@ -2037,7 +2073,6 @@
             }
         };
 
-        // Kamus penerjemah kata kunci teks pekerja (misal: "Tabur baja", "Potong rumput") ke 5 bahasa
         const workerTextDict = {
             "Tabur baja": { ms: "Tabur baja", id: "Tabur pupuk", zh: "施肥", hi: "उर्वरक फैलाना", en: "Spread fertilizer" },
             "Potong rumput": { ms: "Potong rumput", id: "Potong rumput", zh: "割草", hi: "घास काटना", en: "Cut grass" },
@@ -2060,7 +2095,7 @@
             currentLang = lang;
             localStorage.setItem('medicalpro_lang', lang);
             applyLanguage();
-            initAiGreeting(); // Perbarui sapaan AI sesuai bahasa baru
+            initAiGreeting();
             renderTasks();
             renderSupplyApp();
             renderIncomeSales();
@@ -2278,29 +2313,6 @@
                 let el = document.getElementById(id);
                 if(el) el.innerText = val;
             }
-
-            if(document.getElementById('inputUserRealName')) document.getElementById('inputUserRealName').placeholder = t.taskTitlePlaceholder;
-            if(document.getElementById('aiManualInput')) document.getElementById('aiManualInput').placeholder = t.aiPlaceholder;
-            if(document.getElementById('bossInputMessage')) document.getElementById('bossInputMessage').placeholder = t.bossPlaceholder;
-            if(document.getElementById('taskTitle')) document.getElementById('taskTitle').placeholder = t.taskTitlePlaceholder;
-            if(document.getElementById('taskCategory')) document.getElementById('taskCategory').placeholder = t.taskCatPlaceholder;
-            if(document.getElementById('expTitle')) document.getElementById('expTitle').placeholder = t.expTitlePlaceholder;
-            if(document.getElementById('expAmount')) document.getElementById('expAmount').placeholder = t.expAmountPlaceholder;
-            if(document.getElementById('staffPassInput')) document.getElementById('staffPassInput').placeholder = t.staffPassPlaceholder;
-            if(document.getElementById('gProdName')) document.getElementById('gProdName').placeholder = t.gProdNamePlaceholder;
-            if(document.getElementById('gProdStock')) document.getElementById('gProdStock').placeholder = t.gProdStockPlaceholder;
-            if(document.getElementById('gProdPrice')) document.getElementById('gProdPrice').placeholder = t.gProdPricePlaceholder;
-            if(document.getElementById('poPassInput')) document.getElementById('poPassInput').placeholder = t.poPassPlaceholder;
-            if(document.getElementById('officePassInput')) document.getElementById('officePassInput').placeholder = t.officePassPlaceholder;
-            if(document.getElementById('prodName')) document.getElementById('prodName').placeholder = t.prodNamePlaceholder;
-            if(document.getElementById('prodStock')) document.getElementById('prodStock').placeholder = t.prodStockPlaceholder;
-            if(document.getElementById('prodPrice')) document.getElementById('prodPrice').placeholder = t.prodPricePlaceholder;
-            if(document.getElementById('adminPasswordInput')) document.getElementById('adminPasswordInput').placeholder = t.adminPasswordPlaceholder;
-            if(document.getElementById('adminWhatsappName')) document.getElementById('adminWhatsappName').placeholder = t.adminWhatsappNamePlaceholder;
-            if(document.getElementById('adminWhatsappPhone')) document.getElementById('adminWhatsappPhone').placeholder = t.adminWhatsappPhonePlaceholder;
-            if(document.getElementById('workerNameInput')) document.getElementById('workerNameInput').placeholder = t.workerNameInputPlaceholder;
-            if(document.getElementById('invName')) document.getElementById('invName').placeholder = t.invNamePlaceholder;
-            if(document.getElementById('invStock')) document.getElementById('invStock').placeholder = t.invStockPlaceholder;
         }
 
         function checkUserProfile() {
@@ -2327,6 +2339,8 @@
         let lastSpokenText = "";
         let currentWeatherData = { rainSoon: false };
         let globalAiMemory = [];
+        let aiTrainingRules = [];
+        let aiUnresolvedLogs = [];
 
         function applyGlobalLogo() {
             if (globalLogoUrl) {
@@ -2426,12 +2440,26 @@
                     renderAdminWhatsappList();
                 }
             }).catch(() => {});
+            db.collection("settings").doc("ai_training").get().then((doc) => {
+                if (doc.exists && doc.data().rules) {
+                    aiTrainingRules = doc.data().rules;
+                    renderAiTrainingRules();
+                }
+            }).catch(() => {});
 
             db.collection("ai_global_memory").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
                 globalAiMemory = [];
                 snapshot.forEach(doc => {
                     globalAiMemory.push(doc.data());
                 });
+            });
+
+            db.collection("ai_unresolved_logs").orderBy("timestamp", "desc").limit(30).onSnapshot(snapshot => {
+                aiUnresolvedLogs = [];
+                snapshot.forEach(doc => {
+                    aiUnresolvedLogs.push({ firestoreId: doc.id, ...doc.data() });
+                });
+                renderUnresolvedLogs();
             });
         } else { applyAiSettings(); }
 
@@ -2445,18 +2473,125 @@
             });
         }
 
+        function saveAiTrainingRule() {
+            const prefix = document.getElementById('aiTrainPrefix').value.trim();
+            const keyword = document.getElementById('aiTrainKeyword').value.trim().toLowerCase();
+            const answer = document.getElementById('aiTrainAnswer').value.trim();
+            if (keyword && answer) {
+                aiTrainingRules.push({ prefix, keyword, answer });
+                if (db) {
+                    db.collection("settings").doc("ai_training").set({ rules: aiTrainingRules }).then(() => {
+                        document.getElementById('aiTrainPrefix').value = "";
+                        document.getElementById('aiTrainKeyword').value = "";
+                        document.getElementById('aiTrainAnswer').value = "";
+                        renderAiTrainingRules();
+                        alert("Aturan pelatihan AI berjaya disimpan!");
+                    });
+                }
+            } else {
+                alert("Sila isi kata kunci dan kata tambahan 2!");
+            }
+        }
+
+        function deleteAiTrainingRule(index) {
+            aiTrainingRules.splice(index, 1);
+            if (db) {
+                db.collection("settings").doc("ai_training").set({ rules: aiTrainingRules }).then(() => {
+                    renderAiTrainingRules();
+                });
+            }
+        }
+
+        function renderAiTrainingRules() {
+            const container = document.getElementById('aiTrainingRulesContainer');
+            if (!container) return;
+            container.innerHTML = "";
+            if (aiTrainingRules.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400">Belum ada aturan latihan kosa kata.</span>`;
+                return;
+            }
+            aiTrainingRules.forEach((rule, idx) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded border text-xs">
+                        <div>
+                            <span class="font-bold text-purple-900">🔑 Kunci: [${rule.keyword}]</span><br>
+                            <span class="text-[10px] text-slate-600">Awalan: "${rule.prefix || '-'}" | Jawapan: "${rule.answer}"</span>
+                        </div>
+                        <button type="button" onclick="deleteAiTrainingRule(${idx})" class="text-rose-600 font-bold px-2 py-1 text-[11px]">Padam</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderUnresolvedLogs() {
+            const container = document.getElementById('aiUnresolvedLogsContainer');
+            if (!container) return;
+            container.innerHTML = "";
+            if (aiUnresolvedLogs.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400">Tiada pertanyaan baru yang belum dikenal.</span>`;
+                return;
+            }
+            aiUnresolvedLogs.forEach((log) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-50 p-1.5 rounded border text-[11px]">
+                        <div>
+                            <span class="font-bold text-slate-800">👤 ${log.user}:</span> "${log.query}"
+                        </div>
+                        <button type="button" onclick="resolveLog('${log.firestoreId}')" class="text-emerald-700 font-bold px-1.5 py-0.5 bg-emerald-100 rounded">Selesai ✓</button>
+                    </div>
+                `;
+            });
+        }
+
+        function resolveLog(firestoreId) {
+            if (db) {
+                db.collection("ai_unresolved_logs").doc(firestoreId).delete().catch(() => {});
+            }
+        }
+
+        function clearAiMemoryLogs() {
+            if (confirm("Adakah anda ingin membersihkan seluruh riwayat pertanyaan baru dan ingatan sampah AI?")) {
+                if (db) {
+                    db.collection("ai_unresolved_logs").get().then(snapshot => {
+                        let batch = db.batch();
+                        snapshot.forEach(doc => batch.delete(doc.ref));
+                        batch.commit().then(() => alert("Memori riwayat pertanyaan baru berjaya dibersihkan!"));
+                    });
+                }
+            }
+        }
+
+        // --- SISTEM SUARA AI KUNCI KE PRIA (MALE VOICE) DENGAN FALLBACK ---
         function speakText(text) {
             lastSpokenText = text;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text.replace(/[*_#]/g, ''));
+                
                 let langCode = 'ms-MY';
                 if(currentLang === 'id') langCode = 'id-ID';
                 else if(currentLang === 'zh') langCode = 'zh-CN';
                 else if(currentLang === 'hi') langCode = 'hi-IN';
                 else if(currentLang === 'en') langCode = 'en-US';
+                
                 utterance.lang = langCode;
                 utterance.rate = 1.0;
+
+                let voices = window.speechSynthesis.getVoices();
+                let selectedVoice = null;
+
+                // Cari suara pria (male) berdasarkan bahasa
+                selectedVoice = voices.find(v => (v.lang.includes(langCode.substring(0, 2)) || v.lang.includes(currentLang)) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('guy') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('pria') || v.name.toLowerCase().includes('lelaki')));
+
+                // Jika suara pria spesifik tidak ada, cari suara umum berhuruf bahasa tersebut
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(v => v.lang.includes(langCode.substring(0, 2)) || v.lang.includes(currentLang));
+                }
+
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -2485,7 +2620,7 @@
         let officeSales = [];
         let customerOrdersList = [];
 
-        function saveConversationToCloud(userText, aiReply) {
+        function saveConversationToCloud(userText, aiReply, isUnresolved = false) {
             if (db) {
                 db.collection("ai_global_memory").add({
                     user: getFullTitleName(),
@@ -2493,10 +2628,18 @@
                     aiReply: aiReply,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(() => {});
+
+                if (isUnresolved) {
+                    db.collection("ai_unresolved_logs").add({
+                        user: getFullTitleName(),
+                        query: userText,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(() => {});
+                }
             }
         }
 
-        // --- SISTEM AI FLEKSIBEL SESUAI BAHASA PILIHAN FULL 100% ---
+        // --- GENERATE AI RESPONSE DENGAN PELATIHAN KOSA KATA & 5 BAHASA FULL ---
         function generateFriendlyAiResponse(queryType = 'welcome', manualText = '') {
             const fullName = getFullTitleName();
 
@@ -2523,21 +2666,36 @@
             let totalOffice = officeSales.reduce((s, o) => s + parseFloat(o.total.replace(/[^0-9.]/g, '') || 0), 0);
 
             let responseText = "";
-            if (queryType === 'rekap') {
-                responseText = `📊 Rumusan Sistem & Kewangan Estet:\n• Jumlah Pekerja: ${workers.length} orang\n• Jumlah Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Ladang: RM ${totalInc.toFixed(2)}\n• Jualan Produk & Invois Luar Talian: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
-            } else if (queryType === 'baja') {
-                responseText = `🧪 Analisis & Jadual Pembajaan (Kitaran 2 Minggu):\n${bajaWarning}\n${pemupukanAdvice}`;
-            } else if (queryType === 'memori') {
-                let recentMemoryCount = globalAiMemory.length;
-                responseText = `🧠 Memori Global & Kosa Kata Mandiri:\n• Jumlah Perbualan Disimpan: ${recentMemoryCount} interaksi.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
-            } else {
-                responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik.`;
+            let customPrefix = "Selamat datang kembali,";
+            let matchedTraining = null;
+
+            if (manualText) {
+                let lowerText = manualText.toLowerCase();
+                matchedTraining = aiTrainingRules.find(rule => lowerText.includes(rule.keyword));
+                if (matchedTraining) {
+                    if (matchedTraining.prefix) customPrefix = matchedTraining.prefix;
+                    let stockInfoSummary = `📊 Rumusan Data Stok: Jumlah item stok bio baja aktif ${inventory.length} jenis.`;
+                    responseText = `${customPrefix} ${fullName}! 🌿 ${matchedTraining.answer}\n\n${stockInfoSummary}\n${bajaWarning}`;
+                }
             }
 
-            // Menerjemahkan respons AI secara penuh ke bahasa yang dipilih
+            if (!matchedTraining) {
+                if (queryType === 'rekap') {
+                    responseText = `📊 Rumusan Sistem & Kewangan Ladang:\n• Jumlah Pekerja: ${workers.length} orang\n• Jumlah Perbelanjaan: RM ${totalEx.toFixed(2)}\n• Jualan Hasil Ladang: RM ${totalInc.toFixed(2)}\n• Jualan Produk & Invois Luar Talian: RM ${totalOffice.toFixed(2)}\n• ${bajaWarning}`;
+                } else if (queryType === 'baja') {
+                    responseText = `🧪 Analisis & Jadual Pembajaan (Kitaran 2 Minggu):\n${bajaWarning}\n${pemupukanAdvice}`;
+                } else if (queryType === 'memori') {
+                    let recentMemoryCount = globalAiMemory.length;
+                    responseText = `🧠 Memori Global & Kosa Kata Mandiri:\n• Jumlah Perbualan Disimpan: ${recentMemoryCount} interaksi.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
+                } else {
+                    responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik.`;
+                }
+            }
+
+            // Penerjemahan penuh otomatis ke 5 bahasa
             if (currentLang === 'id') {
                 responseText = responseText
-                    .replace(/Rumusan Sistem & Kewangan Estet/g, 'Rekap Sistem & Keuangan Estet')
+                    .replace(/Rumusan Sistem & Kewangan Ladang/g, 'Rekap Sistem & Keuangan Ladang')
                     .replace(/Jumlah Pekerja/g, 'Jumlah Pekerja')
                     .replace(/Jumlah Perbelanjaan/g, 'Total Pengeluaran')
                     .replace(/Jualan Hasil Ladang/g, 'Penjualan Hasil Kebun')
@@ -2557,7 +2715,7 @@
                     .replace(/Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik/g, 'Semua riwayat obrolan dan referensi tautan diselaraskan dengan baik');
             } else if (currentLang === 'en') {
                 responseText = responseText
-                    .replace(/Rumusan Sistem & Kewangan Estet/g, 'Estate System & Financial Summary')
+                    .replace(/Rumusan Sistem & Kewangan Ladang/g, 'Farm System & Financial Summary')
                     .replace(/Jumlah Pekerja/g, 'Total Workers')
                     .replace(/Jumlah Perbelanjaan/g, 'Total Expenses')
                     .replace(/Jualan Hasil Ladang/g, 'Direct Farm Sales')
@@ -2582,7 +2740,8 @@
             }
 
             if (manualText) {
-                saveConversationToCloud(manualText, responseText);
+                let isUnresolved = !matchedTraining && queryType === 'product_query';
+                saveConversationToCloud(manualText, responseText, isUnresolved);
             }
 
             return responseText;
@@ -2912,6 +3071,8 @@
                 renderWorkersAdmin();
                 renderAdminInventoryTable();
                 renderAdminWhatsappList();
+                renderAiTrainingRules();
+                renderUnresolvedLogs();
             } else { alert("Salah kata laluan!"); }
         };
         let closeAdminDashboard = () => document.getElementById('adminDashboardModal').classList.add('hidden');
@@ -3049,7 +3210,7 @@
                             document.getElementById('gardenSalesForm').reset();
                             document.getElementById('gSalesDate').valueAsDate = new Date();
                             alert("Jualan terus dari ladang berjaya direkod!");
-                            showCustomInvoiceModal(salesObj, 'Jualan Terus Dari Ladang (Estet)');
+                            showCustomInvoiceModal(salesObj, 'Jualan Terus Dari Ladang');
                         });
                     });
                 }
@@ -3467,7 +3628,6 @@
             }
         }
 
-        // RENDER TUGAS HARIAN DENGAN TERJEMAHAN OTOMATIS KE 5 BAHASA
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return; tbody.innerHTML = "";
@@ -3651,8 +3811,8 @@
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
             document.getElementById('invRecipientLabel').innerText = "Keterangan Dokumen:";
-            document.getElementById('invCustomerName').innerText = "Rekod Bekalan & Hasil Tuaian Dalaman Estet";
-            document.getElementById('invCustomerAddress').innerText = "Lokasi: Estet Machap, Johor";
+            document.getElementById('invCustomerName').innerText = "Rekod Bekalan & Hasil Tuaian Dalaman Ladang";
+            document.getElementById('invCustomerAddress').innerText = "Lokasi: Ladang Machap, Johor";
             document.getElementById('invCustomerPhone').innerText = "Status: Pengiriman Dalaman Ladang (Bukan Jualan)";
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
@@ -3700,7 +3860,7 @@
             let startStr = "", endStr = "", monthVal = "";
 
             if(type === 'tasks') { 
-                title = "Rumusan Tugas Harian Estet"; 
+                title = "Rumusan Tugas Harian Ladang"; 
                 dataArr = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date)).filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth'));
                 startStr = document.getElementById('filterTaskStart').value;
                 endStr = document.getElementById('filterTaskEnd').value;
@@ -3732,9 +3892,9 @@
             document.getElementById('invModalDateNum').innerText = `Tarikh Cetak: ${todayStr}`;
             document.getElementById('invOfficeAddressDisplay').innerText = officeCompanyAddress;
             document.getElementById('invRecipientLabel').innerText = "Keterangan Laporan:";
-            document.getElementById('invCustomerName').innerText = isTaskReport ? "Rekod Aktiviti & Tugasan Harian Pekerja Estet" : (isExpenseReport ? "Rekod Perbelanjaan Operasi Ladang" : "Pengurusan Korporat / Umum");
-            document.getElementById('invCustomerAddress').innerText = "Lokasi: Estet Machap, Johor";
-            document.getElementById('invCustomerPhone').innerText = "Status: Dokumen Rasmi Dalaman Estet";
+            document.getElementById('invCustomerName').innerText = isTaskReport ? "Rekod Aktiviti & Tugasan Harian Pekerja Ladang" : (isExpenseReport ? "Rekod Perbelanjaan Operasi Ladang" : "Pengurusan Korporat / Umum");
+            document.getElementById('invCustomerAddress').innerText = "Lokasi: Ladang Machap, Johor";
+            document.getElementById('invCustomerPhone').innerText = "Status: Dokumen Rasmi Dalaman Ladang";
             document.getElementById('invModalOwner').innerText = getRealNameOnly();
 
             const tbody = document.getElementById('invoiceTableBody');
