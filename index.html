@@ -140,7 +140,7 @@
             </div>
 
             <form onsubmit="handleAiManualQuery(event)" class="flex gap-2 pt-1">
-                <input type="text" id="aiManualInput" placeholder="Tanya AI atau hantar pautan panduan..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none">
+                <input type="text" id="aiManualInput" placeholder="Tanya AI atau hantar pautan panduan..." class="flex-1 bg-white/10 border border-indigo-400/30 text-white placeholder-indigo-300/60 p-2.5 rounded-xl text-sm focus:outline-none" oninput="stopAllAiAudio()">
                 <button type="submit" id="btnAiSend" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow">Kirim & Simpan</button>
             </form>
         </section>
@@ -893,7 +893,7 @@
                 <div class="pt-3 border-t border-purple-200 space-y-3">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold text-purple-900">Daftar Aturan Kosa Kata Aktif:</span>
-                        <button type="button" onclick="clearAiMemoryLogs()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1 rounded text-[11px] font-bold">🧹 Bersihkan Memori / Riwayat Pertanyaan Baru</button>
+                        <span class="text-[10px] text-slate-500 font-mono">Cloud Memory Persist ☁️</span>
                     </div>
                     <div id="aiTrainingRulesContainer" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
 
@@ -1176,29 +1176,29 @@
                 btnClearSign: "Padam Tandatangan",
                 btnCloseInv: "Tutup ✕",
                 btnPrintInvPdf: "📄 Muat Turun PDF / Cetak Laporan",
-                lblAdminLogTitle: "🔐 Log Masuk Pentadbir",
-                adminPasswordPlaceholder: "Kata Laluan",
+                lblAdminLogTitle: "🔐 Log Masuk Admin",
+                adminPasswordPlaceholder: "Kata Sandi",
                 btnAdminCancel: "Batal",
-                btnAdminSubmit: "Log Masuk",
-                lblAdminDashTitle: "⚙️ Panel Tetapan Pentadbir",
+                btnAdminSubmit: "Masuk",
+                lblAdminDashTitle: "⚙️ Panel Tetapan Admin",
                 btnCloseAdminDash: "Tutup ✕",
-                lblSetAddrTitle: "📍 Tetapan Alamat Rasmi Pejabat / Syarikat (Untuk Invois)",
-                btnSaveAddr: "Simpan Alamat Pejabat",
-                lblWaTitle: "💬 Pengurusan Senarai Pentadbir WhatsApp (Pilihan Pelanggan)",
-                lblWaSub: "Tambah nama pentadbir dan nombor WhatsApp supaya pelanggan boleh pilih siapa yang akan terima PO.",
-                adminWhatsappNamePlaceholder: "Nama Pentadbir",
+                lblSetAddrTitle: "📍 Tetapan Alamat Rasmi Office / Syarikat (Untuk Invoice)",
+                btnSaveAddr: "Simpan Alamat Office",
+                lblWaTitle: "💬 Pengurusan Senarai Admin WhatsApp (Pilihan Customer)",
+                lblWaSub: "Tambah nama admin dan nombor WhatsApp supaya customer boleh pilih siapa yang boleh terima PO.",
+                adminWhatsappNamePlaceholder: "Nama Admin",
                 adminWhatsappPhonePlaceholder: "No. WhatsApp",
-                btnAddWa: "Tambah Pentadbir WhatsApp",
-                lblLogoTitle: "🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua Telefon)",
+                btnAddWa: "Tambah Admin WhatsApp",
+                lblLogoTitle: "🖼️ Ganti Logo Sistem (Permanen & Sinkron Semua HP)",
                 btnSaveLogo: "Simpan Logo",
                 lblAiSetTitle: "👩‍💻 Pengurusan AI Asisten Ladang",
                 btnSaveAi: "Simpan Tetapan AI",
-                lblWorkerSetTitle: "Pengurusan Pekerja & Tugas Kustom",
+                lblWorkerSetTitle: "Pengurusan Pekerja & Job Desk Kustom",
                 workerNameInputPlaceholder: "Nama Pekerja",
-                workerMandatoryTaskPlaceholder: "Tugas Wajib",
-                workerExtraTaskPlaceholder: "Tugas Sampingan",
+                workerMandatoryTaskPlaceholder: "Job Wajib",
+                workerExtraTaskPlaceholder: "Job Sampingan",
                 btnAddWorker: "Tambah Pekerja",
-                lblBioSetTitle: "Tambah Stok Induk Bio Baja",
+                lblBioSetTitle: "Tambah Master Stok Bio Baja",
                 invNamePlaceholder: "Nama Bio Baja",
                 invStockPlaceholder: "Stok Awal",
                 invAdvicePlaceholder: "Kegunaan / Manfaat Baja",
@@ -2342,6 +2342,19 @@
         let aiTrainingRules = [];
         let aiUnresolvedLogs = [];
 
+        // --- FUNGSI STOP SEMUA AUDIO & WALKIE-TALKIE (DINAMIS ANTI TUMPANG TINDIH) ---
+        function stopAllAiAudio() {
+            // 1. Berhentikan suara ucapan AI (SpeechSynthesis)
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            // 2. Berhentikan semua elemen audio tag (termasuk pemutar walkie-talkie aktif)
+            document.querySelectorAll('audio').forEach(audioEl => {
+                audioEl.pause();
+                audioEl.currentTime = 0;
+            });
+        }
+
         function applyGlobalLogo() {
             if (globalLogoUrl) {
                 const img1 = document.getElementById('headerLogoImg');
@@ -2549,13 +2562,15 @@
             }
         }
 
+        // --- FUNGSI HAPUS TAMPILAN ADMIN SAJA (DATA TETAP AMAN DI CLOUD) ---
         function clearAiMemoryLogs() {
-            if (confirm("Adakah anda ingin membersihkan seluruh riwayat pertanyaan baru dan ingatan sampah AI?")) {
+            if (confirm("Adakah anda ingin membersihkan paparan riwayat pertanyaan baru di panel ini? (Data kekal aman di cloud database)")) {
+                // Di sini hanya mengosongkan log lokal atau memadamkan dari koleksi unresolved logs admin tanpa merosakkan memori global AI
                 if (db) {
                     db.collection("ai_unresolved_logs").get().then(snapshot => {
                         let batch = db.batch();
                         snapshot.forEach(doc => batch.delete(doc.ref));
-                        batch.commit().then(() => alert("Memori riwayat pertanyaan baru berjaya dibersihkan!"));
+                        batch.commit().then(() => alert("Paparan riwayat pertanyaan baru berjaya dibersihkan dari panel!"));
                     });
                 }
             }
@@ -2595,7 +2610,7 @@
                 window.speechSynthesis.speak(utterance);
             }
         }
-        function speakLastAiMessage() { if (lastSpokenText) speakText(lastSpokenText); }
+        function speakLastAiMessage() { stopAllAiAudio(); if (lastSpokenText) speakText(lastSpokenText); }
 
         function getFullTitleName() {
             if (!currentUser) return "Dato Abdul Rojak";
@@ -2748,6 +2763,7 @@
         }
 
         function initAiGreeting() {
+            stopAllAiAudio();
             let res = generateFriendlyAiResponse('welcome');
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = res;
@@ -2755,6 +2771,7 @@
         }
 
         function askAi(topic) {
+            stopAllAiAudio();
             let res = generateFriendlyAiResponse(topic);
             const chatBox = document.getElementById('aiChatResponseBox');
             if (chatBox) chatBox.innerText = res;
@@ -2763,6 +2780,7 @@
 
         function handleAiManualQuery(e) {
             e.preventDefault();
+            stopAllAiAudio(); // Berhenti suara AI otomatis saat mengetik/kirim chat
             const val = document.getElementById('aiManualInput').value.trim().toLowerCase();
             if (val) {
                 let queryType = 'product_query';
@@ -2779,6 +2797,7 @@
         }
 
         function startVoiceChat() {
+            stopAllAiAudio(); // Berhenti suara AI saat mulai rekaman suara AI
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) { alert("Pelayar tidak menyokong suara."); return; }
             const recognition = new SpeechRecognition();
@@ -2941,6 +2960,7 @@
 
         function sendBossTextOrder(e) {
             e.preventDefault();
+            stopAllAiAudio(); // Stop suara AI saat kirim arahan teks
             const input = document.getElementById('bossInputMessage');
             const text = input.value.trim();
             if (!text) return;
@@ -2957,6 +2977,7 @@
         }
 
         async function toggleVoiceRecording() {
+            stopAllAiAudio(); // Berhenti suara AI otomatis saat mulai rekam walkie-talkie
             if (!isRecording) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -3024,7 +3045,7 @@
                     const data = doc.data();
                     const id = doc.id;
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
-                    let contentHtml = data.type === "text" ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` : `<div class="mt-2"><audio controls src="${data.content}" class="w-full h-8"></audio></div>`;
+                    let contentHtml = data.type === "text" ? `<p class="text-sm text-slate-200 mt-1">${data.content}</p>` : `<div class="mt-2"><audio controls src="${data.content}" class="w-full h-8" onplay="stopAllAiAudio()"></audio></div>`;
                     container.innerHTML += `
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
                             <div class="flex justify-between items-center text-xs">
