@@ -431,7 +431,7 @@
             <!-- Expenses Section Page -->
             <section id="page-expenses" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-4">
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
-                    <h3 class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
+                    <h3 id="expenseFormTitle" class="text-lg font-bold text-emerald-800">💰 Perbelanjaan Kebun (Bulanan)</h3>
                     <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                         <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
                             <span class="text-slate-500 font-bold">Dari:</span>
@@ -455,7 +455,10 @@
                         <label class="block text-[10px] font-semibold text-slate-500 mb-1">Resit HD</label>
                         <input type="file" id="expReceiptInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
                     </div>
-                    <button type="submit" id="btnExpenseSubmit" class="sm:col-span-4 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
+                    <div class="sm:col-span-4 flex gap-2">
+                        <button type="submit" id="btnExpenseSubmit" class="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-xs font-semibold">Tambah Perbelanjaan</button>
+                        <button type="button" id="btnCancelExpenseEdit" onclick="resetExpenseForm()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold py-2 px-4 rounded-lg">Batal</button>
+                    </div>
                 </form>
 
                 <div class="overflow-x-auto">
@@ -2136,16 +2139,63 @@
 
         let expReceiptBase64 = "";
         document.getElementById('expReceiptInput').addEventListener('change', function(e) { compressImageHD(e.target.files[0], b => { expReceiptBase64 = b; }); });
+        
         function handleExpenseFormSubmit(e) {
             e.preventDefault();
+            const editingId = document.getElementById('editingExpenseId').value;
             const dVal = document.getElementById('expDate').value;
             let expObj = {
-                id: Date.now(), title: document.getElementById('expTitle').value,
-                amount: document.getElementById('expAmount').value, date: dVal, month: dVal.substring(0, 7),
-                receipt: expReceiptBase64 || ""
+                id: editingId ? undefined : Date.now(),
+                title: document.getElementById('expTitle').value,
+                amount: document.getElementById('expAmount').value,
+                date: dVal, month: dVal.substring(0, 7)
             };
-            if(db) db.collection("expenses").add(expObj).then(() => { document.getElementById('expenseForm').reset(); expReceiptBase64=""; alert("Perbelanjaan ditambah!"); });
+            if (expReceiptBase64) expObj.receipt = expReceiptBase64;
+
+            if(db) {
+                if (editingId) {
+                    db.collection("expenses").doc(editingId).update(expObj).then(() => {
+                        resetExpenseForm();
+                        alert("Perbelanjaan berjaya dikemaskini!");
+                    });
+                } else {
+                    db.collection("expenses").add(expObj).then(() => {
+                        resetExpenseForm();
+                        alert("Perbelanjaan ditambah!");
+                    });
+                }
+            }
         }
+
+        function editExpense(firestoreId) {
+            let ex = expenses.find(item => item.firestoreId === firestoreId);
+            if (!ex) return;
+            document.getElementById('editingExpenseId').value = ex.firestoreId;
+            document.getElementById('expTitle').value = ex.title || "";
+            document.getElementById('expAmount').value = ex.amount || "";
+            document.getElementById('expDate').value = ex.date || "";
+            expReceiptBase64 = ex.receipt || "";
+            document.getElementById('expenseFormTitle').innerText = "✏️ Edit Perbelanjaan Kebun";
+            document.getElementById('btnExpenseSubmit').innerText = "Kemaskini Perbelanjaan";
+            document.getElementById('btnCancelExpenseEdit').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('expenseForm').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetExpenseForm() {
+            document.getElementById('expenseForm').reset();
+            document.getElementById('editingExpenseId').value = "";
+            expReceiptBase64 = "";
+            document.getElementById('expenseFormTitle').innerText = "💰 Perbelanjaan Kebun (Bulanan)";
+            document.getElementById('btnExpenseSubmit').innerText = "Tambah Perbelanjaan";
+            document.getElementById('btnCancelExpenseEdit').classList.add('hidden');
+        }
+
+        function deleteExpense(firestoreId) {
+            if (confirm("Yakin ingin memadamkan rekod perbelanjaan ini secara kekal?")) {
+                if(db) db.collection("expenses").doc(firestoreId).delete().then(() => alert("Perbelanjaan berjaya dipadam!"));
+            }
+        }
+
         function renderExpenses() {
             const tbody = document.getElementById('expenseTableBody');
             if(!tbody) return; tbody.innerHTML = "";
@@ -2154,7 +2204,18 @@
             let sortedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sortedExpenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
-                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td><td class="p-3">${ex.title}</td><td class="p-3 font-bold text-rose-600">${ex.amount}</td><td class="p-3">${ex.date}</td></tr>`;
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
+                        <td class="p-3 font-semibold">${ex.title}</td>
+                        <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
+                        <td class="p-3">${ex.date}</td>
+                        <td class="p-3 text-center space-x-1">
+                            <button type="button" onclick="editExpense('${ex.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️ Edit</button>
+                            <button type="button" onclick="deleteExpense('${ex.firestoreId}')" class="bg-rose-50 text-rose-700 px-2 py-1 rounded text-xs font-bold">🗑️ Padam</button>
+                        </td>
+                    </tr>
+                `;
             });
         }
 
