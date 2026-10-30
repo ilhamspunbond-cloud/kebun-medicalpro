@@ -1,29 +1,153 @@
- <!-- Portal Perbincangan / Chat Antar Pengguna Ladang Belimbing Buluh Medical Pro (Dengan Avatar Foto Profil Transparan) -->
-        <section class="bg-amber-950/40 border border-amber-600/40 p-5 rounded-3xl shadow-lg space-y-4 mb-6 text-slate-100">
-            <h3 id="lblBossPortalTitle" class="font-bold text-amber-400 flex items-center gap-2 text-base">💬 Perbincangan atau Perintah tentang Ladang Belimbing Buluh Medical Pro</h3>
-            
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-400 uppercase tracking-wider">Ruang Perbincangan & Pesan Chat (Permanen):</h4>
-                    <span class="text-[10px] text-slate-400">Penyegerakan Cloud Aktif ☁️</span>
-                </div>
-                <div id="bossHistoryContainer" class="space-y-2.5 max-h-80 overflow-y-auto pr-1 bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
-                    <div class="text-xs text-slate-500 text-center py-3">Memuat perbincangan ladang...</div>
-                </div>
-            </div>
+<!-- ========================================== -->
+<!-- 1. BAGIAN HTML (Struktur Tampilan Chat)    -->
+<!-- ========================================== -->
+<section class="bg-amber-950/40 border border-amber-600/40 p-5 rounded-3xl shadow-lg space-y-4 mb-6 text-slate-100">
+    <h3 id="lblBossPortalTitle" class="font-bold text-amber-400 flex items-center gap-2 text-base">💬 Perbincangan atau Perintah tentang Ladang Belimbing Buluh Medical Pro</h3>
+    
+    <div class="space-y-2">
+        <div class="flex justify-between items-center">
+            <h4 id="lblHistoryTitle" class="text-xs font-bold text-amber-400 uppercase tracking-wider">Ruang Perbincangan & Pesan Chat (Permanen):</h4>
+            <span class="text-[10px] text-slate-400">Penyegerakan Cloud Aktif ☁️</span>
+        </div>
+        <div id="bossHistoryContainer" class="space-y-2.5 max-h-80 overflow-y-auto pr-1 bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+            <div class="text-xs text-slate-500 text-center py-3">Memuat perbincangan ladang...</div>
+        </div>
+    </div>
 
-            <form id="bossOrderForm" onsubmit="sendBossTextOrder(event)" class="flex flex-col sm:flex-row gap-2 pt-2">
-                <div class="flex-1 flex gap-2">
-                    <input type="text" id="bossInputMessage" placeholder="Taip perbincangan atau arahan untuk ke ladang..." class="flex-1 border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-900 text-white focus:outline-amber-500">
-                    <label class="bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 border border-slate-700 whitespace-nowrap">
-                        📷 <span class="hidden sm:inline" id="lblChatImg">Gambar</span>
-                        <input type="file" id="chatImageInput" accept="image/*" class="hidden" onchange="previewChatImage()">
-                    </label>
+    <form id="bossOrderForm" onsubmit="sendBossTextOrder(event)" class="flex flex-col sm:flex-row gap-2 pt-2">
+        <div class="flex-1 flex gap-2">
+            <input type="text" id="bossInputMessage" placeholder="Taip perbincangan atau arahan untuk ke ladang..." class="flex-1 border border-slate-700 p-2.5 rounded-xl text-sm bg-slate-900 text-white focus:outline-amber-500">
+            <label class="bg-slate-800 hover:bg-slate-700 text-amber-300 px-3 py-2.5 rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1 border border-slate-700 whitespace-nowrap">
+                📷 <span class="hidden sm:inline" id="lblChatImg">Gambar</span>
+                <input type="file" id="chatImageInput" accept="image/*" class="hidden" onchange="previewChatImage()">
+            </label>
+        </div>
+        <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow transition">Kirim Chat</button>
+    </form>
+    <div id="chatImagePreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 text-xs">
+        <span id="chatImageName" class="text-slate-300 truncate flex-1"></span>
+        <button type="button" onclick="cancelChatImage()" class="text-rose-400 font-bold px-2">Batal ✕</button>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- 2. BAGIAN JAVASCRIPT (Logika & Fungsi)     -->
+<!-- ========================================== -->
+<script>
+let pendingChatImageBase64 = "";
+
+function previewChatImage() {
+    const file = document.getElementById('chatImageInput').files[0];
+    if (file) {
+        compressImageHD(file, function(base64) {
+            pendingChatImageBase64 = base64;
+            document.getElementById('chatImageName').innerText = `📎 ${file.name} (Siap dikirim)`;
+            document.getElementById('chatImagePreviewContainer').classList.remove('hidden');
+        });
+    }
+}
+
+function cancelChatImage() {
+    pendingChatImageBase64 = "";
+    document.getElementById('chatImageInput').value = "";
+    document.getElementById('chatImagePreviewContainer').classList.add('hidden');
+}
+
+function sendBossTextOrder(e) {
+    e.preventDefault();
+    if (typeof stopAllAiAudio === 'function') stopAllAiAudio();
+    
+    const input = document.getElementById('bossInputMessage');
+    const text = input.value.trim();
+    if (!text && !pendingChatImageBase64) return;
+
+    const senderName = typeof getFullTitleName === 'function' ? getFullTitleName() : 'Pengguna';
+    const senderGender = currentUser ? (currentUser.gender || 'Dato') : 'Dato';
+    const userAvatar = currentUser ? (currentUser.avatar || '') : '';
+    
+    if (typeof db !== 'undefined' && db) {
+        db.collection("boss_orders").add({
+            sender: senderName,
+            gender: senderGender,
+            avatar: userAvatar,
+            content: text,
+            image: pendingChatImageBase64 || "",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => { 
+            input.value = ""; 
+            cancelChatImage();
+        }).catch(err => alert("Gagal menghantar mesej chat: " + err.message));
+    }
+}
+
+function deleteBossOrder(docId) {
+    if (confirm("Padam mesej chat ini secara kekal dari semua telefon?")) {
+        if (typeof db !== 'undefined' && db) db.collection("boss_orders").doc(docId).delete();
+    }
+}
+
+function loadBossOrdersRealtime() {
+    if (typeof db === 'undefined' || !db) return;
+    
+    db.collection("boss_orders").orderBy("timestamp", "asc").onSnapshot(snapshot => {
+        const container = document.getElementById('bossHistoryContainer');
+        if (!container) return;
+        
+        if (snapshot.empty) { 
+            container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">${typeof translateDynamicText === 'function' ? translateDynamicText("Belum ada perbincangan atau pesan chat.") : "Belum ada perbincangan atau pesan chat."}</div>`; 
+            return; 
+        }
+        
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const id = doc.id;
+            let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
+            
+            let avatarHtml = data.avatar 
+                ? `<img src="${data.avatar}" class="w-8 h-8 rounded-full object-cover border border-amber-500 shadow-sm bg-transparent">` 
+                : `<span class="w-8 h-8 rounded-full bg-amber-600 flex items-center justify-center font-bold text-xs text-white">${(data.sender || 'U')[0]}</span>`;
+            
+            let contentHtml = data.content ? `<p class="text-sm text-slate-200 mt-1 ml-10">${data.content}</p>` : '';
+            let imageHtml = data.image ? `<div class="mt-2 ml-10"><img src="${data.image}" class="rounded-xl max-h-48 object-cover border border-slate-700 shadow"></div>` : '';
+
+            container.innerHTML += `
+                <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
+                    <div class="flex justify-between items-center text-xs">
+                        <div class="flex items-center gap-2.5">
+                            ${avatarHtml}
+                            <span class="font-bold text-amber-400">${data.sender || 'Pengguna'}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] text-slate-500 font-mono">${timeStr}</span>
+                            <button onclick="deleteBossOrder('${id}')" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️</button>
+                        </div>
+                    </div>
+                    ${contentHtml}
+                    ${imageHtml}
                 </div>
-                <button type="submit" id="btnSendOrder" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow transition">Kirim Chat</button>
-            </form>
-            <div id="chatImagePreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 text-xs">
-                <span id="chatImageName" class="text-slate-300 truncate flex-1"></span>
-                <button type="button" onclick="cancelChatImage()" class="text-rose-400 font-bold px-2">Batal ✕</button>
-            </div>
-        </section>
+            `;
+        });
+
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function compressImageHD(file, callback) {
+    if (!file) { callback(""); return; }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > 1200) { h *= 1200 / w; w = 1200; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            callback(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+</script>
