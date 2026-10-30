@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <link rel="icon" type="image/png" href="Logopit_1745513395623.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Harian - Medicalpro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans pb-24">
+
+    <!-- Navbar Navigasi Antar Halaman -->
+    <nav class="bg-emerald-800 text-white p-3 flex gap-4 overflow-x-auto text-xs font-bold shadow-md">
+        <a href="index.html" class="hover:underline">🏠 Utama & AI</a>
+        <a href="tugas.html" class="underline text-yellow-300">📋 Tugas Harian</a>
+        <a href="stok.html" class="hover:underline">📦 Stok & Gudang</a>
+        <a href="keuangan.html" class="hover:underline">💰 Perbelanjaan</a>
+        <a href="penjualan.html" class="hover:underline">💵 Jualan & Invois</a>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
+        
+        <!-- Task Management Page -->
+        <section id="page-tasks" class="bg-white p-6 rounded-2xl shadow-sm border space-y-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
+                <h3 class="text-lg font-bold text-emerald-800">📌 Tugas Harian & Jadual Rutin</h3>
+                <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                        <span class="text-slate-500 font-bold">Dari:</span>
+                        <input type="date" id="filterTaskStart" onchange="renderTasks()" class="bg-white border p-1 rounded">
+                        <span class="text-slate-500 font-bold">Hingga:</span>
+                        <input type="date" id="filterTaskEnd" onchange="renderTasks()" class="bg-white border p-1 rounded">
+                    </div>
+                    <select id="filterTaskMonth" onchange="renderTasks()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                        <option value="all">Semua Bulan (Global)</option>
+                    </select>
+                    <button type="button" onclick="generateMonthlyInvoice('tasks')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rumusan PDF</button>
+                </div>
+            </div>
+
+            <form id="taskForm" onsubmit="handleTaskFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <input type="hidden" id="editingTaskId" value="">
+                <input type="text" id="taskTitle" placeholder="Nama Pekerjaan" required class="border p-2 rounded-lg text-sm">
+                <input type="text" id="taskCategory" placeholder="Kategori" required class="border p-2 rounded-lg text-sm">
+                <select id="taskWorkerSelect" required class="border p-2 rounded-lg text-sm bg-white">
+                    <option value="">Pilih Pekerja</option>
+                </select>
+                <input type="date" id="taskDate" required class="border p-2 rounded-lg text-sm">
+                
+                <div class="sm:col-span-2 grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Guna Stok Bio Baja?</label>
+                        <select id="taskStockItem" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                            <option value="">-- Tanpa Stok --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Jumlah Dipakai</label>
+                        <input type="number" id="taskQty" placeholder="0" min="1" class="w-full border p-1.5 rounded-lg text-xs bg-white">
+                    </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Lampiran Foto (HD Maks 1MB)</label>
+                    <input type="file" id="imageInput" accept="image/*" class="w-full border p-1.5 rounded-lg text-sm bg-slate-50">
+                </div>
+                <div class="sm:col-span-4 flex gap-2">
+                    <button type="submit" id="btnTaskSubmit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-semibold text-sm">Simpan Laporan Kerja</button>
+                    <button type="button" id="btnCancelTaskEdit" onclick="resetTaskForm()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold py-2.5 px-4 rounded-lg">Batal</button>
+                </div>
+            </form>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 border-b">
+                            <th class="p-3">Foto HD</th>
+                            <th class="p-3">Tugasan</th>
+                            <th class="p-3">Kategori</th>
+                            <th class="p-3">Pekerja</th>
+                            <th class="p-3">Tarikh</th>
+                            <th class="p-3">Info Stok</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script JavaScript Khusus Tugas & Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
+            authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
+            projectId: "kebun-belimbing-buluh-medical",
+            storageBucket: "kebun-belimbing-buluh-medical.firebasestorage.app",
+            messagingSenderId: "101006363434",
+            appId: "1:101006363434:web:ef0f5360e0e47c105f2c53",
+            measurementId: "G-5CX6N1K1GD"
+        };
+        
+        let db = null;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch(e) {}
+
+        let workers = [];
+        let inventory = [];
+        let tasks = [];
+        let taskPhotoBase64 = "";
+
+        // Ambil data pekerja dan stok dari Firebase secara real-time
+        if (db) {
+            db.collection("settings").doc("workers").get().then(doc => {
+                if (doc.exists && doc.data().list) { workers = doc.data().list; renderWorkersDropdown(); }
+            });
+            db.collection("inventory").onSnapshot(snap => {
+                inventory = [];
+                snap.forEach(d => inventory.push({ firestoreId: d.id, ...d.data() }));
+                renderInventoryDropdown();
+            });
+            db.collection("tasks").onSnapshot(snap => {
+                tasks = []; let m = new Set();
+                snap.forEach(d => { let x = d.data(); tasks.push({ firestoreId: d.id, ...x }); if(x.month) m.add(x.month); });
+                updateMonthDropdown('filterTaskMonth', m); renderTasks();
+            });
+        }
+
+        document.getElementById('taskDate').valueAsDate = new Date();
+
+        function renderWorkersDropdown() {
+            const sel = document.getElementById('taskWorkerSelect');
+            if(!sel) return; sel.innerHTML = `<option value="">Pilih Pekerja</option>`;
+            workers.forEach(w => { let n = typeof w === 'object' ? w.name : w; sel.innerHTML += `<option value="${n}">${n}</option>`; });
+        }
+
+        function renderInventoryDropdown() {
+            const sel = document.getElementById('taskStockItem');
+            if(!sel) return; sel.innerHTML = `<option value="">-- Tanpa Stok --</option>`;
+            inventory.forEach(item => {
+                sel.innerHTML += `<option value="${item.name}">${item.name} (Baki: ${item.stock})</option>`;
+            });
+        }
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > 800) { h *= 800 / w; w = 800; }
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        taskPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function handleTaskFormSubmit(e) {
+            e.preventDefault();
+            const editingId = document.getElementById('editingTaskId').value;
+            const dVal = document.getElementById('taskDate').value;
+            let taskObj = {
+                title: document.getElementById('taskTitle').value,
+                category: document.getElementById('taskCategory').value,
+                worker: document.getElementById('taskWorkerSelect').value,
+                date: dVal, month: dVal.substring(0, 7),
+                stockUsed: document.getElementById('taskStockItem').value || "Tiada",
+                status: "Selesai ✓"
+            };
+            if (taskPhotoBase64) taskObj.photo = taskPhotoBase64;
+
+            if (db) {
+                if (editingId) {
+                    db.collection("tasks").doc(editingId).update(taskObj).then(() => {
+                        resetTaskForm();
+                        alert("Laporan tugas berjaya dikemaskini!");
+                    });
+                } else {
+                    db.collection("tasks").add({ ...taskObj, id: Date.now() }).then(() => {
+                        resetTaskForm();
+                        alert("Tugas disimpan!");
+                    });
+                }
+            }
+        }
+
+        function editTask(firestoreId) {
+            let t = tasks.find(item => item.firestoreId === firestoreId);
+            if (!t) return;
+            document.getElementById('editingTaskId').value = t.firestoreId;
+            document.getElementById('taskTitle').value = t.title || "";
+            document.getElementById('taskCategory').value = t.category || "";
+            document.getElementById('taskWorkerSelect').value = t.worker || "";
+            document.getElementById('taskDate').value = t.date || "";
+            document.getElementById('taskStockItem').value = t.stockUsed === "Tiada" ? "" : t.stockUsed;
+            taskPhotoBase64 = t.photo || "";
+            document.getElementById('btnTaskSubmit').innerText = "Kemaskini Laporan Kerja";
+            document.getElementById('btnCancelTaskEdit').classList.remove('hidden');
+        }
+
+        function resetTaskForm() {
+            document.getElementById('taskForm').reset();
+            document.getElementById('editingTaskId').value = "";
+            taskPhotoBase64 = "";
+            document.getElementById('taskDate').valueAsDate = new Date();
+            document.getElementById('btnTaskSubmit').innerText = "Simpan Laporan Kerja";
+            document.getElementById('btnCancelTaskEdit').classList.add('hidden');
+        }
+
+        function deleteTask(firestoreId) {
+            if (confirm("Yakin ingin memadamkan laporan tugas ini?")) {
+                if (db) db.collection("tasks").doc(firestoreId).delete().then(() => alert("Tugas dipadam!"));
+            }
+        }
+
+        function filterByDateRange(itemDate, startElId, endElId, monthElId) {
+            let start = document.getElementById(startElId)?.value;
+            let end = document.getElementById(endElId)?.value;
+            let month = document.getElementById(monthElId)?.value;
+            if (start && end) return itemDate >= start && itemDate <= end;
+            if (month && month !== 'all') return itemDate.startsWith(month);
+            return true;
+        }
+
+        function renderTasks() {
+            const tbody = document.getElementById('taskTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            let sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedTasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
+                        <td class="p-3 font-semibold">${t.title || '-'}</td>
+                        <td class="p-3">${t.category || '-'}</td>
+                        <td class="p-3">${t.worker || '-'}</td>
+                        <td class="p-3">${t.date || '-'}</td>
+                        <td class="p-3">${t.stockUsed || 'Tiada'}</td>
+                        <td class="p-3 text-emerald-700 font-medium">${t.status || 'Selesai'}</td>
+                        <td class="p-3 text-center space-x-1">
+                            <button type="button" onclick="editTask('${t.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-xs font-bold">✏️ Edit</button>
+                            <button type="button" onclick="deleteTask('${t.firestoreId}')" class="bg-rose-50 text-rose-700 px-2 py-1 rounded text-xs font-bold">🗑️ Padam</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateMonthDropdown(id, set) {
+            const sel = document.getElementById(id);
+            if(!sel) return;
+            let cv = sel.value;
+            sel.innerHTML = `<option value="all">Semua Bulan (Global)</option>`;
+            Array.from(set).sort().reverse().forEach(m => sel.innerHTML += `<option value="${m}">Bulan: ${m}</option>`);
+            sel.value = cv;
+        }
+    </script>
+</body>
+</html>
