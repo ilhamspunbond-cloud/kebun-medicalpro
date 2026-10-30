@@ -189,26 +189,7 @@
 
            
 
-            <!-- Income Section Page (Jualan Terus Dari Ladang) -->
-            <section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border hidden space-y-6">
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
-                    <div>
-                        <h3 id="lblIncomeTitle" class="text-lg font-bold text-emerald-900">💵 Jualan Terus Dari Ladang</h3>
-                        <p id="lblIncomeSub" class="text-xs text-slate-500">Urus produk hasil ladang, tambah produk dengan foto, catat jualan dengan data pembeli & cetak invois rasmi</p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-                        <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
-                            <span class="text-slate-500 font-bold">Dari:</span>
-                            <input type="date" id="filterIncomeStart" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
-                            <span class="text-slate-500 font-bold">Hingga:</span>
-                            <input type="date" id="filterIncomeEnd" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
-                        </div>
-                        <select id="filterIncomeMonth" onchange="renderIncomeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
-                            <option value="all">Semua Bulan (Global)</option>
-                        </select>
-                        <button type="button" onclick="generateMonthlyInvoice('income')" id="btnPrintIncomePdf" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rumusan Ladang PDF</button>
-                    </div>
-                </div>
+         
 
                 <!-- Panel Log Masuk Staf Ladang -->
                 <div id="staffLoginPanel" class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
