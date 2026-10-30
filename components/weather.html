@@ -1,0 +1,59 @@
+ <!-- KOTAK CUACA STYLE GOOGLE WEATHER (REAL-TIME SIMPANG RENGGAM, JOHOR) -->
+        <section class="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 text-white shadow-xl space-y-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="text-xs sm:text-sm font-bold text-slate-200 tracking-wide">Simpang Renggam, Johor · <span class="text-indigo-400 font-normal">Machap</span></span>
+                </div>
+                <span id="liveClock" class="text-xs font-mono bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg font-bold border border-slate-700">--:--:--</span>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <div>
+                    <div id="lblWeatherCurrent" class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Semasa</div>
+                    <div class="flex items-baseline gap-3">
+                        <span id="tempDisplay" class="text-5xl sm:text-6xl font-light tracking-tighter">--°</span>
+                        <div id="weatherMainIconContainer" class="text-4xl">⛅</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div id="condDisplay" class="text-lg sm:text-xl font-medium text-slate-200">Memuat turun...</div>
+                    <div id="feelsLikeDisplay" class="text-xs sm:text-sm text-slate-400 mt-0.5">Terasa seperti --°</div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <div id="lblHourlyForecast" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ramalan Mengikut Jam</div>
+                <div id="hourlyForecastContainer" class="flex overflow-x-auto gap-3 pb-2 scrollbar-thin scrollbar-thumb-slate-700 bg-slate-950/60 p-3 rounded-2xl border border-slate-800/80"></div>
+            </div>
+
+            <div class="relative h-20 rounded-2xl bg-gradient-to-t from-slate-950 via-slate-900 to-indigo-950 border border-slate-800 flex items-center justify-between px-5 overflow-hidden shadow-inner">
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:12px_12px]"></div>
+                <div class="z-10 flex items-center gap-3">
+                    <span id="illustrationEmoji" class="text-3xl">🏡</span>
+                    <div>
+                        <div id="illustrationTitle" class="text-xs font-bold text-indigo-200">Ladang Machap</div>
+                        <div id="weatherIllustrationText" class="text-[11px] text-slate-400">Suasana di ladang.</div>
+                    </div>
+                </div>
+                <div class="z-10 text-right font-mono text-[10px] text-emerald-400 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-800">
+                    Live API Active
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-1 border-t border-slate-800">
+                <div class="flex justify-between items-center bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-xs">
+                    <div id="lblPrecip" class="flex items-center gap-2 text-slate-300 font-medium"><span>🌧️</span> Kerpasan</div>
+                    <span id="detailPrecipitation" class="font-bold text-slate-200">-- %</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-950/70 p-3 rounded-xl border border-slate-800 text-xs">
+                    <div id="lblWind" class="flex items-center gap-2 text-slate-300 font-medium"><span>💨</span> Angin</div>
+                    <span id="detailWind" class="font-bold text-slate-200">-- km/j</span>
+                </div>
+            </div>
+
+            <div class="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
+                <div id="lblAiDecision" class="text-xs font-bold text-yellow-400 uppercase mb-1">🤖 Keputusan AI Berdasarkan Cuaca & Tanah:</div>
+                <p id="smartRecommendation" class="text-xs sm:text-sm leading-relaxed text-slate-300">Memproses ramalan...</p>
+            </div>
+        </section>
