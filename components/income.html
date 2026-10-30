@@ -1,0 +1,117 @@
+<section id="page-income" class="tab-page bg-white p-6 rounded-2xl shadow-sm border space-y-6">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b pb-3">
+        <div>
+            <h3 id="lblIncomeTitle" class="text-lg font-bold text-emerald-900">💵 Jualan Terus Dari Ladang</h3>
+            <p id="lblIncomeSub" class="text-xs text-slate-500">Urus produk hasil ladang, tambah produk dengan foto, catat jualan dengan data pembeli & cetak invois rasmi</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <div class="flex items-center gap-1 bg-slate-50 p-1.5 rounded-xl border text-xs">
+                <span class="text-slate-500 font-bold">Dari:</span>
+                <input type="date" id="filterIncomeStart" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
+                <span class="text-slate-500 font-bold">Hingga:</span>
+                <input type="date" id="filterIncomeEnd" onchange="renderIncomeSales()" class="bg-white border p-1 rounded">
+            </div>
+            <select id="filterIncomeMonth" onchange="renderIncomeSales()" class="border p-2 rounded-lg text-xs bg-white font-semibold">
+                <option value="all">Semua Bulan (Global)</option>
+            </select>
+            <button type="button" onclick="generateMonthlyInvoice('income')" id="btnPrintIncomePdf" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-bold shadow">🖨️ Cetak Rumusan Ladang PDF</button>
+        </div>
+    </div>
+
+    <!-- Panel Log Masuk Staf Ladang -->
+    <div id="staffLoginPanel" class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div>
+            <h4 id="lblStaffLoginTitle" class="font-bold text-sm text-emerald-900">🔐 Akses Input Jualan Ladang (Staf)</h4>
+            <p id="staffStatusText" class="text-xs text-emerald-700">Status: Belum Log Masuk</p>
+        </div>
+        <div class="flex gap-2 w-full sm:w-auto">
+            <input type="password" id="staffPassInput" placeholder="Kata Laluan Staf" class="border p-2 rounded-lg text-xs bg-white w-full sm:w-40">
+            <button type="button" onclick="verifyStaffLogin()" id="btnStaffLogin" class="bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Log Masuk</button>
+        </div>
+    </div>
+
+    <!-- Kandungan Utama Jualan Ladang -->
+    <div id="incomeMainContent" class="space-y-6 opacity-50 pointer-events-none">
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-3">
+            <h4 id="lblAddGardenProd" class="font-bold text-xs text-slate-700 uppercase">➕ Tambah / Kemaskini Produk Ladang & Foto</h4>
+            <form id="gardenProductForm" onsubmit="handleGardenProductSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <input type="text" id="gProdName" placeholder="Nama Produk (Cth: Belimbing Buluh)" required class="border p-2 rounded-lg text-xs bg-white">
+                <input type="number" id="gProdStock" placeholder="Stok Kuantiti" min="0" step="0.01" required class="border p-2 rounded-lg text-xs bg-white">
+                <div class="flex gap-1">
+                    <input type="text" id="gProdPrice" placeholder="Harga Seunit" required class="border p-2 rounded-lg text-xs bg-white flex-1">
+                    <span id="gProdCurrencyDisplay" class="bg-slate-200 border px-2 py-2 rounded-lg text-xs font-bold flex items-center">RM</span>
+                </div>
+                <div>
+                    <input type="file" id="gProdPhoto" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                </div>
+                <button type="submit" id="btnSaveGardenProd" class="sm:col-span-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold">Simpan / Kemaskini Produk Ladang</button>
+            </form>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2" id="gardenProductSummaryContainer"></div>
+        </div>
+
+        <form id="gardenSalesForm" onsubmit="handleGardenSalesSubmit(event)" class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-200 space-y-3">
+            <input type="hidden" id="editingGardenSalesId" value="">
+            <div id="lblGardenSalesTitle" class="text-xs font-bold text-emerald-900 uppercase">🛒 Catat Transaksi Jualan Ladang Baharu (Pesanan Pelanggan)</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label id="lblSelectGardenProd" class="text-[10px] text-slate-600 block mb-1">Pilih Produk Ladang</label>
+                    <select id="gSalesProductSelect" required class="w-full text-xs p-2 rounded-xl border bg-white" onchange="onGardenProductSelected()"></select>
+                </div>
+                <div>
+                    <label id="lblGardenQty" class="text-[10px] text-slate-600 block mb-1">Kuantiti Jualan</label>
+                    <input type="number" id="gSalesQty" placeholder="0" step="0.01" min="0.01" required class="w-full text-xs p-2 rounded-xl border bg-white" oninput="calculateGardenTotal()">
+                </div>
+                <div>
+                    <label id="lblGardenTotalAmt" class="text-[10px] text-slate-600 block mb-1">Jumlah Harga</label>
+                    <div class="flex gap-1">
+                        <input type="text" id="gSalesTotalAmount" placeholder="0.00" required class="w-full text-xs p-2 rounded-xl border bg-slate-100 font-bold text-emerald-700">
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label id="lblGardenBuyer" class="text-[10px] text-slate-600 block mb-1">Nama Pembeli (Atas Nama)</label>
+                    <input type="text" id="gSalesCustomer" placeholder="Cth: En. Ahmad" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                </div>
+                <div>
+                    <label id="lblGardenBuyerAddr" class="text-[10px] text-slate-600 block mb-1">Alamat Pelanggan</label>
+                    <input type="text" id="gSalesAddress" placeholder="Cth: Johor Bahru" class="w-full text-xs p-2 rounded-xl border bg-white">
+                </div>
+                <div>
+                    <label id="lblGardenBuyerPhone" class="text-[10px] text-slate-600 block mb-1">Nombor Telefon</label>
+                    <input type="text" id="gSalesPhone" placeholder="Cth: 0123456789" class="w-full text-xs p-2 rounded-xl border bg-white">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label id="lblGardenSalesDate" class="text-[10px] text-slate-600 block mb-1">Tarikh Jualan</label>
+                    <input type="date" id="gSalesDate" required class="w-full text-xs p-2 rounded-xl border bg-white">
+                </div>
+                <div>
+                    <label id="lblGardenSalesPhoto" class="text-[10px] text-slate-600 block mb-1">Bukti Foto / Resit (Pilihan)</label>
+                    <input type="file" id="gSalesPhotoInput" accept="image/*" class="w-full border p-1 rounded-lg text-xs bg-white">
+                </div>
+            </div>
+            <button type="submit" id="btnGardenSalesSubmit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">Simpan Jualan & Cetak Invois Rasmi</button>
+        </form>
+
+        <div>
+            <div id="lblGardenHistoryTitle" class="text-xs font-bold text-slate-700 uppercase mb-2">📋 Riwayat Jualan Ladang & Pelanggan:</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                   <thead>
+                        <tr class="bg-slate-100 border-b">
+                            <th id="thIncDate" class="p-2">Tarikh</th>
+                            <th id="thIncProd" class="p-2">Produk</th>
+                            <th id="thIncQty" class="p-2">Kuantiti</th>
+                            <th id="thIncTotal" class="p-2">Jumlah</th>
+                            <th id="thIncBuyer" class="p-2">Pembeli & Tel</th>
+                            <th id="thIncAction" class="p-2 text-center">Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incomeTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
