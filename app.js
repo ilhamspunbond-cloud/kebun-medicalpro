@@ -369,7 +369,7 @@ const firebaseConfig = {
                 lblPoLoginTitle: "Akses Dilindungi Kata Sandi Admin",
                 lblPoLoginSub: "Sila masukkan kata sandi admin utama untuk melihat dan menguruskan pesanan PO masuk.",
                 btnPoLogin: "Buka Akses",
-                thPoNo: "No PO",
+                thPoNo: "PO No",
                 thPoDate: "Tanggal",
                 thPoCustomer: "Pelanggan",
                 thPoItems: "Rincian Pesanan",
@@ -766,7 +766,6 @@ const firebaseConfig = {
                 btnPrintOfficePdf: "🖨️ कार्यालय सारांश PDF प्रिंट करें",
                 lblOfficeLoginTitle: "🔐 ऑफ़लाइन उत्पाद और चालान व्यवस्थापक एक्सेस",
                 officeStatusText: "स्थिति: लॉग इन नहीं",
-                btnOfficeLogin: "लॉग इन",
                 officeFormTitleLabel: "➕ नया ऑफ़लाइन उत्पाद जोड़ें",
                 btnCancelOfficeEdit: "संपादित करना रद्द करें",
                 lblProdBenefits: "उत्पाद के लाभ, गुण और सामग्री (AI द्वारा स्वचालित रूप से पढ़ा जाता है)",
@@ -958,7 +957,6 @@ const firebaseConfig = {
                 btnPrintOfficePdf: "🖨️ Print Office Summary PDF",
                 lblOfficeLoginTitle: "🔐 Offline Products & Invoices Admin Access",
                 officeStatusText: "Status: Not Logged In",
-                btnOfficeLogin: "Log In",
                 officeFormTitleLabel: "➕ Add New Offline Product",
                 btnCancelOfficeEdit: "Cancel Edit",
                 lblProdBenefits: "Benefits, Advantages & Ingredients (Read Automatically by AI)",
@@ -1793,95 +1791,51 @@ const firebaseConfig = {
             }
         }
 
-        function updateLiveClockAndWeather() {
-            const now = new Date();
-            const options = { timeZone: 'Asia/Kuala_Lumpur', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
-            
-            const clockEl = document.getElementById('liveClock');
-            if (clockEl) clockEl.innerText = timeString;
+        // ==========================================
+        // SISTEM REKOMENDASI & RIWAYAT CUACA OTOMATIS (CLOUD / LOCAL)
+        // ==========================================
+        function simpanRiwayatCuacaOtomatis(kondisiCuaca, adaHujanMalam) {
+            const sekarang = new Date().getTime();
+            const dataCuacaBaru = {
+                waktuSimpan: sekarang,
+                kondisi: kondisiCuaca,       
+                hujanSemalam: adaHujanMalam 
+            };
+            localStorage.setItem('riwayat_cuaca_ladang', JSON.stringify(dataCuacaBaru));
+        }
 
-            fetch('https://api.open-meteo.com/v1/forecast?latitude=1.8227&longitude=103.3106&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FKuala_Lumpur')
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.current_weather && data.hourly) {
-                        const temp = Math.round(data.current_weather.temperature);
-                        const windSpeed = Math.round(data.current_weather.windspeed);
-                        const feelsLike = Math.round(temp + 2);
-                        
-                        const hourlyTime = data.hourly.time;
-                        const hourlyPrecip = data.hourly.precipitation;
-                        const hourlyTemp = data.hourly.temperature_2m;
+        function ambilDanBersihkanRiwayatCuaca() {
+            const dataTersimpan = localStorage.getItem('riwayat_cuaca_ladang');
+            if (!dataTersimpan) return null;
 
-                        const malaysiaHourStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', hour: 'numeric', hour12: false }).format(now);
-                        const currentHourInt = parseInt(malaysiaHourStr, 10);
+            const cuaca = JSON.parse(dataTersimpan);
+            const sekarang = new Date().getTime();
+            const batas24Jam = 24 * 60 * 60 * 1000; 
 
-                        const todayDateStr = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now).split('/').reverse().join('-');
-                        const currentExactIsoStr = `${todayDateStr}T${String(currentHourInt).padStart(2, '0')}:00`;
+            if (sekarang - cuaca.waktuSimpan > batas24Jam) {
+                localStorage.removeItem('riwayat_cuaca_ladang');
+                return null;
+            }
+            return cuaca;
+        }
 
-                        let idx = hourlyTime.findIndex(t => t === currentExactIsoStr);
-                        if (idx === -1) {
-                            idx = hourlyTime.findIndex(t => t.includes(`T${String(currentHourInt).padStart(2, '0')}:`));
-                            if (idx === -1) idx = 0;
-                        }
+        function updateRekomendasiLadang() {
+            const riwayat = ambilDanBersihkanRiwayatCuaca();
+            const kotakRekomendasi = document.getElementById("smartRecommendation");
 
-                        let isNight = currentHourInt < 6 || currentHourInt >= 18;
-                        let currentPrecipNow = hourlyPrecip[idx] || 0;
-                        let rainSoon = currentPrecipNow > 0.1;
-                        
-                        currentWeatherData = { temp, windSpeed, rainSoon, currentPrecipNow };
+            if (!kotakRekomendasi) return;
 
-                        let condText = rainSoon ? "Hujan Rintik" : (isNight ? "Malam Tenang" : "Berawan Separa");
-                        let mainIcon = rainSoon ? "🌧️" : (isNight ? "🌙" : "⛅");
-
-                        let aiRecommendationText = "";
-                        if (currentHourInt >= 17 || currentHourInt < 7) {
-                            aiRecommendationText = `🌙 <b>Waktu Rehat Pekerja:</b> Sudah lewat pukul 5 petang. Disarankan menghentikan aktiviti ladang dan membenarkan pekerja berehat/tidur malam hingga jam 7:00–8:00 pagi esok.`;
-                        } else if (currentHourInt >= 12 && currentHourInt < 14) {
-                            aiRecommendationText = `☀️ <b>Waktu Rehat Tengah Hari:</b> Pukul ${currentHourInt}:00. Sesi rehat tengah hari selama 2 jam (12:00 - 14:00). Pekerja dihentikan sementara dari kerja berat.`;
-                        } else if (rainSoon) {
-                            aiRecommendationText = `⚠️ <b>Perhatian ${getRealNameOnly()}!</b> Terkesan potensi hujan (${currentPrecipNow} mm). Disarankan menangguhkan semburan bio baja cair supaya tidak luntur tercuci air hujan.`;
-                        } else if (temp > 33) {
-                            aiRecommendationText = `☀️ Suhu agak terik (${temp}°C). Pastikan penyiraman anak pokok Belimbing Buluh dan tanaman herba dicukupkan pada waktu pagi atau petang.`;
-                        } else {
-                            aiRecommendationText = `✨ Cuaca stabil (${temp}°C). Sesi kerja aktif berjalan. Keadaan ideal untuk aktiviti ladang.`;
-                        }
-
-                        if (document.getElementById('tempDisplay')) document.getElementById('tempDisplay').innerText = `${temp}°`;
-                        if (document.getElementById('condDisplay')) document.getElementById('condDisplay').innerText = condText;
-                        if (document.getElementById('feelsLikeDisplay')) document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${feelsLike}°`;
-                        if (document.getElementById('weatherMainIconContainer')) document.getElementById('weatherMainIconContainer').innerText = mainIcon;
-                        if (document.getElementById('detailWind')) document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
-                        if (document.getElementById('smartRecommendation')) document.getElementById('smartRecommendation').innerHTML = aiRecommendationText;
-
-                        const hContainer = document.getElementById('hourlyForecastContainer');
-                        if (hContainer) {
-                            hContainer.innerHTML = "";
-                            for (let i = 0; i < 8; i++) {
-                                let tIdx = idx + i;
-                                if (tIdx < hourlyTime.length) {
-                                    let timeStr = hourlyTime[tIdx];
-                                    let timeHourInt = parseInt(timeStr.substring(11, 13), 10);
-                                    let displayHour = i === 0 ? "Semasa" : ((timeHourInt % 12 || 12) + (timeHourInt >= 12 ? " PM" : " AM"));
-                                    let pVal = hourlyPrecip[tIdx] || 0;
-                                    let tVal = Math.round(hourlyTemp[tIdx]);
-                                    let itemIsNight = timeHourInt < 6 || timeHourInt >= 18;
-                                    let icon = pVal > 0.2 ? "🌧️" : (itemIsNight ? "🌙" : "⛅");
-                                    let rainPercent = pVal > 0.1 ? Math.round(pVal * 40) + "%" : "";
-
-                                    hContainer.innerHTML += `
-                                        <div class="flex flex-col items-center justify-between py-2 px-3 bg-slate-900/60 rounded-xl border border-slate-800 min-w-[70px] text-center flex-shrink-0">
-                                            <span class="text-xs font-bold text-slate-200">${tVal}°</span>
-                                            <span class="text-[10px] text-cyan-400 font-bold my-1 min-h-[14px]">${rainPercent}</span>
-                                            <span class="text-xl my-1">${icon}</span>
-                                            <span class="text-[11px] text-slate-400 font-mono mt-1">${displayHour}</span>
-                                        </div>
-                                    `;
-                                }
-                            }
-                        }
-                    }
-                }).catch(err => {});
+            if (riwayat && riwayat.hujanSemalam) {
+                kotakRekomendasi.innerHTML = `
+                    🌧️ <strong>Peringatan Cuaca:</strong> Terpantau ada hujan semalam. Tanah di ladang Machap masih basah dan lembap.<br>
+                    👉 <em>Syor Kerja Hari Ini:</em> <strong>Jangan lakukan penyiraman tanaman hari ini.</strong> Alihkan pekerja ke tugas pemangkasan ranting, penyiangan rumput, atau perawatan mesin/alat ladang.
+                `;
+            } else {
+                kotakRekomendasi.innerHTML = `
+                    ☀️ <strong>Peringatan Cuaca:</strong> Cuaca stabil dan kering. Tanah dalam keadaan baik.<br>
+                    👉 <em>Syor Kerja Hari Ini:</em> Silakan jalankan jadual rutin penyiraman pagi dan aplikasi bio baja seperti biasa.
+                `;
+            }
         }
 
         let pendingChatImageBase64 = "";
@@ -1938,7 +1892,6 @@ const firebaseConfig = {
         function loadBossOrdersRealtime() {
             if (!db) return;
             
-            // Dibatasi .limit(50) terakhir agar HP ringan dan tidak berat merender chat menumpuk
             db.collection("boss_orders").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
@@ -1950,7 +1903,7 @@ const firebaseConfig = {
                 
                 let docs = [];
                 snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                docs.reverse(); // Urutkan dari terlama ke terbaru
+                docs.reverse();
 
                 container.innerHTML = "";
                 docs.forEach(data => {
@@ -3039,16 +2992,6 @@ const firebaseConfig = {
             setTimeout(initSignaturePad, 200);
         }
 
-        // Inisialisasi Utama Saat Halaman Dimuat
-        window.addEventListener('DOMContentLoaded', () => {
-            applyLanguage();
-            changeGlobalCurrency(currentCurrency);
-            checkUserProfile();
-            updateLiveClockAndWeather();
-            loadBossOrdersRealtime();
-            autoCleanOldChat();
-        });
-
         function getTitleEmoji(gender) {
             switch (gender) {
                 case 'Dato': return '👑';
@@ -3078,3 +3021,15 @@ const firebaseConfig = {
               })
               .catch((err) => console.log("Gagal membersihkan chat lama:", err));
         }
+
+        // ==========================================
+        // INISIALISASI UTAMA SAAT HALAMAN DIMUAT (TUNGGAL)
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            applyLanguage();
+            changeGlobalCurrency(currentCurrency);
+            checkUserProfile();
+            loadBossOrdersRealtime();
+            autoCleanOldChat();
+            updateRekomendasiLadang();
+        });
