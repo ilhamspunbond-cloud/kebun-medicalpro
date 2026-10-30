@@ -2935,15 +2935,20 @@
             }
         }
 
-        function loadBossOrdersRealtime() {
+                function loadBossOrdersRealtime() {
             if (!db) return;
-            db.collection("boss_orders").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+            
+            // Kita urutkan secara ascending (dari yang terlama ke terbaru) 
+            // supaya pesan terbaru otomatis jatuh ke posisi paling bawah.
+            db.collection("boss_orders").orderBy("timestamp", "asc").onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
+                
                 if (snapshot.empty) { 
                     container.innerHTML = `<div class="text-xs text-slate-500 text-center py-3">${translateDynamicText("Belum ada perbincangan atau pesan chat.")}</div>`; 
                     return; 
                 }
+                
                 container.innerHTML = "";
                 snapshot.forEach(doc => {
                     const data = doc.data();
@@ -2974,7 +2979,12 @@
                         </div>
                     `;
                 });
+
+                // Otomatis gulir (scroll) ke paling bawah setiap ada pesan baru atau halaman dimuat
+                container.scrollTop = container.scrollHeight;
             });
+        }
+
         }
 
         function compressImageHD(file, callback) {
