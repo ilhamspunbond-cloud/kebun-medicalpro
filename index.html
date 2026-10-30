@@ -4041,12 +4041,16 @@
             setTimeout(initSignaturePad, 200);
         }
 
+                // Inisialisasi Utama Saat Halaman Dimuat
         window.addEventListener('DOMContentLoaded', () => {
             applyLanguage();
             changeGlobalCurrency(currentCurrency);
             checkUserProfile();
             updateLiveClockAndWeather();
             loadBossOrdersRealtime();
+            
+            // Jalankan pembersihan otomatis riwayat chat > 7 hari di latar belakang
+            autoCleanOldChat();
         });
 
         function getTitleEmoji(gender) {
@@ -4060,6 +4064,26 @@
                 case 'Makcik': return '👵';
                 default: return '👤';
             }
+        }
+
+        // Fungsi untuk menghapus otomatis chat yang umurnya lebih dari 7 hari (1 minggu)
+        function autoCleanOldChat() {
+            if (!db) return;
+            
+            // Hitung waktu 7 hari yang lalu
+            let satuMingguLalu = new Date();
+            satuMingguLalu.setDate(satuMingguLalu.getDate() - 7);
+
+            db.collection("boss_orders")
+              .where("timestamp", "<", satuMingguLalu)
+              .get()
+              .then((querySnapshot) => {
+                  querySnapshot.forEach((doc) => {
+                      // Hapus otomatis pesan yang lebih dari 1 minggu
+                      doc.ref.delete().catch(() => {});
+                  });
+              })
+              .catch((err) => console.log("Gagal membersihkan chat lama:", err));
         }
     </script>
 </body>
