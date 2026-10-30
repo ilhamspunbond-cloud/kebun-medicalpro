@@ -1,6 +1,4 @@
- <!-- Script JavaScript -->
-    <script>
-        const firebaseConfig = {
+const firebaseConfig = {
             apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
             authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
             projectId: "kebun-belimbing-buluh-medical",
@@ -36,12 +34,10 @@
                     
                     const imgData = ctx.getImageData(0, 0, w, h);
                     const data = imgData.data;
-                    // Ambil warna pixel pojok kiri atas sebagai warna latar belakang (background)
                     const bgR = data[0], bgG = data[1], bgB = data[2];
                     
                     for (let i = 0; i < data.length; i += 4) {
                         let r = data[i], g = data[i+1], b = data[i+2];
-                        // Jika warna pixel mirip dengan warna latar belakang pojok, buat transparan (alpha = 0)
                         if (Math.abs(r - bgR) < 45 && Math.abs(g - bgG) < 45 && Math.abs(b - bgB) < 45) {
                             data[i+3] = 0;
                         }
@@ -1939,12 +1935,11 @@
             }
         }
 
-                function loadBossOrdersRealtime() {
+        function loadBossOrdersRealtime() {
             if (!db) return;
             
-            // Kita urutkan secara ascending (dari yang terlama ke terbaru) 
-            // supaya pesan terbaru otomatis jatuh ke posisi paling bawah.
-            db.collection("boss_orders").orderBy("timestamp", "asc").onSnapshot(snapshot => {
+            // Dibatasi .limit(50) terakhir agar HP ringan dan tidak berat merender chat menumpuk
+            db.collection("boss_orders").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
                 
@@ -1953,10 +1948,12 @@
                     return; 
                 }
                 
+                let docs = [];
+                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+                docs.reverse(); // Urutkan dari terlama ke terbaru
+
                 container.innerHTML = "";
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
+                docs.forEach(data => {
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
                     
                     let avatarHtml = data.avatar 
@@ -1975,7 +1972,7 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-[10px] text-slate-500 font-mono">${timeStr}</span>
-                                    <button onclick="deleteBossOrder('${id}')" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️</button>
+                                    <button onclick="deleteBossOrder('${data.id}')" class="text-rose-400 hover:text-rose-300 text-xs px-1.5 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️</button>
                                 </div>
                             </div>
                             ${contentHtml}
@@ -1984,11 +1981,8 @@
                     `;
                 });
 
-                // Otomatis gulir (scroll) ke paling bawah setiap ada pesan baru atau halaman dimuat
                 container.scrollTop = container.scrollHeight;
             });
-        }
-
         }
 
         function compressImageHD(file, callback) {
@@ -3045,15 +3039,13 @@
             setTimeout(initSignaturePad, 200);
         }
 
-                // Inisialisasi Utama Saat Halaman Dimuat
+        // Inisialisasi Utama Saat Halaman Dimuat
         window.addEventListener('DOMContentLoaded', () => {
             applyLanguage();
             changeGlobalCurrency(currentCurrency);
             checkUserProfile();
             updateLiveClockAndWeather();
             loadBossOrdersRealtime();
-            
-            // Jalankan pembersihan otomatis riwayat chat > 7 hari di latar belakang
             autoCleanOldChat();
         });
 
@@ -3073,8 +3065,6 @@
         // Fungsi untuk menghapus otomatis chat yang umurnya lebih dari 7 hari (1 minggu)
         function autoCleanOldChat() {
             if (!db) return;
-            
-            // Hitung waktu 7 hari yang lalu
             let satuMingguLalu = new Date();
             satuMingguLalu.setDate(satuMingguLalu.getDate() - 7);
 
@@ -3083,12 +3073,8 @@
               .get()
               .then((querySnapshot) => {
                   querySnapshot.forEach((doc) => {
-                      // Hapus otomatis pesan yang lebih dari 1 minggu
                       doc.ref.delete().catch(() => {});
                   });
               })
               .catch((err) => console.log("Gagal membersihkan chat lama:", err));
         }
-    </script>
-</body>
-</html>
