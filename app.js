@@ -1559,8 +1559,8 @@
         function speakLastAiMessage() { stopAllAiAudio(); if (lastSpokenText) speakText(lastSpokenText); }
 
         function getFullTitleName() {
-            if (!currentUser) return "Dato Abdul Rojak";
-            let title = currentUser.gender || "Dato";
+            if (!currentUser) return "abang Abdul Rojak";
+            let title = currentUser.gender || "abang";
             let name = currentUser.name || "Abdul Rojak";
             return `${title} ${name}`;
         }
@@ -3170,7 +3170,7 @@ let verifyAdmin = () => {
         renderAiTrainingRules();
         renderUnresolvedLogs();
         renderAdminManagementUI(); // Munculkan senarai admin di panel
-        alert("Selamat datang, Dato Abdul Rojak (Admin Utama)!");
+        alert("Selamat datang, abang Abdul Rojak (Admin Utama)!");
     } else { 
         alert("Kata laluan salah! Panel ini khas untuk Admin Utama."); 
     }
@@ -3180,7 +3180,7 @@ let verifyAdmin = () => {
 function verifyPoLogin() {
     const pass = document.getElementById('poPassInput').value.trim();
     if (pass === masterAdminPassword) {
-        openPoAccess("Admin Utama (Dato)");
+        openPoAccess("Admin Utama (abang)");
         return;
     }
     let foundAdmin = customAdminList.find(a => a.pass === pass);
