@@ -1,4 +1,4 @@
-const firebaseConfig = {
+        const firebaseConfig = {
             apiKey: "AIzaSyD_LWsMJL2j8IkeDw0O1e6Gp3gvvvixuzk",
             authDomain: "kebun-belimbing-buluh-medical.firebaseapp.com",
             projectId: "kebun-belimbing-buluh-medical",
@@ -18,7 +18,7 @@ const firebaseConfig = {
         let currentLang = localStorage.getItem('medicalpro_lang') || 'ms';
         let currentCurrency = localStorage.getItem('medicalpro_currency') || 'RM';
 
-        // Fungsi Otomatis Buat Latar Belakang Foto Jadi Transparan
+        // Fungsi Otomatis Buat Latar Belakang Foto Jadi Transparan & Super Ringan
         function removeImageBackground(file, callback) {
             if (!file) { callback(""); return; }
             const reader = new FileReader();
@@ -27,7 +27,7 @@ const firebaseConfig = {
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     let w = img.width, h = img.height;
-                    if (w > 400) { h *= 400 / w; w = 400; }
+                    if (w > 300) { h *= 300 / w; w = 300; }
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, w, h);
@@ -43,7 +43,7 @@ const firebaseConfig = {
                         }
                     }
                     ctx.putImageData(imgData, 0, 0);
-                    callback(canvas.toDataURL('image/png'));
+                    callback(canvas.toDataURL('image/png', 0.7));
                 };
                 img.src = e.target.result;
             };
@@ -138,7 +138,6 @@ const firebaseConfig = {
                 lblAssetTitle: "🚜 Aset & Peralatan Ladang",
                 expenseFormTitle: "💰 Perbelanjaan Ladang (Bulanan)",
                 btnPrintExpPdf: "🖨️ Cetak Rumusan PDF",
-                expTitlePlaceholder: "Keterangan Perbelanjaan",
                 lblExpReceipt: "Resit HD",
                 btnExpenseSubmit: "Tambah Perbelanjaan",
                 btnCancelExpenseEdit: "Batal",
@@ -1307,7 +1306,6 @@ const firebaseConfig = {
         let officeCompanyAddress = "Machap, Johor, Malaysia | No. MyGAP: 24.0151";
         let adminWhatsappList = [];
         let lastSpokenText = "";
-        let currentWeatherData = { rainSoon: false };
         let globalAiMemory = [];
         let aiTrainingRules = [];
         let aiUnresolvedLogs = [];
@@ -1791,11 +1789,11 @@ const firebaseConfig = {
             }
         }
 
-               // ==========================================
-        // SISTEM CUACA REAL-TIME & REKOMENDASI AI CERDAS
-        // Koordinat: Simpang Renggam, Johor (1.8288, 103.3155)
         // ==========================================
-
+        // SISTEM CUACA REAL-TIME & REKOMENDASI AI CERDAS (24 JAM)
+        // Koordinat Akurat: Simpang Renggam, Johor (1.8288, 103.3155)
+        // ==========================================
+        
         function updateLiveClock() {
             const now = new Date();
             const clockEl = document.getElementById('liveClock');
@@ -1808,8 +1806,7 @@ const firebaseConfig = {
         async function fetchRealTimeWeatherAndAnalyze() {
             const lat = 1.8288;
             const lon = 103.3155;
-            // Mengambil data cuaca real-time dan riwayat jam-jam sebelumnya untuk cek hujan semalam/kemarin
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=precipitation,weather_code&timezone=Asia%2FSingapore`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=precipitation,weather_code,temperature_2m&timezone=Asia%2FSingapore`;
 
             try {
                 const response = await fetch(url);
@@ -1822,45 +1819,96 @@ const firebaseConfig = {
                     const windSpeed = data.current.wind_speed_10m;
                     const precipitationNow = data.current.precipitation || 0;
                     const weatherCode = data.current.weather_code;
+                    const isDay = data.current.is_day;
 
-                    // Tampilkan data cuaca ke layar HP
+                    // Update DOM Cuaca Utama
                     document.getElementById('tempDisplay').innerText = `${temp}°`;
                     document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${apparentTemp}°`;
                     document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
                     document.getElementById('detailPrecipitation').innerText = `${precipitationNow} mm`;
 
-                    // --- LOGIKA CEK HUJAN 24 JAM KE BELAKANG (OTOMATIS) ---
+                    let conditionText = "Cerah Berawan";
+                    let emoji = "⛅";
+                    let illustrationText = "Suasana cerah di ladang Machap.";
+                    let illustrationEmoji = "☀️";
+
+                    if (weatherCode === 0) {
+                        conditionText = isDay ? "Cerah Terik" : "Malam Cerah";
+                        emoji = isDay ? "☀️" : "🌙";
+                        illustrationText = "Cuaca sangat baik untuk pengeringan hasil ladang.";
+                    } else if (weatherCode >= 1 && weatherCode <= 3) {
+                        conditionText = "Berawan Separa";
+                        emoji = "⛅";
+                        illustrationText = "Suhu stabil, selesa untuk kerja lapangan.";
+                    } else if (weatherCode >= 51 && weatherCode <= 67) {
+                        conditionText = "Hujan Rintik / Lebat";
+                        emoji = "🌧️";
+                        illustrationText = "Tanah basah. Utamakan kerja di bawah bumbung.";
+                        illustrationEmoji = "🌧️";
+                    } else if (weatherCode >= 95) {
+                        conditionText = "Ribut Petir";
+                        emoji = "⛈️";
+                        illustrationText = "Amaran ribut! Hentikan kerja terbuka.";
+                        illustrationEmoji = "⚡";
+                    }
+
+                    document.getElementById('condDisplay').innerText = conditionText;
+                    document.getElementById('weatherMainIconContainer').innerText = emoji;
+                    document.getElementById('illustrationEmoji').innerText = illustrationEmoji;
+                    document.getElementById('weatherIllustrationText').innerText = illustrationText;
+
+                    // Cek Hujan 24 Jam ke Belakang Secara Otomatis
                     let adaHujanSemalamAtauKemarin = false;
                     let totalHujan24Jam = precipitationNow;
 
                     if (data.hourly && data.hourly.precipitation) {
                         const nowIndex = new Date().getHours();
-                        // Cek 24 jam ke belakang dari data hourly API
                         const startIndex = Math.max(0, nowIndex - 24);
                         for (let i = startIndex; i <= nowIndex; i++) {
                             totalHujan24Jam += (data.hourly.precipitation[i] || 0);
-                            // Kode WMO 51-99 adalah indikasi hujan atau badai
                             if (data.hourly.weather_code[i] >= 51) {
                                 adaHujanSemalamAtauKemarin = true;
                             }
                         }
                     }
 
-                    // Jika total curah hujan 24 jam > 2mm atau status cuaca menunjukkan hujan
                     if (totalHujan24Jam > 2.0 || precipitationNow > 0 || weatherCode >= 51) {
                         adaHujanSemalamAtauKemarin = true;
                     }
 
-                    // Simpan ke memori lokal HP (supaya tetap teringat dalam siklus 24 jam)
                     simpanRiwayatCuacaCerdas(adaHujanSemalamAtauKemarin, totalHujan24Jam, weatherCode);
-
-                    // Jalankan Rekomendasi AI Cerdas berdasarkan hasil analisis cuaca
                     jalankanRekomendasiAILapangan(adaHujanSemalamAtauKemarin, totalHujan24Jam, weatherCode);
+
+                    if (data.hourly) {
+                        renderHourlyForecast(data.hourly);
+                    }
                 }
             } catch (err) {
                 console.warn("Gagal terhubung ke API cuaca, menggunakan memori lokal:", err);
-                // Fallback jika offline: baca dari memori terakhir
                 muatRekomendasiDariMemoriLokal();
+            }
+        }
+
+        function renderHourlyForecast(hourlyData) {
+            const container = document.getElementById('hourlyForecastContainer');
+            if (!container || !hourlyData || !hourlyData.time) return;
+            
+            container.innerHTML = "";
+            const currentHourIndex = new Date().getHours();
+            
+            for (let i = currentHourIndex; i < currentHourIndex + 8 && i < hourlyData.time.length; i++) {
+                let timeStr = new Date(hourlyData.time[i]).toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+                let temp = Math.round(hourlyData.temperature_2m[i]);
+                let code = hourlyData.weather_code[i];
+                let icon = code >= 51 ? "🌧️" : (code === 0 ? "☀️" : "⛅");
+
+                container.innerHTML += `
+                    <div class="flex flex-col items-center justify-center bg-slate-900/90 border border-slate-800 px-3 py-2 rounded-xl min-w-[70px] text-center shrink-0">
+                        <span class="text-[10px] text-slate-400">${timeStr}</span>
+                        <span class="text-xl my-1">${icon}</span>
+                        <span class="text-xs font-bold text-white">${temp}°</span>
+                    </div>
+                `;
             }
         }
 
@@ -1874,7 +1922,6 @@ const firebaseConfig = {
             localStorage.setItem('medicalpro_riwayat_cuaca_24jam', JSON.stringify(dataCuaca));
         }
 
-        // --- SISTEM REKOMENDASI AI CERDAS (OTOMATIS PILIH TUGAS ALTERNATIF) ---
         function jalankanRekomendasiAILapangan(hujanTerdeteksi, totalHujan, kodeCuaca) {
             const kotakRekomendasi = document.getElementById("smartRecommendation");
             if (!kotakRekomendasi) return;
@@ -1883,23 +1930,23 @@ const firebaseConfig = {
             let rekomendasiKerja = "";
 
             if (hujanTerdeteksi || totalHujan > 1.5 || (kodeCuaca >= 51 && kodeCuaca <= 99)) {
-                statusKondisi = `🌧️ <strong>Analisis Tanah (Simpang Renggam):</strong> Terdeteksi ada hujan lebat / curah hujan tinggi (~${totalHujan.toFixed(1)} mm) dalam 24 jam terakhir. Tanah di ladang Machap terpantau basah dan lembap.`;
+                statusKondisi = `🌧️ <strong>Analisis Tanah (Simpang Renggam):</strong> Terkesan hujan/kelembapan tinggi (~${totalHujan.toFixed(1)} mm) dalam 24 jam terakhir. Tanah basah.`;
                 
                 rekomendasiKerja = `
-                    👉 <strong class="text-amber-300">Keputusan AI Cerdas:</strong> <strong>SKIP / Jangan lakukan penyiraman pohon hari ini!</strong> Air tanah sudah sangat mencukupi.<br>
+                    👉 <strong class="text-amber-300">Keputusan AI Cerdas:</strong> <strong>SKIP / Jangan lakukan penyiraman pohon hari ini!</strong><br>
                     🛠️ <strong>Alihkan Pekerja ke Tugas Alternatif:</strong><br>
-                    1. 🌿 <strong>Pruning:</strong> Lakukan pemangkasan ranting & daun tua.<br>
-                    2. 🍃 <strong>Petik Daun:</strong> Fokus pemetikan daun teh belimbing / buah matang.<br>
-                    3. 🚜 <strong>Potong Rumput:</strong> Bersihkan jalur antar barisan pohon karena rumput cepat tumbuh subur pasca hujan.
+                    1. 🌿 <strong>Pruning:</strong> Pemangkasan ranting & daun tua.<br>
+                    2. 🍃 <strong>Petik Daun:</strong> Fokus pemetikan daun teh belimbing.<br>
+                    3. 🚜 <strong>Potong Rumput:</strong> Pembersihan jalur antar barisan pohon.
                 `;
             } else {
-                statusKondisi = `☀️ <strong>Analisis Tanah (Simpang Renggam):</strong> Cuaca stabil, kering, dan tidak ada hujan signifikan dalam 24 jam terakhir.`;
+                statusKondisi = `☀️ <strong>Analisis Tanah (Simpang Renggam):</strong> Cuaca stabil, kering, tanpa hujan signifikan 24 jam terakhir.`;
                 
                 rekomendasiKerja = `
                     👉 <strong class="text-emerald-300">Keputusan AI Cerdas:</strong> Tanah dalam kondisi kering ideal.<br>
                     🛠️ <strong>Syor Kerja Hari Ini:</strong><br>
-                    1. 💧 Lakukan jadual rutin **penyiraman pagi** untuk menjaga kelembapan akar.<br>
-                    2. 🌿 Jalankan tugas **pruning** ringan atau **petik daun** sesuai target harian.
+                    1. 💧 Lakukan jadual rutin **penyiraman pagi** untuk akar.<br>
+                    2. 🌿 Jalankan tugas **pruning** ringan atau **petik daun**.
                 `;
             }
 
@@ -1915,18 +1962,6 @@ const firebaseConfig = {
                 document.getElementById("smartRecommendation").innerHTML = `☀️ Sistem memantau cuaca normal di Simpang Renggam. Laksanakan tugas rutin lapangan seperti biasa.`;
             }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            updateLiveClock();
-            fetchRealTimeWeatherAndAnalyze();
-            // Cek ulang cuaca otomatis setiap 1 jam sekali
-            setInterval(fetchRealTimeWeatherAndAnalyze, 60 * 60 * 1000);
-        });
- 
-
-
-
-         }
 
         let pendingChatImageBase64 = "";
 
@@ -1982,7 +2017,7 @@ const firebaseConfig = {
         function loadBossOrdersRealtime() {
             if (!db) return;
             
-            db.collection("boss_orders").orderBy("timestamp", "desc").limit(50).onSnapshot(snapshot => {
+            db.collection("boss_orders").orderBy("timestamp", "desc").limit(20).onSnapshot(snapshot => {
                 const container = document.getElementById('bossHistoryContainer');
                 if (!container) return;
                 
@@ -2000,11 +2035,11 @@ const firebaseConfig = {
                     let timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ms-MY') : 'Baru sahaja';
                     
                     let avatarHtml = data.avatar 
-                        ? `<img src="${data.avatar}" class="w-8 h-8 rounded-full object-cover border border-amber-500 shadow-sm bg-transparent">` 
+                        ? `<img src="${data.avatar}" class="w-8 h-8 rounded-full object-cover border border-amber-500 shadow-sm bg-transparent" loading="lazy">` 
                         : `<span class="w-8 h-8 rounded-full bg-amber-600 flex items-center justify-center font-bold text-xs text-white">${(data.sender || 'U')[0]}</span>`;
                     
                     let contentHtml = data.content ? `<p class="text-sm text-slate-200 mt-1 ml-10">${data.content}</p>` : '';
-                    let imageHtml = data.image ? `<div class="mt-2 ml-10"><img src="${data.image}" class="rounded-xl max-h-48 object-cover border border-slate-700 shadow"></div>` : '';
+                    let imageHtml = data.image ? `<div class="mt-2 ml-10"><img src="${data.image}" class="rounded-xl max-h-48 object-cover border border-slate-700 shadow" loading="lazy"></div>` : '';
 
                     container.innerHTML += `
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow flex flex-col gap-1 relative group">
@@ -2028,6 +2063,9 @@ const firebaseConfig = {
             });
         }
 
+        // ==========================================
+        // OPTIMASI PERFORMA: KOMPRESOR GAMBAR SUPER RINGAN (MAX 600px)
+        // ==========================================
         function compressImageHD(file, callback) {
             if (!file) { callback(""); return; }
             const reader = new FileReader();
@@ -2036,10 +2074,10 @@ const firebaseConfig = {
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     let w = img.width, h = img.height;
-                    if (w > 1200) { h *= 1200 / w; w = 1200; }
+                    if (w > 600) { h *= 600 / w; w = 600; }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(canvas.toDataURL('image/jpeg', 0.85));
+                    callback(canvas.toDataURL('image/jpeg', 0.7));
                 };
                 img.src = e.target.result;
             };
@@ -2151,7 +2189,7 @@ const firebaseConfig = {
             if (!sc || !sel) return;
             sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Ladang --</option>`;
             gardenProducts.forEach(p => {
-                let imgTag = p.photo ? `<img src="${p.photo}" class="w-10 h-10 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-xl">🌱</span>`;
+                let imgTag = p.photo ? `<img src="${p.photo}" class="w-10 h-10 object-cover rounded-lg mx-auto mb-1" loading="lazy">` : `<span class="text-xl">🌱</span>`;
                 let translatedProdName = translateDynamicText(p.name);
                 sc.innerHTML += `<div class="bg-white border p-2.5 rounded-xl text-center">${imgTag}<div class="text-[11px] font-bold text-emerald-900">${translatedProdName}</div><div class="text-xs text-slate-600">Stok: <b>${p.stock}</b></div></div>`;
                 sel.innerHTML += `<option value="${p.name}" data-price="${p.price}" data-stock="${p.stock}">${translatedProdName} (Stok: ${p.stock} | ${currentCurrency}${p.price})</option>`;
@@ -2220,11 +2258,12 @@ const firebaseConfig = {
             return true;
         }
 
+        // OPTIMASI: Render maksimal 20 data terbaru agar anti ngadat di semua HP
         function renderIncomeSales() {
             const tbody = document.getElementById('incomeTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            let sortedIncome = [...incomeList].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let sortedIncome = [...incomeList].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20);
 
             sortedIncome.filter(s => filterByDateRange(s.date, 'filterIncomeStart', 'filterIncomeEnd', 'filterIncomeMonth')).forEach(s => {
                 tbody.innerHTML += `<tr class="border-b"><td class="p-2">${s.date}</td><td class="p-2 font-medium">${translateDynamicText(s.product)}</td><td class="p-2">${s.qty}</td><td class="p-2 font-bold text-emerald-600">${s.total}</td><td class="p-2">${s.customer}</td><td class="p-2 text-center"><button type="button" onclick="showCustomInvoiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')}, 'Jualan Terus Dari Ladang')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs">📄 Invois</button></td></tr>`;
@@ -2287,7 +2326,7 @@ const firebaseConfig = {
             if (!sc || !sel) return;
             sc.innerHTML = ""; sel.innerHTML = `<option value="">-- Pilih Produk Luar Talian --</option>`;
             officeProducts.forEach(p => {
-                let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1">` : `<span class="text-2xl">🏢</span>`;
+                let imgTag = p.photo ? `<img src="${p.photo}" class="w-12 h-12 object-cover rounded-lg mx-auto mb-1" loading="lazy">` : `<span class="text-2xl">🏢</span>`;
                 let translatedProdName = translateDynamicText(p.name);
                 let translatedBenefits = translateDynamicText(p.benefits);
                 sc.innerHTML += `<div class="bg-white border p-3 rounded-xl relative"><div class="absolute top-2 right-2"><button type="button" onclick="editOfficeProduct('${p.firestoreId}')" class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px]">Edit</button></div><div class="text-center">${imgTag}</div><div class="text-xs font-bold text-blue-900 truncate">${translatedProdName}</div><div class="text-[11px] text-slate-600">Stok: <b>${p.stock}</b> | ${currentCurrency} ${parseFloat(p.price).toFixed(2)}</div><div class="text-[10px] text-slate-500 mt-1"><b>Khasiat:</b> ${translatedBenefits || '-'}</div></div>`;
@@ -2388,11 +2427,12 @@ const firebaseConfig = {
             }
         }
 
+        // OPTIMASI: Render maksimal 20 data terbaru
         function renderOfficeSales() {
             const tbody = document.getElementById('officeSalesTableBody');
             if (!tbody) return;
             tbody.innerHTML = "";
-            let sortedSales = [...officeSales].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let sortedSales = [...officeSales].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20);
 
             let filtered = sortedSales.filter(s => filterByDateRange(s.date, 'filterOfficeStart', 'filterOfficeEnd', 'filterOfficeMonth'));
             if (filtered.length === 0) {
@@ -2541,7 +2581,7 @@ const firebaseConfig = {
                 let translatedName = translateDynamicText(item.name);
                 let translatedAdvice = translateDynamicText(item.advice);
                 sel.innerHTML += `<option value="${item.name}">${translatedName} (Baki: ${item.stock})</option>`;
-                c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2">`:''}<h4 class="font-bold text-emerald-800">${translatedName}</h4><p class="text-xs">Baki: <b>${item.stock}</b></p><p class="text-[11px] text-slate-600 mt-1">${translatedAdvice}</p></div>`;
+                c.innerHTML += `<div class="bg-slate-50 border p-4 rounded-xl">${item.photo?`<img src="${item.photo}" class="w-full h-32 object-cover rounded mb-2" loading="lazy">`:''}<h4 class="font-bold text-emerald-800">${translatedName}</h4><p class="text-xs">Baki: <b>${item.stock}</b></p><p class="text-[11px] text-slate-600 mt-1">${translatedAdvice}</p></div>`;
             });
         }
         function renderAdminInventoryTable() {
@@ -2622,11 +2662,12 @@ const firebaseConfig = {
             }
         }
 
+        // OPTIMASI: Render maksimal 20 data terbaru
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return; tbody.innerHTML = "";
             
-            let sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let sortedTasks = [...tasks].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20);
 
             sortedTasks.filter(t => filterByDateRange(t.date, 'filterTaskStart', 'filterTaskEnd', 'filterTaskMonth')).forEach(t => {
                 let translatedTitle = translateDynamicText(t.title);
@@ -2635,7 +2676,7 @@ const firebaseConfig = {
                 let translatedStock = translateDynamicText(t.stockUsed);
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
+                        <td class="p-3">${t.photo?`<img src="${t.photo}" class="w-10 h-10 object-cover rounded" loading="lazy">`:'Tiada'}</td>
                         <td class="p-3 font-semibold">${translatedTitle}</td>
                         <td class="p-3">${translatedCat}</td>
                         <td class="p-3">${t.worker}</td>
@@ -2716,12 +2757,12 @@ const firebaseConfig = {
             const tbody = document.getElementById('expenseTableBody');
             if(!tbody) return; tbody.innerHTML = "";
             
-            let sortedExpenses = [...expenses].sort((a, b) => new Date(a.date) - new Date(b.date));
+            let sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20);
 
             sortedExpenses.filter(e => filterByDateRange(e.date, 'filterExpenseStart', 'filterExpenseEnd', 'filterExpenseMonth')).forEach(ex => {
                 tbody.innerHTML += `
                     <tr class="border-b">
-                        <td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded">`:'Tiada'}</td>
+                        <td class="p-3">${ex.receipt?`<img src="${ex.receipt}" class="w-10 h-10 object-cover rounded" loading="lazy">`:'Tiada'}</td>
                         <td class="p-3 font-semibold">${translateDynamicText(ex.title)}</td>
                         <td class="p-3 font-bold text-rose-600">${ex.amount}</td>
                         <td class="p-3">${ex.date}</td>
@@ -3082,20 +3123,7 @@ const firebaseConfig = {
             setTimeout(initSignaturePad, 200);
         }
 
-        function getTitleEmoji(gender) {
-            switch (gender) {
-                case 'Dato': return '👑';
-                case 'Tuan': return '🎩';
-                case 'Puan': return '👒';
-                case 'Abang': return '🧢';
-                case 'Akak': return '🧕';
-                case 'Pakcik': return '👴';
-                case 'Makcik': return '👵';
-                default: return '👤';
-            }
-        }
-
-        // Fungsi untuk menghapus otomatis chat yang umurnya lebih dari 7 hari (1 minggu)
+        // Fungsi auto hapus chat lama di atas 7 hari agar database dan memori HP tetap ringan
         function autoCleanOldChat() {
             if (!db) return;
             let satuMingguLalu = new Date();
@@ -3113,7 +3141,7 @@ const firebaseConfig = {
         }
 
         // ==========================================
-        // INISIALISASI UTAMA SAAT HALAMAN DIMUAT (TUNGGAL)
+        // INISIALISASI UTAMA SAAT HALAMAN DIMUAT
         // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
             applyLanguage();
@@ -3121,5 +3149,9 @@ const firebaseConfig = {
             checkUserProfile();
             loadBossOrdersRealtime();
             autoCleanOldChat();
-            updateRekomendasiLadang();
+            updateLiveClock();
+            fetchRealTimeWeatherAndAnalyze();
+            
+            // Interval update cuaca otomatis setiap 30 menit
+            setInterval(fetchRealTimeWeatherAndAnalyze, 30 * 60 * 1000);
         });
