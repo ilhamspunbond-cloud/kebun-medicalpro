@@ -1791,52 +1791,141 @@ const firebaseConfig = {
             }
         }
 
-        
-// ==========================================
-        // SISTEM REKOMENDASI & RIWAYAT CUACA OTOMATIS (CLOUD / LOCAL)
+               // ==========================================
+        // SISTEM CUACA REAL-TIME & REKOMENDASI AI CERDAS
+        // Koordinat: Simpang Renggam, Johor (1.8288, 103.3155)
         // ==========================================
-        function simpanRiwayatCuacaOtomatis(kondisiCuaca, adaHujanMalam) {
-            const sekarang = new Date().getTime();
-            const dataCuacaBaru = {
-                waktuSimpan: sekarang,
-                kondisi: kondisiCuaca,       
-                hujanSemalam: adaHujanMalam 
-            };
-            localStorage.setItem('riwayat_cuaca_ladang', JSON.stringify(dataCuacaBaru));
-        }
 
-        function ambilDanBersihkanRiwayatCuaca() {
-            const dataTersimpan = localStorage.getItem('riwayat_cuaca_ladang');
-            if (!dataTersimpan) return null;
-
-            const cuaca = JSON.parse(dataTersimpan);
-            const sekarang = new Date().getTime();
-            const batas24Jam = 24 * 60 * 60 * 1000; 
-
-            if (sekarang - cuaca.waktuSimpan > batas24Jam) {
-                localStorage.removeItem('riwayat_cuaca_ladang');
-                return null;
+        function updateLiveClock() {
+            const now = new Date();
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) {
+                clockEl.innerText = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
-            return cuaca;
+        }
+        setInterval(updateLiveClock, 1000);
+
+        async function fetchRealTimeWeatherAndAnalyze() {
+            const lat = 1.8288;
+            const lon = 103.3155;
+            // Mengambil data cuaca real-time dan riwayat jam-jam sebelumnya untuk cek hujan semalam/kemarin
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&hourly=precipitation,weather_code&timezone=Asia%2FSingapore`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Gagal mengambil data cuaca");
+                const data = await response.json();
+                
+                if (data && data.current) {
+                    const temp = Math.round(data.current.temperature_2m);
+                    const apparentTemp = Math.round(data.current.apparent_temperature);
+                    const windSpeed = data.current.wind_speed_10m;
+                    const precipitationNow = data.current.precipitation || 0;
+                    const weatherCode = data.current.weather_code;
+
+                    // Tampilkan data cuaca ke layar HP
+                    document.getElementById('tempDisplay').innerText = `${temp}°`;
+                    document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${apparentTemp}°`;
+                    document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
+                    document.getElementById('detailPrecipitation').innerText = `${precipitationNow} mm`;
+
+                    // --- LOGIKA CEK HUJAN 24 JAM KE BELAKANG (OTOMATIS) ---
+                    let adaHujanSemalamAtauKemarin = false;
+                    let totalHujan24Jam = precipitationNow;
+
+                    if (data.hourly && data.hourly.precipitation) {
+                        const nowIndex = new Date().getHours();
+                        // Cek 24 jam ke belakang dari data hourly API
+                        const startIndex = Math.max(0, nowIndex - 24);
+                        for (let i = startIndex; i <= nowIndex; i++) {
+                            totalHujan24Jam += (data.hourly.precipitation[i] || 0);
+                            // Kode WMO 51-99 adalah indikasi hujan atau badai
+                            if (data.hourly.weather_code[i] >= 51) {
+                                adaHujanSemalamAtauKemarin = true;
+                            }
+                        }
+                    }
+
+                    // Jika total curah hujan 24 jam > 2mm atau status cuaca menunjukkan hujan
+                    if (totalHujan24Jam > 2.0 || precipitationNow > 0 || weatherCode >= 51) {
+                        adaHujanSemalamAtauKemarin = true;
+                    }
+
+                    // Simpan ke memori lokal HP (supaya tetap teringat dalam siklus 24 jam)
+                    simpanRiwayatCuacaCerdas(adaHujanSemalamAtauKemarin, totalHujan24Jam, weatherCode);
+
+                    // Jalankan Rekomendasi AI Cerdas berdasarkan hasil analisis cuaca
+                    jalankanRekomendasiAILapangan(adaHujanSemalamAtauKemarin, totalHujan24Jam, weatherCode);
+                }
+            } catch (err) {
+                console.warn("Gagal terhubung ke API cuaca, menggunakan memori lokal:", err);
+                // Fallback jika offline: baca dari memori terakhir
+                muatRekomendasiDariMemoriLokal();
+            }
         }
 
-        function updateRekomendasiLadang() {
-            const riwayat = ambilDanBersihkanRiwayatCuaca();
-            const kotakRekomendasi = document.getElementById("smartRecommendation");
+        function simpanRiwayatCuacaCerdas(adaHujan, totalCurahHujan, kodeCuaca) {
+            const dataCuaca = {
+                waktuSimpan: new Date().getTime(),
+                hujanTerdeteksi: adaHujan,
+                curahHujan: totalCurahHujan,
+                kode: kodeCuaca
+            };
+            localStorage.setItem('medicalpro_riwayat_cuaca_24jam', JSON.stringify(dataCuaca));
+        }
 
+        // --- SISTEM REKOMENDASI AI CERDAS (OTOMATIS PILIH TUGAS ALTERNATIF) ---
+        function jalankanRekomendasiAILapangan(hujanTerdeteksi, totalHujan, kodeCuaca) {
+            const kotakRekomendasi = document.getElementById("smartRecommendation");
             if (!kotakRekomendasi) return;
 
-            if (riwayat && riwayat.hujanSemalam) {
-                kotakRekomendasi.innerHTML = `
-                    🌧️ <strong>Peringatan Cuaca:</strong> Terpantau ada hujan semalam. Tanah di ladang Machap masih basah dan lembap.<br>
-                    👉 <em>Syor Kerja Hari Ini:</em> <strong>Jangan lakukan penyiraman tanaman hari ini.</strong> Alihkan pekerja ke tugas pemangkasan ranting, penyiangan rumput, atau perawatan mesin/alat ladang.
+            let statusKondisi = "";
+            let rekomendasiKerja = "";
+
+            if (hujanTerdeteksi || totalHujan > 1.5 || (kodeCuaca >= 51 && kodeCuaca <= 99)) {
+                statusKondisi = `🌧️ <strong>Analisis Tanah (Simpang Renggam):</strong> Terdeteksi ada hujan lebat / curah hujan tinggi (~${totalHujan.toFixed(1)} mm) dalam 24 jam terakhir. Tanah di ladang Machap terpantau basah dan lembap.`;
+                
+                rekomendasiKerja = `
+                    👉 <strong class="text-amber-300">Keputusan AI Cerdas:</strong> <strong>SKIP / Jangan lakukan penyiraman pohon hari ini!</strong> Air tanah sudah sangat mencukupi.<br>
+                    🛠️ <strong>Alihkan Pekerja ke Tugas Alternatif:</strong><br>
+                    1. 🌿 <strong>Pruning:</strong> Lakukan pemangkasan ranting & daun tua.<br>
+                    2. 🍃 <strong>Petik Daun:</strong> Fokus pemetikan daun teh belimbing / buah matang.<br>
+                    3. 🚜 <strong>Potong Rumput:</strong> Bersihkan jalur antar barisan pohon karena rumput cepat tumbuh subur pasca hujan.
                 `;
             } else {
-                kotakRekomendasi.innerHTML = `
-                    ☀️ <strong>Peringatan Cuaca:</strong> Cuaca stabil dan kering. Tanah dalam keadaan baik.<br>
-                    👉 <em>Syor Kerja Hari Ini:</em> Silakan jalankan jadual rutin penyiraman pagi dan aplikasi bio baja seperti biasa.
+                statusKondisi = `☀️ <strong>Analisis Tanah (Simpang Renggam):</strong> Cuaca stabil, kering, dan tidak ada hujan signifikan dalam 24 jam terakhir.`;
+                
+                rekomendasiKerja = `
+                    👉 <strong class="text-emerald-300">Keputusan AI Cerdas:</strong> Tanah dalam kondisi kering ideal.<br>
+                    🛠️ <strong>Syor Kerja Hari Ini:</strong><br>
+                    1. 💧 Lakukan jadual rutin **penyiraman pagi** untuk menjaga kelembapan akar.<br>
+                    2. 🌿 Jalankan tugas **pruning** ringan atau **petik daun** sesuai target harian.
                 `;
             }
+
+            kotakRekomendasi.innerHTML = `${statusKondisi}<br><div class="mt-2 pt-2 border-t border-slate-800">${rekomendasiKerja}</div>`;
+        }
+
+        function muatRekomendasiDariMemoriLokal() {
+            const saved = localStorage.getItem('medicalpro_riwayat_cuaca_24jam');
+            if (saved) {
+                const data = JSON.parse(saved);
+                jalankanRekomendasiAILapangan(data.hujanTerdeteksi, data.curahHujan, data.kode);
+            } else {
+                document.getElementById("smartRecommendation").innerHTML = `☀️ Sistem memantau cuaca normal di Simpang Renggam. Laksanakan tugas rutin lapangan seperti biasa.`;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateLiveClock();
+            fetchRealTimeWeatherAndAnalyze();
+            // Cek ulang cuaca otomatis setiap 1 jam sekali
+            setInterval(fetchRealTimeWeatherAndAnalyze, 60 * 60 * 1000);
+        });
+ 
+
+
+
          }
 
         let pendingChatImageBase64 = "";
