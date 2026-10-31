@@ -78,7 +78,7 @@ const firebaseConfig = {
                 lblHourlyForecast: "Ramalan Mengikut Jam",
                 lblIllustrationTitle: "Ladang Machap",
                 lblIllustrationText: "Suasana di ladang.",
-                lblPrecip: "Kerpasan",
+                lblPrecip: "Taburan Hujan",
                 lblWind: "Angin",
                 lblAiDecision: "🤖 Keputusan AI Berdasarkan Cuaca & Tanah:",
                 lblBossPortalTitle: "💬 Perbincangan atau Perintah tentang Ladang Belimbing Buluh Medical Pro",
