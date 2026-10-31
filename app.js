@@ -1791,7 +1791,8 @@ const firebaseConfig = {
             }
         }
 
-        // ==========================================
+        
+// ==========================================
         // SISTEM REKOMENDASI & RIWAYAT CUACA OTOMATIS (CLOUD / LOCAL)
         // ==========================================
         function simpanRiwayatCuacaOtomatis(kondisiCuaca, adaHujanMalam) {
@@ -1836,7 +1837,7 @@ const firebaseConfig = {
                     👉 <em>Syor Kerja Hari Ini:</em> Silakan jalankan jadual rutin penyiraman pagi dan aplikasi bio baja seperti biasa.
                 `;
             }
-        }
+         }
 
         let pendingChatImageBase64 = "";
 
