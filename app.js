@@ -1648,7 +1648,6 @@
                     let recentMemoryCount = globalAiMemory.length;
                     responseText = `🧠 Memori Global & Kosa Kata Mandiri:\n• Jumlah Perbualan Disimpan: ${recentMemoryCount} interaksi.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
                 } else {
-                    // KALIMAT SAPAAN UTAMA YANG DIUBAH SESUAI PERMINTAAN LU, BRO:
                     responseText = `Selamat datang di sistem Medicalpro, ${fullName}! 🌿 Ada yang bisa saya bantu? Silakan beri tahu jika Anda perlu mengecek rekap pengeluaran, pemasukan, produk, atau data penting ladang lainnya.`;
                 }
             }
@@ -1800,7 +1799,6 @@
                     const weatherCode = data.current.weather_code;
                     const isDay = data.current.is_day;
 
-                    // Update DOM Cuaca Utama
                     document.getElementById('tempDisplay').innerText = `${temp}°`;
                     document.getElementById('feelsLikeDisplay').innerText = `Terasa seperti ${apparentTemp}°`;
                     document.getElementById('detailWind').innerText = `${windSpeed} km/j`;
@@ -1836,7 +1834,6 @@
                     document.getElementById('illustrationEmoji').innerText = illustrationEmoji;
                     document.getElementById('weatherIllustrationText').innerText = illustrationText;
 
-                    // Cek Hujan 24 Jam ke Belakang Secara Otomatis
                     let adaHujanSemalamAtauKemarin = false;
                     let totalHujan24Jam = precipitationNow;
 
@@ -1969,7 +1966,7 @@
             if (!text && !pendingChatImageBase64) return;
 
             const senderName = getFullTitleName();
-            const senderGender = currentUser ? (currentUser.gender || 'Dato') : 'Dato';
+            const senderGender = currentUser ? (currentUser.gender || 'abang') : 'abang';
             const userAvatar = currentUser ? (currentUser.avatar || '') : '';
             
             if (db) {
@@ -2068,17 +2065,6 @@
         const secretAdminCode = "rojak123";
         let openAdminLogin = () => document.getElementById('adminLoginModal').classList.remove('hidden');
         let closeAdminLogin = () => document.getElementById('adminLoginModal').classList.add('hidden');
-        let verifyAdmin = () => {
-            if (document.getElementById('adminPasswordInput').value === secretAdminCode) {
-                closeAdminLogin();
-                document.getElementById('adminDashboardModal').classList.remove('hidden');
-                renderWorkersAdmin();
-                renderAdminInventoryTable();
-                renderAdminWhatsappList();
-                renderAiTrainingRules();
-                renderUnresolvedLogs();
-            } else { alert("Salah kata laluan!"); }
-        };
         let closeAdminDashboard = () => document.getElementById('adminDashboardModal').classList.add('hidden');
 
         if (db) {
@@ -2133,9 +2119,9 @@
         }
 
         function verifyStaffLogin() {
-            const p = document.getElementById('staffPassInput').value;
-            if (p === secretAdminCode || p === "kasir123") {
-                document.getElementById('staffStatusText').innerText = "Status: Berjaya Log Masuk (Staf Ladang)";
+            const p = document.getElementById('staffPassInput').value.trim();
+            if (p === masterAdminPassword || customAdminList.some(a => a.pass === p) || p === "kasir123") {
+                document.getElementById('staffStatusText').innerText = "Status: Berjaya Log Masuk (Staf / Admin)";
                 document.getElementById('incomeMainContent').classList.remove('opacity-50', 'pointer-events-none');
                 alert("Akses Jualan Terus Dari Ladang dibuka!");
             } else { alert("Kata laluan salah!"); }
@@ -2237,7 +2223,6 @@
             return true;
         }
 
-        // OPTIMASI: Render maksimal 20 data terbaru agar anti ngadat di semua HP
         function renderIncomeSales() {
             const tbody = document.getElementById('incomeTableBody');
             if (!tbody) return;
@@ -2250,8 +2235,8 @@
         }
 
         function verifyOfficeLogin() {
-            const p = document.getElementById('officePassInput').value;
-            if (p === secretAdminCode) {
+            const p = document.getElementById('officePassInput').value.trim();
+            if (p === masterAdminPassword || customAdminList.some(a => a.pass === p)) {
                 document.getElementById('officeStatusText').innerText = "Status: Berjaya Log Masuk (Pentadbir)";
                 document.getElementById('officeMainContent').classList.remove('opacity-50', 'pointer-events-none');
                 alert("Akses Produk & Invois Luar Talian dibuka!");
@@ -2406,7 +2391,6 @@
             }
         }
 
-        // OPTIMASI: Render maksimal 20 data terbaru
         function renderOfficeSales() {
             const tbody = document.getElementById('officeSalesTableBody');
             if (!tbody) return;
@@ -2641,7 +2625,6 @@
             }
         }
 
-        // OPTIMASI: Render maksimal 20 data terbaru
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             if(!tbody) return; tbody.innerHTML = "";
@@ -2976,17 +2959,6 @@
         function closeInvoiceModal() { document.getElementById('invoiceModal').classList.add('hidden'); }
         function downloadInvoicePdfOrText() { window.print(); }
 
-        function verifyPoLogin() {
-            const pass = document.getElementById('poPassInput').value;
-            if (pass === secretAdminCode) {
-                document.getElementById('poLoginPanel').classList.add('hidden');
-                document.getElementById('poMainContent').classList.remove('opacity-50', 'pointer-events-none');
-                alert("Akses PO Masuk berjaya dibuka!");
-            } else {
-                alert("Kata laluan salah! Sila masukkan kata laluan pentadbir yang sah.");
-            }
-        }
-
         function renderAdminCustomerOrders() {
             const tbody = document.getElementById('adminCustomerOrdersTableBody');
             if (!tbody) return;
@@ -3102,7 +3074,6 @@
             setTimeout(initSignaturePad, 200);
         }
 
-        // Fungsi auto hapus chat lama di atas 7 hari agar database dan memori HP tetap ringan
         function autoCleanOldChat() {
             if (!db) return;
             let satuMingguLalu = new Date();
@@ -3131,120 +3102,114 @@
             updateLiveClock();
             fetchRealTimeWeatherAndAnalyze();
             
-            // Interval update cuaca otomatis setiap 30 menit
             setInterval(fetchRealTimeWeatherAndAnalyze, 30 * 60 * 1000);
         });
 
-// Password Master Utama (Khusus Abdul Rojak)
-const masterAdminPassword = "rojak123";
+        // ==========================================
+        // SISTEM MULTI-ADMIN & MASTER PASSWORD
+        // ==========================================
+        const masterAdminPassword = "rojak123";
 
-// Daftar Admin Tambahan (Default awal sebelum ditambah dari panel)
-let customAdminList = [
-    { name: "Norlela binti Mohd Yussoff", pass: "lela2026#" },
-    { name: "Norsida binti Ibrahim", pass: "sida2026#" },
-    { name: "Adham Baba", pass: "adham2026#" },
-    { name: "Mohd Hafiezulniezam bin Mohd Hasdin", pass: "hufi2026#" },
-    { name: "Hane Aqela binti Abdul Aziz", pass: "aqela2026#" },
-    { name: "Azwan bin Adham", pass: "azwan2026#" },
-    { name: "Iskandar bin Mirza", pass: "iskandar2026#" }
-];
+        let customAdminList = [
+            { name: "Norlela binti Mohd Yussoff", pass: "lela2026#" },
+            { name: "Norsida binti Ibrahim", pass: "sida2026#" },
+            { name: "Adham Baba", pass: "adham2026#" },
+            { name: "Mohd Hafiezulniezam bin Mohd Hasdin", pass: "hufi2026#" },
+            { name: "Hane Aqela binti Abdul Aziz", pass: "aqela2026#" },
+            { name: "Azwan bin Adham", pass: "azwan2026#" },
+            { name: "Iskandar bin Mirza", pass: "iskandar2026#" }
+        ];
 
-// Ambil data admin tambahan dari Firebase saat aplikasi dimuat
-if (db) {
-    db.collection("settings").doc("custom_admins").get().then((doc) => {
-        if (doc.exists && doc.data().list) {
-            customAdminList = doc.data().list;
-        }
-    }).catch(() => {});
-}
-
-// 1. Verifikasi khusus Panel Admin Utama (Hanya Master Rojak)
-let verifyAdmin = () => {
-    const pass = document.getElementById('adminPasswordInput').value.trim();
-    if (pass === masterAdminPassword) {
-        closeAdminLogin();
-        document.getElementById('adminDashboardModal').classList.remove('hidden');
-        renderWorkersAdmin();
-        renderAdminInventoryTable();
-        renderAdminWhatsappList();
-        renderAiTrainingRules();
-        renderUnresolvedLogs();
-        renderAdminManagementUI(); // Munculkan senarai admin di panel
-        alert("Selamat datang, abang Abdul Rojak (Admin Utama)!");
-    } else { 
-        alert("Kata laluan salah! Panel ini khas untuk Admin Utama."); 
-    }
-};
-
-// 2. Verifikasi untuk PO Masuk & Panel Staf (Bisa diakses Master + Admin Tambahan)
-function verifyPoLogin() {
-    const pass = document.getElementById('poPassInput').value.trim();
-    if (pass === masterAdminPassword) {
-        openPoAccess("Admin Utama (abang)");
-        return;
-    }
-    let foundAdmin = customAdminList.find(a => a.pass === pass);
-    if (foundAdmin) {
-        openPoAccess(foundAdmin.name);
-    } else {
-        alert("Kata laluan salah! Sila masukkan kata laluan pentadbir yang sah.");
-    }
-}
-
-function openPoAccess(adminName) {
-    document.getElementById('poLoginPanel').classList.add('hidden');
-    document.getElementById('poMainContent').classList.remove('opacity-50', 'pointer-events-none');
-    alert(`Akses PO Masuk dibuka! Selamat bertugas, ${adminName}.`);
-}
-
-// Tambah admin baru langsung dari Panel Admin Utama
-function addNewCustomAdmin() {
-    const name = document.getElementById('newAdminNameInput').value.trim();
-    const pass = document.getElementById('newAdminPassInput').value.trim();
-    if (name && pass) {
-        customAdminList.push({ name, pass });
         if (db) {
-            db.collection("settings").doc("custom_admins").set({ list: customAdminList }).then(() => {
-                document.getElementById('newAdminNameInput').value = "";
-                document.getElementById('newAdminPassInput').value = "";
+            db.collection("settings").doc("custom_admins").get().then((doc) => {
+                if (doc.exists && doc.data().list) {
+                    customAdminList = doc.data().list;
+                }
+            }).catch(() => {});
+        }
+
+        let verifyAdmin = () => {
+            const pass = document.getElementById('adminPasswordInput').value.trim();
+            if (pass === masterAdminPassword) {
+                closeAdminLogin();
+                document.getElementById('adminDashboardModal').classList.remove('hidden');
+                renderWorkersAdmin();
+                renderAdminInventoryTable();
+                renderAdminWhatsappList();
+                renderAiTrainingRules();
+                renderUnresolvedLogs();
                 renderAdminManagementUI();
-                alert(`Admin ${name} berjaya didaftarkan!`);
+                alert("Selamat datang, abang Abdul Rojak (Admin Utama)!");
+            } else { 
+                alert("Kata laluan salah! Panel ini khas untuk Admin Utama."); 
+            }
+        };
+
+        function verifyPoLogin() {
+            const pass = document.getElementById('poPassInput').value.trim();
+            if (pass === masterAdminPassword) {
+                openPoAccess("Admin Utama (abang)");
+                return;
+            }
+            let foundAdmin = customAdminList.find(a => a.pass === pass);
+            if (foundAdmin) {
+                openPoAccess(foundAdmin.name);
+            } else {
+                alert("Kata laluan salah! Sila masukkan kata laluan pentadbir yang sah.");
+            }
+        }
+
+        function openPoAccess(adminName) {
+            document.getElementById('poLoginPanel').classList.add('hidden');
+            document.getElementById('poMainContent').classList.remove('opacity-50', 'pointer-events-none');
+            alert(`Akses PO Masuk dibuka! Selamat bertugas, ${adminName}.`);
+        }
+
+        function addNewCustomAdmin() {
+            const name = document.getElementById('newAdminNameInput').value.trim();
+            const pass = document.getElementById('newAdminPassInput').value.trim();
+            if (name && pass) {
+                customAdminList.push({ name, pass });
+                if (db) {
+                    db.collection("settings").doc("custom_admins").set({ list: customAdminList }).then(() => {
+                        document.getElementById('newAdminNameInput').value = "";
+                        document.getElementById('newAdminPassInput').value = "";
+                        renderAdminManagementUI();
+                        alert(`Admin ${name} berjaya didaftarkan!`);
+                    });
+                }
+            } else {
+                alert("Sila isi nama dan kata laluan admin dengan lengkap.");
+            }
+        }
+
+        function deleteCustomAdmin(index) {
+            customAdminList.splice(index, 1);
+            if (db) {
+                db.collection("settings").doc("custom_admins").set({ list: customAdminList }).then(() => {
+                    renderAdminManagementUI();
+                    alert("Admin berjaya dipadam!");
+                });
+            }
+        }
+
+        function renderAdminManagementUI() {
+            let container = document.getElementById('adminManagementContainer');
+            if (!container) return;
+            container.innerHTML = "";
+            if (customAdminList.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400">Tiada admin tambahan didaftarkan.</span>`;
+                return;
+            }
+            customAdminList.forEach((adm, idx) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800">👤 ${adm.name}</span><br>
+                            <span class="text-[10px] text-slate-500 font-mono">Password: ${adm.pass}</span>
+                        </div>
+                        <button type="button" onclick="deleteCustomAdmin(${idx})" class="bg-rose-100 text-rose-700 px-2 py-1 rounded font-bold text-[10px]">Padam</button>
+                    </div>
+                `;
             });
         }
-    } else {
-        alert("Sila isi nama dan kata laluan admin dengan lengkap.");
-    }
-}
-
-// Hapus admin
-function deleteCustomAdmin(index) {
-    customAdminList.splice(index, 1);
-    if (db) {
-        db.collection("settings").doc("custom_admins").set({ list: customAdminList }).then(() => {
-            renderAdminManagementUI();
-            alert("Admin berjaya dipadam!");
-        });
-    }
-}
-
-// Tampilkan daftar admin di dalam Panel Admin Utama
-function renderAdminManagementUI() {
-    let container = document.getElementById('adminManagementContainer');
-    if (!container) return;
-    container.innerHTML = "";
-    if (customAdminList.length === 0) {
-        container.innerHTML = `<span class="text-[11px] text-slate-400">Tiada admin tambahan didaftarkan.</span>`;
-        return;
-    }
-    customAdminList.forEach((adm, idx) => {
-        container.innerHTML += `
-            <div class="flex justify-between items-center bg-white p-2 rounded-lg border text-xs">
-                <div>
-                    <span class="font-bold text-slate-800">👤 ${adm.name}</span><br>
-                    <span class="text-[10px] text-slate-500 font-mono">Password: ${adm.pass}</span>
-                </div>
-                <button type="button" onclick="deleteCustomAdmin(${idx})" class="bg-rose-100 text-rose-700 px-2 py-1 rounded font-bold text-[10px]">Padam</button>
-            </div>
-        `;
-    });
-}
