@@ -1626,7 +1626,7 @@
             let totalOffice = officeSales.reduce((s, o) => s + parseFloat(o.total.replace(/[^0-9.]/g, '') || 0), 0);
 
             let responseText = "";
-            let customPrefix = "Selamat datang kembali,";
+            let customPrefix = "Selamat datang di sistem Medicalpro,";
             let matchedTraining = null;
 
             if (manualText) {
@@ -1648,12 +1648,15 @@
                     let recentMemoryCount = globalAiMemory.length;
                     responseText = `🧠 Memori Global & Kosa Kata Mandiri:\n• Jumlah Perbualan Disimpan: ${recentMemoryCount} interaksi.\nAI terus merekod setiap input pautan dan kosa kata baharu agar semakin pintar!`;
                 } else {
-                    responseText = `Selamat datang kembali, ${fullName}! 🌿 Asisten mandiri Medicalpro siap membantu. Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik.`;
+                    // KALIMAT SAPAAN UTAMA YANG DIUBAH SESUAI PERMINTAAN LU, BRO:
+                    responseText = `Selamat datang di sistem Medicalpro, ${fullName}! 🌿 Ada yang bisa saya bantu? Silakan beri tahu jika Anda perlu mengecek rekap pengeluaran, pemasukan, produk, atau data penting ladang lainnya.`;
                 }
             }
 
             if (currentLang === 'id') {
                 responseText = responseText
+                    .replace(/Selamat datang di sistem Medicalpro/g, 'Selamat datang di sistem Medicalpro')
+                    .replace(/Ada yang bisa saya bantu\? Silakan beri tahu jika Anda perlu mengecek rekap pengeluaran, pemasukan, produk, atau data penting ladang lainnya/g, 'Ada yang bisa saya bantu? Silakan beri tahu jika Anda perlu mengecek rekap pengeluaran, pemasukan, produk, atau data penting kebun lainnya')
                     .replace(/Rumusan Sistem & Kewangan Ladang/g, 'Rekap Sistem & Keuangan Ladang')
                     .replace(/Jumlah Pekerja/g, 'Jumlah Pekerja')
                     .replace(/Jumlah Perbelanjaan/g, 'Total Pengeluaran')
@@ -1663,39 +1666,15 @@
                     .replace(/Stok baja berikut hampir habis/g, 'Stok pupuk berikut hampir habis')
                     .replace(/Stok bio baja dalam keadaan selamat dan mencukupi/g, 'Stok bio pupuk dalam keadaan aman dan mencukupi')
                     .replace(/Analisis & Jadual Pembajaan/g, 'Analisis & Jadwal Pemupukan')
-                    .replace(/Cadangan Pembajaan/g, 'Saran Pemupukan')
-                    .replace(/Sudah/g, 'Sudah')
-                    .replace(/hari sejak pembajaan terakhir/g, 'hari sejak pemupukan terakhir')
-                    .replace(/hari lalu/g, 'hari lalu')
-                    .replace(/Jadual pembajaan berikutnya sekitar/g, 'Jadwal pemupukan berikutnya sekitar')
-                    .replace(/hari lagi/g, 'hari lagi')
-                    .replace(/Selamat datang kembali/g, 'Selamat datang kembali')
-                    .replace(/Asisten mandiri Medicalpro siap membantu/g, 'Asisten mandiri Medicalpro siap membantu')
-                    .replace(/Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik/g, 'Semua riwayat obrolan dan referensi tautan diselaraskan dengan baik');
+                    .replace(/Cadangan Pembajaan/g, 'Saran Pemupukan');
             } else if (currentLang === 'en') {
                 responseText = responseText
-                    .replace(/Rumusan Sistem & Kewangan Ladang/g, 'Farm System & Financial Summary')
-                    .replace(/Jumlah Pekerja/g, 'Total Workers')
-                    .replace(/Jumlah Perbelanjaan/g, 'Total Expenses')
-                    .replace(/Jualan Hasil Ladang/g, 'Direct Farm Sales')
-                    .replace(/Jualan Produk & Invois Luar Talian/g, 'Offline Products & Invoices Sales')
-                    .replace(/Perhatian/g, 'Attention')
-                    .replace(/Stok baja berikut hampir habis/g, 'The following fertilizer stock is running low')
-                    .replace(/Stok bio baja dalam keadaan selamat dan mencukupi/g, 'Bio fertilizer stock is safe and sufficient')
-                    .replace(/Analisis & Jadual Pembajaan/g, 'Fertilization Analysis & Schedule')
-                    .replace(/Cadangan Pembajaan/g, 'Fertilization Recommendation')
-                    .replace(/Sudah/g, 'It has been')
-                    .replace(/hari sejak pembajaan terakhir/g, 'days since last fertilization')
-                    .replace(/hari lalu/g, 'days ago')
-                    .replace(/Jadual pembajaan berikutnya sekitar/g, 'Next fertilization schedule in about')
-                    .replace(/hari lagi/g, 'days')
-                    .replace(/Selamat datang kembali/g, 'Welcome back')
-                    .replace(/Asisten mandiri Medicalpro siap membantu/g, 'Medicalpro autonomous assistant is ready to help')
-                    .replace(/Semua riwayat perbualan dan rujukan pautan diselaraskan dengan baik/g, 'All chat history and link references are properly synced');
+                    .replace(/Selamat datang di sistem Medicalpro/g, 'Welcome to the Medicalpro system')
+                    .replace(/Ada yang bisa saya bantu\? Silakan beri tahu jika Anda perlu mengecek rekap pengeluaran, pemasukan, produk, atau data penting ladang lainnya/g, 'Is there anything I can help you with? Please let me know if you need to check expense summaries, income, products, or other important farm data');
             } else if (currentLang === 'zh') {
-                responseText = `欢迎回来，${fullName}! 🌿 Medicalpro 智能助手随时为您服务。系统数据正常，所有云端记忆已同步。`;
+                responseText = `欢迎来到 Medicalpro 系统，${fullName}! 🌿 请问有什么我可以帮您的吗？如果您需要核对开销、收入、产品或任何农场数据，请随时告诉我。`;
             } else if (currentLang === 'hi') {
-                responseText = `वापसी पर स्वागत है, ${fullName}! 🌿 मेडिकलप्रो स्मार्ट सहायक आपकी सहायता के लिए तैयार है। सभी डेटा और मेमोरी सिंक हो चुके हैं।`;
+                responseText = `मेडिकलप्रो सिस्टम में आपका स्वागत है, ${fullName}! 🌿 क्या मैं आपकी कोई सहायता कर सकता हूँ? यदि आपको खर्च, आय, उत्पाद या किसी अन्य महत्वपूर्ण फार्म डेटा की जाँच करनी हो तो कृपया बताएं।`;
             }
 
             if (manualText) {
